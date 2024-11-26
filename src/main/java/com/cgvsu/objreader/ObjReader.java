@@ -28,8 +28,8 @@ public class ObjReader {
 				continue;
 			}
 
-			final String token = wordsInLine.get(0);
-			wordsInLine.remove(0);
+			final String token = wordsInLine.getFirst();
+			wordsInLine.removeFirst();
 
 			++lineInd;
 			switch (token) {
