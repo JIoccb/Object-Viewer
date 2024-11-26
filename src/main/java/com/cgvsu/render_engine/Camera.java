@@ -1,10 +1,12 @@
 package com.cgvsu.render_engine;
 
 
+import com.cgvsu.math.matrices.Matrix4D;
+import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector3D;
 
 public class Camera {
-
+    //TODO починить типы данных
     public Camera(
             final Vector3D position,
             final Vector3D target,
@@ -41,18 +43,18 @@ public class Camera {
     }
 
     public void movePosition(final Vector3D translation) {
-        this.position.add(translation);
+        this.position = BinaryOperations.add(position, translation);
     }
 
     public void moveTarget(final Vector3D translation) {
-        this.target.add(target);
+        this.target = BinaryOperations.add(target, target);
     }
 
-    Matrix4f getViewMatrix() {
+    Matrix4D getViewMatrix() throws Exception {
         return GraphicConveyor.lookAt(position, target);
     }
 
-    Matrix4f getProjectionMatrix() {
+    Matrix4D getProjectionMatrix() {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
 
