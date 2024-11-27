@@ -6,11 +6,9 @@ import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
-import com.cgvsu.math.vectors.Vector4D;
 
 public class GraphicConveyor {
 
-    //TODO починить типы данных
     public static Matrix3D rotation(double x, double y, double z) {
         return new Matrix3D(new double[][]{
                 {Math.cos(y) * Math.cos(z), Math.cos(z) * Math.sin(y) * Math.sin(x) - Math.sin(z) * Math.cos(x),
@@ -38,9 +36,9 @@ public class GraphicConveyor {
         });
     }
 
-    public static Matrix4D rotateScaleTranslate(Vector3D translate, double alpha, double beta, double gamma, double x, double y, double z) {
+    public static Matrix4D rotateScaleTranslate(Vector3D translate, double alpha, double beta, double gamma, double x, double y, double z) throws Exception {
         Matrix RS = BinaryOperations.product(scaling(x, y, z), rotation(alpha, beta, gamma));
-        return BinaryOperations.product(translation(translate.get(0), translate.get(1), translate.get(2)), RS.increaseDimensions());
+        return BinaryOperations.product(translation(translate.get(0), translate.get(1), translate.get(2)), RS.increaseDimensions()).toMatrix4D();
     }
 
     public static Matrix4D lookAt(Vector3D eye, Vector3D target) throws Exception {
@@ -55,9 +53,9 @@ public class GraphicConveyor {
         Vector3D resultY = BinaryOperations.cross(resultZ, resultX);
 
 
-        resultX = resultX.normalize();
-        resultY = resultY.normalize();
-        resultZ = resultZ.normalize();
+        resultX = resultX.normalize().toVector3D();
+        resultY = resultY.normalize().toVector3D();
+        resultZ = resultZ.normalize().toVector3D();
 
         return new Matrix4D(new double[][]{
                 {resultX.get(0), resultY.get(0), resultZ.get(0), 0},
@@ -91,6 +89,6 @@ public class GraphicConveyor {
     }*/
 
     public static Vector2D vertexToPoint(final Vector3D vertex, final int width, final int height) {
-        return new Vector2D(new double[]{vertex.get(0) * width + width / 2.F, -vertex.get(1) * height + height / 2.F});
+        return new Vector2D(new double[]{vertex.get(0) * width + width / 2.0F, -vertex.get(1) * height + height / 2.0F});
     }
 }
