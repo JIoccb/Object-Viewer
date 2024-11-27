@@ -1,6 +1,7 @@
 package com.cgvsu.math.vectors;
 
-import matrices.Matrix;
+
+import com.cgvsu.math.matrices.Matrix;
 
 public class Vector {
     private int length;
@@ -66,10 +67,12 @@ public class Vector {
     /**
      * Vector normalization
      */
-    public Vector normalize() {
-        int length = getLength();
+    public Vector normalize() throws Exception {
         double norm = norm();
-
+        if (Math.abs(norm) < 1e-6){
+            throw new Exception("This is the zero vector.");
+        }
+        int length = getLength();
         Vector res = new Vector(length);
 
         for (int i = 0; i < length; i++) {
