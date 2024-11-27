@@ -6,7 +6,6 @@ import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector3D;
 
 public class Camera {
-    //TODO починить типы данных
     public Camera(
             final Vector3D position,
             final Vector3D target,
@@ -43,11 +42,11 @@ public class Camera {
     }
 
     public void movePosition(final Vector3D translation) {
-        this.position = BinaryOperations.add(position, translation);
+        this.position = BinaryOperations.add(position, translation, true);
     }
 
     public void moveTarget(final Vector3D translation) {
-        this.target = BinaryOperations.add(target, target);
+        this.target = BinaryOperations.add(target, target,true);
     }
 
     Matrix4D getViewMatrix() throws Exception {
