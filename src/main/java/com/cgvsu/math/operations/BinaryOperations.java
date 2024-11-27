@@ -1,11 +1,14 @@
 package com.cgvsu.math.operations;
 
-import matrices.Matrix;
-import matrices.Matrix2D;
-import matrices.Matrix3D;
-import matrices.Matrix4D;
-import vectors.Vector;
-import vectors.Vector3D;
+
+import com.cgvsu.math.matrices.Matrix;
+import com.cgvsu.math.matrices.Matrix2D;
+import com.cgvsu.math.matrices.Matrix3D;
+import com.cgvsu.math.matrices.Matrix4D;
+import com.cgvsu.math.vectors.Vector;
+import com.cgvsu.math.vectors.Vector2D;
+import com.cgvsu.math.vectors.Vector3D;
+import com.cgvsu.math.vectors.Vector4D;
 
 public class BinaryOperations {
     /**
@@ -35,11 +38,11 @@ public class BinaryOperations {
         Matrix res = new Matrix(aRows, bCols);
         for (int i = 0; i < aRows; i++) {
             for (int j = 0; j < bCols; j++) {
-                double elem = 0;
+                double elem = 0; // Считаем значение элемента res[i][j]
                 for (int k = 0; k < aCols; k++) {
                     elem += A.get(i, k) * B.get(k, j);
-                    res.set(i, j, elem);
                 }
+                res.set(i, j, elem); // Записываем результат после вычисления
             }
         }
         return res;
@@ -72,6 +75,50 @@ public class BinaryOperations {
 
         return res;
     }
+    public static Vector2D add(Vector2D x, Vector2D y, boolean isAddition) {
+        Vector2D res = new Vector2D();
+        double x0 = x.get(0), x1 = x.get(1), y0 = y.get(0), y1 = y.get(1);
+        if (isAddition) {
+            res.set(0, x0 + y0);
+            res.set(1, x1 + y1);
+        } else {
+            res.set(0, x0 - y0);
+            res.set(1, x1 - y1);
+        }
+        return res;
+    }
+
+    public static Vector3D add(Vector3D x, Vector3D y, boolean isAddition) {
+        Vector3D res = new Vector3D();
+        double x0 = x.get(0), x1 = x.get(1), x2 = x.get(2), y0 = y.get(0), y1 = y.get(1), y2 = y.get(2);
+        if (isAddition) {
+            res.set(0, x0 + y0);
+            res.set(1, x1 + y1);
+            res.set(2, x2 + y2);
+        } else {
+            res.set(0, x0 - y0);
+            res.set(1, x1 - y1);
+            res.set(2, x2 - y2);
+        }
+        return res;
+    }
+
+    public static Vector4D add(Vector4D x, Vector4D y, boolean isAddition) {
+        Vector4D res = new Vector4D();
+        double x0 = x.get(0), x1 = x.get(1), x2 = x.get(2), x3 = x.get(3), y0 = y.get(0), y1 = y.get(1), y2 = y.get(2), y3 = y.get(3);
+        if (isAddition) {
+            res.set(0, x0 + y0);
+            res.set(1, x1 + y1);
+            res.set(2, x2 + y2);
+            res.set(3, x3 + y3);
+        } else {
+            res.set(0, x0 - y0);
+            res.set(1, x1 - y1);
+            res.set(2, x2 - y2);
+            res.set(3, x3 - y3);
+        }
+        return res;
+    }
 
     public static Matrix2D product(Matrix2D A, Matrix2D B) {
         Matrix2D res = new Matrix2D();
@@ -80,8 +127,8 @@ public class BinaryOperations {
                 double elem = 0;
                 for (int k = 0; k < 2; k++) {
                     elem += A.get(i, k) * B.get(k, j);
-                    res.set(i, j, elem);
                 }
+                res.set(i, j, elem);
             }
         }
         return res;
@@ -94,8 +141,8 @@ public class BinaryOperations {
                 double elem = 0;
                 for (int k = 0; k < 3; k++) {
                     elem += A.get(i, k) * B.get(k, j);
-                    res.set(i, j, elem);
                 }
+                res.set(i, j, elem);
             }
         }
         return res;
@@ -108,8 +155,8 @@ public class BinaryOperations {
                 double elem = 0;
                 for (int k = 0; k < 4; k++) {
                     elem += A.get(i, k) * B.get(k, j);
-                    res.set(i, j, elem);
                 }
+                res.set(i, j, elem);
             }
         }
         return res;
@@ -127,8 +174,8 @@ public class BinaryOperations {
             double elem = 0;
             for (int k = 0; k < rows; k++) {
                 elem += matrix.get(i, k) * vector.get(k);
-                res.set(i, elem);
             }
+            res.set(i, elem);
         }
         return res;
     }
@@ -275,11 +322,11 @@ public class BinaryOperations {
         int xLength = x.getLength();
         int yLength = y.getLength();
         if (xLength != yLength) {
-            throw new IllegalArgumentException(STR."The shapes of vector must be equal. Provided: \{xLength}, \{yLength}.");
+            throw new IllegalArgumentException(STR."The shapes of vectors must be equal. Provided: \{xLength}, \{yLength}.");
         }
         double res = 0;
         for (int i = 0; i < xLength; i++) {
-            res += x.get(i - 1) * y.get(i - 1);
+            res += x.get(i) * y.get(i);
         }
         return res;
     }
