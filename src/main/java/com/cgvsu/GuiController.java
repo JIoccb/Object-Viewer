@@ -58,7 +58,11 @@ public class GuiController {
             camera.setAspectRatio((float) (width / height));
 
             if (mesh != null) {
-                RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+                try {
+                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
@@ -90,31 +94,31 @@ public class GuiController {
 
     @FXML
     public void handleCameraForward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(0, 0, -TRANSLATION));
+        camera.movePosition(new Vector3D(new double[]{0, 0, -TRANSLATION}));
     }
 
     @FXML
     public void handleCameraBackward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(0, 0, TRANSLATION));
+        camera.movePosition(new Vector3D(new double[]{0, 0, TRANSLATION}));
     }
 
     @FXML
     public void handleCameraLeft(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(TRANSLATION, 0, 0));
+        camera.movePosition(new Vector3D(new double[]{TRANSLATION, 0, 0}));
     }
 
     @FXML
     public void handleCameraRight(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(-TRANSLATION, 0, 0));
+        camera.movePosition(new Vector3D(new double[]{-TRANSLATION, 0, 0}));
     }
 
     @FXML
     public void handleCameraUp(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(0, TRANSLATION, 0));
+        camera.movePosition(new Vector3D(new double[]{0, TRANSLATION, 0}));
     }
 
     @FXML
     public void handleCameraDown(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(0, -TRANSLATION, 0));
+        camera.movePosition(new Vector3D(new double[]{0, -TRANSLATION, 0}));
     }
 }
