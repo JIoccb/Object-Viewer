@@ -1,6 +1,7 @@
 package com.cgvsu.math.matrices;
 
-import vectors.Vector;
+
+import com.cgvsu.math.vectors.Vector;
 
 public class Matrix2D extends Matrix {
 
