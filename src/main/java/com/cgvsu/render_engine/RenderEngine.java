@@ -40,24 +40,24 @@ public class RenderEngine {
 
                 Vector3D vertexMath = new Vector3D(new double[]{vertex.get(0), vertex.get(1), vertex.get(2)});
 
-                Vector2D resultPoint = vertexToPoint(BinaryOperations.product(modelViewProjectionMatrix, vertexMath.increaseDimension()), width, height);
+                Vector2D resultPoint = vertexToPoint(BinaryOperations.product(modelViewProjectionMatrix, vertexMath.increaseDimension()).toVector3D(), width, height);
                 resultPoints.add(resultPoint);
             }
-            //TODO разобраться с кодом ниже
+
             for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 graphicsContext.strokeLine(
-                        resultPoints.get(vertexInPolygonInd - 1).x,
-                        resultPoints.get(vertexInPolygonInd - 1).y,
-                        resultPoints.get(vertexInPolygonInd).x,
-                        resultPoints.get(vertexInPolygonInd).y);
+                        resultPoints.get(vertexInPolygonInd - 1).get(0),
+                        resultPoints.get(vertexInPolygonInd - 1).get(1),
+                        resultPoints.get(vertexInPolygonInd).get(0),
+                        resultPoints.get(vertexInPolygonInd).get(1));
             }
 
             if (nVerticesInPolygon > 0)
                 graphicsContext.strokeLine(
-                        resultPoints.get(nVerticesInPolygon - 1).x,
-                        resultPoints.get(nVerticesInPolygon - 1).y,
-                        resultPoints.get(0).x,
-                        resultPoints.get(0).y);
+                        resultPoints.get(nVerticesInPolygon - 1).get(0),
+                        resultPoints.get(nVerticesInPolygon - 1).get(1),
+                        resultPoints.getFirst().get(0),
+                        resultPoints.getFirst().get(1));
         }
     }
 }
