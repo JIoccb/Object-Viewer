@@ -1,6 +1,9 @@
 package com.cgvsu.math.matrices;
 
-import vectors.Vector;
+
+import com.cgvsu.math.vectors.Vector;
+
+
 
 public class Matrix {
     private int rows;
@@ -37,17 +40,19 @@ public class Matrix {
         return cols;
     }
 
-    public double[] getCol(int index) {
-        double[] res = new double[rows];
+    public Vector getCol(int index) {
+        Vector res = new Vector(rows);
         for (int i = 0; i < rows; i++) {
-            res[i] = data[i][index];
+            res.set(i, data[i][index]);
         }
         return res;
     }
 
-    public double[] getRow(int index) {
-        double[] res = new double[cols];
-        System.arraycopy(data[index], 0, res, 0, cols);
+    public Vector getRow(int index) {
+        Vector res = new Vector(cols);
+        for (int i = 0; i < cols; i++) {
+            res.set(i, data[index][i]);
+        }
         return res;
     }
 
@@ -200,10 +205,11 @@ public class Matrix {
      */
     public Vector solveSystem() throws Exception {
         int cols = getCols();
-        if (removeColumn(cols - 1).rank() < rank()) {
+        int rank = rank();
+        if (removeColumn(cols - 1).rank() < rank) {
             throw new Exception("The system of equations has no solutions");
         } else {
-            if (rank() != cols - 1) {
+            if (rank != cols - 1) {
                 throw new Exception("The system of equations has many solutions");
             } else {
                 return gaussianElimination().backSubstitution();
@@ -356,6 +362,26 @@ public class Matrix {
         res.set(rows, cols, 1);
         return res;
     }
+    public Matrix4D toMatrix4D() throws Exception {
+        if (getRows() != 4 || getCols() != 4){
+            throw new Exception(STR."Shapes of matrix must be equal to 4x4. Provided: \{getRows()}, \{getCols()}.");
+        }
+        return new Matrix4D(getData());
+    }
+
+    public Matrix3D toMatrix3D() throws Exception {
+        if (getRows() != 3 || getCols() != 3){
+            throw new Exception(STR."Shapes of matrix must be equal to 4x4. Provided: \{getRows()}, \{getCols()}.");
+        }
+        return new Matrix3D(getData());
+    }
+
+    public Matrix2D toMatrix2D() throws Exception {
+        if (getRows() != 2 || getCols() != 2){
+            throw new Exception(STR."Shapes of matrix must be equal to 4x4. Provided: \{getRows()}, \{getCols()}.");
+        }
+        return new Matrix2D(getData());
+    }
 
     /**
      * Converting a matrix to a vector
@@ -366,9 +392,7 @@ public class Matrix {
         if (rows != 1) {
             throw new IllegalArgumentException(STR."Matrix must have 1 row. Provided: \{rows}.");
         }
-        Vector res = new Vector(rows);
-        res.setData(getRow(0));
-        return res;
+        return getRow(0);
     }
 
     /**
