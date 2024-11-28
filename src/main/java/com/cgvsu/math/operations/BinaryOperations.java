@@ -33,16 +33,18 @@ public class BinaryOperations {
         int bCols = B.getCols();
         int bRows = B.getRows();
         if (aCols != bRows) {
-            throw new IllegalArgumentException(STR."The inner dimensions of the matrices must be equal. Provided: (\{aRows}, \{aCols}), (\{bRows}, \{bCols}).");
+            throw new IllegalArgumentException(
+                    "The inner dimensions of the matrices must be equal. Provided: (" + aRows + ", " + aCols + "), (" + bRows + ", " + bCols + ")."
+            );
         }
         Matrix res = new Matrix(aRows, bCols);
         for (int i = 0; i < aRows; i++) {
             for (int j = 0; j < bCols; j++) {
-                double elem = 0; // Считаем значение элемента res[i][j]
+                double elem = 0;
                 for (int k = 0; k < aCols; k++) {
                     elem += A.get(i, k) * B.get(k, j);
                 }
-                res.set(i, j, elem); // Записываем результат после вычисления
+                res.set(i, j, elem);
             }
         }
         return res;
@@ -59,20 +61,14 @@ public class BinaryOperations {
         int xLength = x.getLength();
         int yLength = y.getLength();
         if (xLength != yLength) {
-            throw new IllegalArgumentException(STR."The dimensions of vectors must be equal. Provuded: \{xLength}, \{yLength}.");
+            throw new IllegalArgumentException(
+                    "The dimensions of vectors must be equal. Provided: " + xLength + ", " + yLength + "."
+            );
         }
         Vector res = new Vector(xLength);
-        if (isAddition){
-            for (int i = 0; i < xLength; i++) {
-                res.set(i, x.get(i) + y.get(i));
-            }
+        for (int i = 0; i < xLength; i++) {
+            res.set(i, isAddition ? x.get(i) + y.get(i) : x.get(i) - y.get(i));
         }
-        else {
-            for (int i = 0; i < xLength; i++) {
-                res.set(i, x.get(i) - y.get(i));
-            }
-        }
-
         return res;
     }
     public static Vector2D add(Vector2D x, Vector2D y, boolean isAddition) {
@@ -205,20 +201,14 @@ public class BinaryOperations {
         int bCols = B.getCols();
         int bRows = B.getRows();
         if (aRows != bRows || aCols != bCols) {
-            throw new IllegalArgumentException(STR."The dimensions of the matrices must be equal. Provided: (\{aRows}, \{aCols}), (\{bRows}, \{bCols}).");
+            throw new IllegalArgumentException(
+                    "The dimensions of the matrices must be equal. Provided: (" + aRows + ", " + aCols + "), (" + bRows + ", " + bCols + ")."
+            );
         }
         Matrix res = new Matrix(aRows, aCols);
-        if (isAddition) {
-            for (int i = 0; i < aRows; i++) {
-                for (int j = 0; j < A.getCols(); j++) {
-                    res.set(i, j, A.get(i, j) + B.get(i, j));
-                }
-            }
-        } else {
-            for (int i = 0; i < aRows; i++) {
-                for (int j = 0; j < A.getCols(); j++) {
-                    res.set(i, j, A.get(i, j) - B.get(i, j));
-                }
+        for (int i = 0; i < aRows; i++) {
+            for (int j = 0; j < aCols; j++) {
+                res.set(i, j, isAddition ? A.get(i, j) + B.get(i, j) : A.get(i, j) - B.get(i, j));
             }
         }
         return res;
@@ -259,21 +249,18 @@ public class BinaryOperations {
     public static Matrix concatCols(Matrix A, Matrix B) {
         int aRows = A.getRows();
         int bRows = B.getRows();
+        if (aRows != bRows) {
+            throw new IllegalArgumentException(
+                    "The count of rows in the matrices must be equal. Provided: (" + aRows + ", " + A.getCols() + "), (" + bRows + ", " + B.getCols() + ")."
+            );
+        }
         int aCols = A.getCols();
         int bCols = B.getCols();
-        if (aRows != bRows) {
-            throw new IllegalArgumentException(STR."The count of rows in the matrices must be equal. Provided: (\{aRows}, \{aCols}), (\{bRows}, \{bCols}).");
-        }
         Matrix res = new Matrix(aRows, aCols + bCols);
-
-
         for (int i = 0; i < aRows; i++) {
             for (int j = 0; j < aCols; j++) {
                 res.set(i, j, A.get(i, j));
             }
-        }
-
-        for (int i = 0; i < aRows; i++) {
             for (int j = 0; j < bCols; j++) {
                 res.set(i, aCols + j, B.get(i, j));
             }
@@ -293,19 +280,18 @@ public class BinaryOperations {
         int aCols = A.getCols();
         int bCols = B.getCols();
         if (A.getCols() != B.getCols()) {
-            throw new IllegalArgumentException(STR."The count of columns in the matrices must be equal. Provided: (\{aRows}, \{aCols}), (\{bRows}, \{bCols}).");
+            throw new IllegalArgumentException(
+                    "The count of columns in the matrices must be equal. Provided: (" + A.getRows() + ", " + A.getCols() + "), (" + B.getRows() + ", " + B.getCols() + ")."
+            );
         }
-
         Matrix res = new Matrix(aRows + bRows, aCols);
-
         for (int i = 0; i < aRows; i++) {
             for (int j = 0; j < aCols; j++) {
                 res.set(i, j, A.get(i, j));
             }
         }
-
         for (int i = 0; i < bRows; i++) {
-            for (int j = 0; j < aCols; j++) {
+            for (int j = 0; j < bCols; j++) {
                 res.set(aRows + i, j, B.get(i, j));
             }
         }
@@ -322,7 +308,9 @@ public class BinaryOperations {
         int xLength = x.getLength();
         int yLength = y.getLength();
         if (xLength != yLength) {
-            throw new IllegalArgumentException(STR."The shapes of vectors must be equal. Provided: \{xLength}, \{yLength}.");
+            throw new IllegalArgumentException(
+                    "The shapes of vectors must be equal. Provided: " + xLength + ", " + yLength + "."
+            );
         }
         double res = 0;
         for (int i = 0; i < xLength; i++) {
