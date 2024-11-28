@@ -6,6 +6,7 @@ import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
+import com.cgvsu.math.vectors.Vector4D;
 import javafx.scene.canvas.GraphicsContext;
 
 import com.cgvsu.model.Model;
@@ -13,14 +14,13 @@ import com.cgvsu.model.Model;
 import static com.cgvsu.render_engine.GraphicConveyor.*;
 
 public class RenderEngine {
-    //TODO починить типы данных
     public static void render(
             final GraphicsContext graphicsContext,
             final Camera camera,
             final Model mesh,
             final int width,
             final int height) throws Exception {
-        Matrix4D modelMatrix = rotateScaleTranslate(); //TODO задать параметры
+        Matrix4D modelMatrix = rotateScaleTranslate(new Vector3D(new double[]{0, 0, 0}), 0, 0, 0, 1, 1, 1); //TODO задать параметры
         Matrix4D viewMatrix = camera.getViewMatrix();
         Matrix4D projectionMatrix = camera.getProjectionMatrix();
 
@@ -40,7 +40,10 @@ public class RenderEngine {
 
                 Vector3D vertexMath = new Vector3D(new double[]{vertex.get(0), vertex.get(1), vertex.get(2)});
 
-                Vector2D resultPoint = vertexToPoint(BinaryOperations.product(modelViewProjectionMatrix, vertexMath.increaseDimension()).toVector3D(), width, height);
+                //TODO исправить этот ужас
+                Vector4D result = BinaryOperations.product(modelViewProjectionMatrix, vertexMath.increaseDimension()).toVector4D();
+                double[] resultData = result.getData();
+                Vector2D resultPoint = vertexToPoint(new Vector3D(new double[]{resultData[0], resultData[1], resultData[2]}), width, height);
                 resultPoints.add(resultPoint);
             }
 
