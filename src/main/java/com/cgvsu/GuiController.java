@@ -9,7 +9,6 @@ import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
@@ -76,7 +75,7 @@ public class GuiController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
         fileChooser.setTitle("Load Model");
 
-        File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+        File file = fileChooser.showOpenDialog(canvas.getScene().getWindow());
         if (file == null) {
             return;
         }
@@ -87,7 +86,7 @@ public class GuiController {
             String fileContent = Files.readString(fileName);
             mesh = ObjReader.read(fileContent);
             // todo: обработка ошибок
-        } catch (IOException exception) {
+        } catch (IOException ignored) {
 
         }
     }
