@@ -81,10 +81,10 @@ public class Matrix {
         int cols = getCols();
         int length = vector.getLength();
         if (index < 0 || index > rows) {
-            throw new IndexOutOfBoundsException(STR."Row index is out of matrix bounds. Provided :\{index}");
+            throw new IndexOutOfBoundsException("Row index is out of matrix bounds. Provided: " + index);
         }
         if (length != cols) {
-            throw new Exception(STR."Length of vector must be equal to count of cols in matrix. Provided :\{length}");
+            throw new Exception("Length of vector must be equal to count of cols in matrix. Provided: " + length);
         }
         Matrix res = new Matrix();
         for (int i = 0; i < cols; i++) {
@@ -98,10 +98,10 @@ public class Matrix {
         int cols = getCols();
         int length = vector.getLength();
         if (index < 0 || index > cols) {
-            throw new IndexOutOfBoundsException(STR."Column index is out of matrix bounds. Provided :\{index}");
+            throw new IndexOutOfBoundsException("Column index is out of matrix bounds. Provided: " + index);
         }
         if (length != rows) {
-            throw new Exception(STR."Length of vector must be equal to count of rows in matrix. Provided :\{length}");
+            throw new Exception("Length of vector must be equal to count of rows in matrix. Provided: " + length);
         }
         Matrix res = new Matrix();
         for (int i = 0; i < rows; i++) {
@@ -126,7 +126,7 @@ public class Matrix {
     public void print() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                System.out.print(STR."\{data[i][j]} ");
+                System.out.print(data[i][j] + " ");
             }
             System.out.println();
         }
@@ -276,12 +276,11 @@ public class Matrix {
         int cols = getCols();
 
         if (rows != cols) {
-            throw new IllegalArgumentException(STR."The matrix must be square. Provided shapes: (\{rows}, \{cols}).");
+            throw new IllegalArgumentException("The matrix must be square. Provided shapes: (" + rows + ", " + cols + ").");
         }
         double[][] data = getData();
 
-        double res;
-        res = 0;
+        double res = 0;
         for (int i = 0; i < rows; i++) {
             res += data[i][i];
         }
@@ -363,22 +362,22 @@ public class Matrix {
         return res;
     }
     public Matrix4D toMatrix4D() throws Exception {
-        if (getRows() != 4 || getCols() != 4){
-            throw new Exception(STR."Shapes of matrix must be equal to 4x4. Provided: \{getRows()}, \{getCols()}.");
+        if (getRows() != 4 || getCols() != 4) {
+            throw new Exception("Shapes of matrix must be equal to 4x4. Provided: " + getRows() + ", " + getCols() + ".");
         }
         return new Matrix4D(getData());
     }
 
     public Matrix3D toMatrix3D() throws Exception {
-        if (getRows() != 3 || getCols() != 3){
-            throw new Exception(STR."Shapes of matrix must be equal to 4x4. Provided: \{getRows()}, \{getCols()}.");
+        if (getRows() != 3 || getCols() != 3) {
+            throw new Exception("Shapes of matrix must be equal to 3x3. Provided: " + getRows() + ", " + getCols() + ".");
         }
         return new Matrix3D(getData());
     }
 
     public Matrix2D toMatrix2D() throws Exception {
-        if (getRows() != 2 || getCols() != 2){
-            throw new Exception(STR."Shapes of matrix must be equal to 4x4. Provided: \{getRows()}, \{getCols()}.");
+        if (getRows() != 2 || getCols() != 2) {
+            throw new Exception("Shapes of matrix must be equal to 2x2. Provided: " + getRows() + ", " + getCols() + ".");
         }
         return new Matrix2D(getData());
     }
@@ -390,7 +389,7 @@ public class Matrix {
         int rows = getRows();
 
         if (rows != 1) {
-            throw new IllegalArgumentException(STR."Matrix must have 1 row. Provided: \{rows}.");
+            throw new IllegalArgumentException("Matrix must have 1 row. Provided: " + rows + ".");
         }
         return getRow(0);
     }
@@ -402,7 +401,7 @@ public class Matrix {
         int cols = getCols();
         int rows = getRows();
         if (cols != rows) {
-            throw new IllegalArgumentException(STR."The matrix must be square. Provided shapes: (\{rows}, \{cols}).");
+            throw new IllegalArgumentException("The matrix must be square. Provided shapes: (" + rows + ", " + cols + ").");
         }
         double res = 1;
         Matrix triang = this.gaussianElimination();

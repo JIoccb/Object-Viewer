@@ -13,12 +13,15 @@ public class Matrix2D extends Matrix {
 
     public Matrix2D(double[][] data) {
         if (data.length != 2 || data[0].length != 2) {
-            throw new IllegalArgumentException(STR."The shapes of the array must be equal to 2. Provides: (\{data.length}, \{data[0].length}).");
+            throw new IllegalArgumentException(
+                    "The shapes of the array must be equal to 2. Provided: (" + data.length + ", " + data[0].length + ")."
+            );
         }
         setCols(2);
         setRows(2);
         setData(data);
     }
+
 
     /**
      * Determinant of matrix

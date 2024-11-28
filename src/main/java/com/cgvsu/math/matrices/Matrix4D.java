@@ -9,7 +9,9 @@ public class Matrix4D extends Matrix {
 
     public Matrix4D(double[][] data) {
         if (data.length != 4 || data[0].length != 4) {
-            throw new IllegalArgumentException(STR."The shapes of the array must be equal to 4. Provides: (\{data.length}, \{data[0].length}).");
+            throw new IllegalArgumentException(
+                    "The shapes of the array must be equal to 4. Provided: (" + data.length + ", " + data[0].length + ")."
+            );
         }
         setCols(4);
         setRows(4);

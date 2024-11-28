@@ -1,6 +1,7 @@
 package com.cgvsu.math.matrices;
 
-import vectors.Vector;
+
+import com.cgvsu.math.vectors.Vector;
 
 public class Matrix3D extends Matrix {
     public Matrix3D() {
@@ -11,7 +12,9 @@ public class Matrix3D extends Matrix {
 
     public Matrix3D(double[][] data) {
         if (data.length != 3 || data[0].length != 3) {
-            throw new IllegalArgumentException(STR."The shapes of the array must be equal to 3. Provides: (\{data.length}, \{data[0].length}).");
+            throw new IllegalArgumentException(
+                    "The shapes of the array must be equal to 3. Provided: (" + data.length + ", " + data[0].length + ")."
+            );
         }
         setCols(3);
         setRows(3);
