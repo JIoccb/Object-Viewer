@@ -1,11 +1,18 @@
 package com.cgvsu.render_engine;
 
-
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector3D;
 
 public class Camera {
+
+    private Vector3D position;  // Позиция камеры
+    private Vector3D target;    // Точка, на которую смотрит камера
+    private final float fov;          // Угол обзора
+    private float aspectRatio;  // Соотношение сторон
+    private final float nearPlane;    // Ближняя плоскость отсечения
+    private final float farPlane;     // Дальняя плоскость отсечения
+
     public Camera(
             final Vector3D position,
             final Vector3D target,
@@ -46,21 +53,37 @@ public class Camera {
     }
 
     public void moveTarget(final Vector3D translation) {
-        this.target = BinaryOperations.add(target, target,true);
+        this.target = BinaryOperations.add(target, translation, true);
     }
 
-    Matrix4D getViewMatrix() throws Exception {
+    public Matrix4D getViewMatrix() throws Exception {
         return GraphicConveyor.lookAt(position, target);
     }
 
-    Matrix4D getProjectionMatrix() {
+    public Matrix4D getProjectionMatrix() {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
 
-    private Vector3D position;
-    private Vector3D target;
-    private float fov;
-    private float aspectRatio;
-    private float nearPlane;
-    private float farPlane;
+    /**
+     * Обновляет целевую точку камеры (target) на основе углов yaw и pitch.
+     * @param yaw   Угол поворота по горизонтали (в градусах)
+     * @param pitch Угол поворота по вертикали (в градусах)
+     */
+    public void updateTarget(double yaw, double pitch) {
+        // Преобразование углов в радианы
+        double radYaw = Math.toRadians(yaw);
+        double radPitch = Math.toRadians(pitch);
+
+        // Вычисление новой целевой точки на основе углов
+        double x = Math.cos(radPitch) * Math.sin(radYaw);
+        double y = Math.sin(radPitch);
+        double z = Math.cos(radPitch) * Math.cos(radYaw);
+
+        // Установка нового значения target относительно текущей позиции
+        this.target = BinaryOperations.add(
+                position,
+                new Vector3D(new double[]{x, y, z}),
+                true
+        );
+    }
 }
