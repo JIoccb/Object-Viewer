@@ -21,31 +21,36 @@ public class RenderEngine {
             final Model mesh,
             final int width,
             final int height) throws Exception {
-        //Matrix4D modelMatrix = rotateScaleTranslate(new Vector3D(new double[]{0, 0, 0}), 0, 0, 0, 1, 1, 1);
+
+        if (mesh == null || mesh.polygons.isEmpty() || mesh.vertices.isEmpty()) {
+            return; // Нечего отрисовывать
+        }
+
         Matrix4D modelMatrix = Matrix.id(4).toMatrix4D();
         Matrix4D viewMatrix = camera.getViewMatrix();
         Matrix4D projectionMatrix = camera.getProjectionMatrix();
 
-        Matrix4D modelViewProjectionMatrix = modelMatrix;
-
-        modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix, BinaryOperations.product(viewMatrix,
-                modelViewProjectionMatrix));
+        Matrix4D modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix,
+                BinaryOperations.product(viewMatrix, modelMatrix));
 
         final int nPolygons = mesh.polygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
             final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
 
+            if (nVerticesInPolygon < 2) continue; // Пропуск недопустимого полигона
+
             ArrayList<Vector2D> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 Vector3D vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 
+                Vector4D result = BinaryOperations.product(modelViewProjectionMatrix, vertex.increaseDimension()).toVector4D();
+                double w = result.get(3);
 
-                Vector3D vertexMath = new Vector3D(new double[]{vertex.get(0), vertex.get(1), vertex.get(2)});
+                if (w != 0) {
+                    result = new Vector4D(new double[]{result.get(0) / w, result.get(1) / w, result.get(2) / w, 1.0});
+                }
 
-                //TODO исправить этот ужас
-                Vector4D result = BinaryOperations.product(modelViewProjectionMatrix, vertexMath.increaseDimension()).toVector4D();
-                double[] resultData = result.getData();
-                Vector2D resultPoint = vertexToPoint(new Vector3D(new double[]{resultData[0], resultData[1], resultData[2]}), width, height);
+                Vector2D resultPoint = vertexToPoint(new Vector3D(new double[]{result.get(0), result.get(1), result.get(2)}), width, height);
                 resultPoints.add(resultPoint);
             }
 
@@ -57,12 +62,11 @@ public class RenderEngine {
                         resultPoints.get(vertexInPolygonInd).get(1));
             }
 
-            if (nVerticesInPolygon > 0)
-                graphicsContext.strokeLine(
-                        resultPoints.get(nVerticesInPolygon - 1).get(0),
-                        resultPoints.get(nVerticesInPolygon - 1).get(1),
-                        resultPoints.getFirst().get(0),
-                        resultPoints.getFirst().get(1));
+            graphicsContext.strokeLine(
+                    resultPoints.get(nVerticesInPolygon - 1).get(0),
+                    resultPoints.get(nVerticesInPolygon - 1).get(1),
+                    resultPoints.getFirst().get(0),
+                    resultPoints.getFirst().get(1));
         }
     }
 }
