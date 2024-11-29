@@ -2,21 +2,21 @@ package com.cgvsu;
 
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.render_engine.RenderEngine;
-import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.io.IOException;
-import java.io.File;
-
 
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
@@ -24,10 +24,12 @@ import com.cgvsu.render_engine.Camera;
 
 public class GuiController {
 
-    final private float TRANSLATION = 0.5F;
+    private static final float TRANSLATION_SPEED = 0.5F;
+    private static final float ROTATION_SPEED = 0.1F;
+    private static final float ZOOM_SPEED = 0.1F;
 
     @FXML
-    AnchorPane anchorPane;
+    private AnchorPane anchorPane;
 
     @FXML
     private Canvas canvas;
@@ -39,14 +41,17 @@ public class GuiController {
             new Vector3D(new double[]{0, 0, 0}),
             1.0F, 1, 0.01F, 100);
 
-    private Timeline timeline;
+    private double mousePrevX = 0;
+    private double mousePrevY = 0;
+    private double cameraYaw = 0;  // Вращение по горизонтали
+    private double cameraPitch = 0; // Вращение по вертикали
 
     @FXML
     private void initialize() {
         anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
         anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
-        timeline = new Timeline();
+        Timeline timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
 
         KeyFrame frame = new KeyFrame(Duration.millis(15), event -> {
@@ -67,6 +72,8 @@ public class GuiController {
 
         timeline.getKeyFrames().add(frame);
         timeline.play();
+
+        setupMouseControls();
     }
 
     @FXML
@@ -85,39 +92,70 @@ public class GuiController {
         try {
             String fileContent = Files.readString(fileName);
             mesh = ObjReader.read(fileContent);
-            // todo: обработка ошибок
         } catch (IOException ignored) {
-
+            System.err.println("Error reading file: " + fileName);
         }
     }
 
-    @FXML
-    public void handleCameraForward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(new double[]{0, 0, -TRANSLATION}));
+    private void setupMouseControls() {
+        // Обработка нажатий мыши
+        canvas.setOnMousePressed(event -> {
+            mousePrevX = event.getSceneX();
+            mousePrevY = event.getSceneY();
+        });
+
+        // Обработка перетаскивания мыши
+        canvas.setOnMouseDragged(event -> {
+            double deltaX = event.getSceneX() - mousePrevX;
+            double deltaY = event.getSceneY() - mousePrevY;
+
+            cameraYaw += deltaX * ROTATION_SPEED;
+            cameraPitch += deltaY * ROTATION_SPEED;
+
+            // Ограничение угла наклона по вертикали
+            cameraPitch = Math.max(-90, Math.min(90, cameraPitch));
+
+            // Обновление целевой точки камеры
+            camera.updateTarget(cameraYaw, cameraPitch);
+
+            mousePrevX = event.getSceneX();
+            mousePrevY = event.getSceneY();
+        });
+
+        // Обработка прокрутки мыши
+        canvas.setOnScroll((ScrollEvent event) -> {
+            double zoom = event.getDeltaY();
+            camera.movePosition(new Vector3D(new double[]{0, 0, -zoom * ZOOM_SPEED}));
+        });
     }
 
     @FXML
-    public void handleCameraBackward(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(new double[]{0, 0, TRANSLATION}));
+    public void handleCameraForward() {
+        camera.movePosition(new Vector3D(new double[]{0, 0, -TRANSLATION_SPEED}));
     }
 
     @FXML
-    public void handleCameraLeft(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(new double[]{TRANSLATION, 0, 0}));
+    public void handleCameraBackward() {
+        camera.movePosition(new Vector3D(new double[]{0, 0, TRANSLATION_SPEED}));
     }
 
     @FXML
-    public void handleCameraRight(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(new double[]{-TRANSLATION, 0, 0}));
+    public void handleCameraLeft() {
+        camera.movePosition(new Vector3D(new double[]{TRANSLATION_SPEED, 0, 0}));
     }
 
     @FXML
-    public void handleCameraUp(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(new double[]{0, TRANSLATION, 0}));
+    public void handleCameraRight() {
+        camera.movePosition(new Vector3D(new double[]{-TRANSLATION_SPEED, 0, 0}));
     }
 
     @FXML
-    public void handleCameraDown(ActionEvent actionEvent) {
-        camera.movePosition(new Vector3D(new double[]{0, -TRANSLATION, 0}));
+    public void handleCameraUp() {
+        camera.movePosition(new Vector3D(new double[]{0, TRANSLATION_SPEED, 0}));
+    }
+
+    @FXML
+    public void handleCameraDown() {
+        camera.movePosition(new Vector3D(new double[]{0, -TRANSLATION_SPEED, 0}));
     }
 }
