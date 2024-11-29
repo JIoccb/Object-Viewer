@@ -55,8 +55,7 @@ public class ObjReader {
         return result;
     }
 
-    // Всем методам кроме основного я поставил модификатор доступа protected, чтобы обращаться к ним в тестах
-    protected static Vector3D parseVertex(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
+    public static Vector3D parseVertex(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
         try {
             return new Vector3D(new double[]{Double.parseDouble(wordsInLineWithoutToken.get(0)),
                     Double.parseDouble(wordsInLineWithoutToken.get(1)),
