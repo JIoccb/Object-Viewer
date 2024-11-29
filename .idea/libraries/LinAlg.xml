@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="LinAlg">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../LinAlg/artifacts/LinAlg_jar/LinAlg.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
