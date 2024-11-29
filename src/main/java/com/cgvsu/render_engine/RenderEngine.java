@@ -2,6 +2,7 @@ package com.cgvsu.render_engine;
 
 import java.util.ArrayList;
 
+import com.cgvsu.math.matrices.Matrix;
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
@@ -20,7 +21,8 @@ public class RenderEngine {
             final Model mesh,
             final int width,
             final int height) throws Exception {
-        Matrix4D modelMatrix = rotateScaleTranslate(new Vector3D(new double[]{0, 0, 0}), 0, 0, 0, 1, 1, 1); //TODO задать параметры
+        //Matrix4D modelMatrix = rotateScaleTranslate(new Vector3D(new double[]{0, 0, 0}), 0, 0, 0, 1, 1, 1);
+        Matrix4D modelMatrix = Matrix.id(4).toMatrix4D();
         Matrix4D viewMatrix = camera.getViewMatrix();
         Matrix4D projectionMatrix = camera.getProjectionMatrix();
 
