@@ -26,7 +26,8 @@ public class RenderEngine {
             return; // Нечего отрисовывать
         }
 
-        Matrix4D modelMatrix = Matrix.id(4).toMatrix4D();
+        //Matrix4D modelMatrix = Matrix.id(4).toMatrix4D();
+        Matrix4D modelMatrix = rotateScaleTranslate(new Vector3D(new double[]{0, 0, 0}), 0, 0, 0, 1, 1, 1);
         Matrix4D viewMatrix = camera.getViewMatrix();
         Matrix4D projectionMatrix = camera.getProjectionMatrix();
 
