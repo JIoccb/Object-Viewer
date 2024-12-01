@@ -30,12 +30,19 @@ public class GraphicConveyor {
         resultY = resultY.normalize().toVector3D();
         resultZ = resultZ.normalize().toVector3D();
 
-        return new Matrix4D(new double[][]{
+        Matrix4D trans = Matrix4D.id(4).toMatrix4D();
+        trans.set(0,3,-BinaryOperations.dot(resultX, eye));
+        trans.set(1,3,-BinaryOperations.dot(resultY, eye));
+        trans.set(2,3,-BinaryOperations.dot(resultZ, eye));
+
+        Matrix4D proj = new Matrix4D(new double[][]{
                 {resultX.get(0), resultY.get(0), resultZ.get(0), 0},
                 {resultX.get(1), resultY.get(1), resultZ.get(1), 0},
                 {resultX.get(2), resultY.get(2), resultZ.get(2), 0},
-                {-BinaryOperations.dot(resultX, eye), -BinaryOperations.dot(resultY, eye), -BinaryOperations.dot(resultZ, eye), 1}
+                {0, 0, 0, 1}
         });
+
+        return BinaryOperations.product(proj, trans).toMatrix4D();
     }
 
     public static Matrix4D perspective(
@@ -46,11 +53,12 @@ public class GraphicConveyor {
         Matrix4D result = new Matrix4D();
         float tangentMinusOnDegree = (float) (1.0F / (Math.tan(fov * 0.5F)));
 
-        result.set(0, 0, tangentMinusOnDegree / aspectRatio);
-        result.set(1, 1, tangentMinusOnDegree);
+        result.set(0, 0, tangentMinusOnDegree);
+        result.set(1, 1, tangentMinusOnDegree / aspectRatio);
         result.set(2, 2, (farPlane + nearPlane) / (farPlane - nearPlane));
-        result.set(2, 3, 1);
-        result.set(3, 2, 2 * (nearPlane * farPlane) / (nearPlane - farPlane));
+        result.set(2, 3, 2 * (nearPlane * farPlane) / (nearPlane - farPlane));
+        result.set(3, 2, 1);
+
         return result;
     }
 
