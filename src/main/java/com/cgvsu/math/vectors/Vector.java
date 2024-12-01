@@ -67,16 +67,15 @@ public class Vector {
     /**
      * Vector normalization
      */
-    public Vector normalize() throws Exception {
-        double norm = norm();
-        if (Math.abs(norm) < 1e-6){
-            throw new Exception("This is the zero vector.");
-        }
-        int length = getLength();
+    public Vector normalize() {
         Vector res = new Vector(length);
+        double norm = norm();
+        if (!(Math.abs(norm) < 1e-6)) {
+            int length = getLength();
 
-        for (int i = 0; i < length; i++) {
-            res.set(i, get(i) / norm);
+            for (int i = 0; i < length; i++) {
+                res.set(i, get(i) / norm);
+            }
         }
         return res;
     }
