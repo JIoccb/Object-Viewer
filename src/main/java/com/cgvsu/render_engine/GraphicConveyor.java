@@ -1,5 +1,6 @@
 package com.cgvsu.render_engine;
 
+import com.cgvsu.math.affine_transformations.AffineTransformations;
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
@@ -9,7 +10,7 @@ import static com.cgvsu.math.affine_transformations.AffineTransformations.*;
 
 public class GraphicConveyor {
 
-    public static Matrix4D rotateScaleTranslate(Vector3D translate, double alpha, double beta, double gamma, double x, double y, double z) throws Exception {
+    public static Matrix4D rotateScaleTranslate(Vector3D translate, double alpha, double beta, double gamma, double x, double y, double z) {
         Matrix4D RS = BinaryOperations.product(scaling(x, y, z), rotation(alpha, beta, gamma));
         return BinaryOperations.product(translation(translate.get(0), translate.get(1), translate.get(2)), RS);
     }
@@ -30,10 +31,9 @@ public class GraphicConveyor {
         resultY = resultY.normalize().toVector3D();
         resultZ = resultZ.normalize().toVector3D();
 
-        Matrix4D trans = Matrix4D.id(4).toMatrix4D();
-        trans.set(0,3,-BinaryOperations.dot(resultX, eye));
-        trans.set(1,3,-BinaryOperations.dot(resultY, eye));
-        trans.set(2,3,-BinaryOperations.dot(resultZ, eye));
+        Matrix4D trans = AffineTransformations.translation(-BinaryOperations.dot(resultX, eye),
+                -BinaryOperations.dot(resultY, eye), -BinaryOperations.dot(resultZ, eye));
+
 
         Matrix4D proj = new Matrix4D(new double[][]{
                 {resultX.get(0), resultY.get(0), resultZ.get(0), 0},
@@ -51,12 +51,12 @@ public class GraphicConveyor {
             final float nearPlane,
             final float farPlane) {
         Matrix4D result = new Matrix4D();
-        float tangentMinusOnDegree = (float) (1.0F / (Math.tan(fov * 0.5F)));
+        float tangentMinusOnDegree = (float) (1.0F / (Math.tan(fov)));
 
         result.set(0, 0, tangentMinusOnDegree);
         result.set(1, 1, tangentMinusOnDegree / aspectRatio);
         result.set(2, 2, (farPlane + nearPlane) / (farPlane - nearPlane));
-        result.set(2, 3, 2 * (nearPlane * farPlane) / (nearPlane - farPlane));
+        result.set(2, 3, 2 * nearPlane * farPlane / (nearPlane - farPlane));
         result.set(3, 2, 1);
 
         return result;
@@ -70,7 +70,10 @@ public class GraphicConveyor {
         return new Vector3D(x / w, y / w, z / w);
     }*/
 
-    public static Vector2D vertexToPoint(final Vector3D vertex, final int width, final int height) {
+    /*public static Vector2D vertexToPoint(final Vector3D vertex, final int width, final int height) {
         return new Vector2D(new double[]{vertex.get(0) * width + width / 2.0F, -vertex.get(1) * height + height / 2.0F});
+    }*/
+    public static Vector2D vertexToPoint(final Vector3D vertex, final int width, final int height) {
+        return new Vector2D(new double[]{(width - 1) / 2.0D * (vertex.get(0) + 1), (height - 1) / 2.0D * (-vertex.get(1) + 1)});
     }
 }

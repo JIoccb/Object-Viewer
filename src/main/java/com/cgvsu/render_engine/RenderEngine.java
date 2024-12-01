@@ -48,7 +48,7 @@ public class RenderEngine {
                 double w = result.get(3);
 
                 if (w != 0) {
-                    result = new Vector4D(new double[]{result.get(0) / w, result.get(1) / w, result.get(2) / w, 1.0});
+                    result = result.scale(1 / w).toVector4D();
                 }
 
                 Vector2D resultPoint = vertexToPoint(new Vector3D(new double[]{result.get(0), result.get(1), result.get(2)}), width, height);
