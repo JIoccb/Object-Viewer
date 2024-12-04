@@ -2,7 +2,6 @@ package com.cgvsu.render_engine;
 
 import java.util.ArrayList;
 
-import com.cgvsu.math.matrices.Matrix;
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
