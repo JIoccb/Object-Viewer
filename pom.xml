@@ -56,13 +56,13 @@
             <version>4.13.1</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>linalg</groupId>
             <artifactId>linalg</artifactId>
             <version>1.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/src/main/resources/com.cgvsu.math/LinAlg.jar</systemPath>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <build>
