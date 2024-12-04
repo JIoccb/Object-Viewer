@@ -1,6 +1,7 @@
 package com.cgvsu.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Polygon {
 
@@ -11,6 +12,13 @@ public class Polygon {
 
     public Polygon() {
         vertexIndices = new ArrayList<>();
+        textureVertexIndices = new ArrayList<>();
+        normalIndices = new ArrayList<>();
+    }
+
+    public Polygon(List<Integer> list) {
+        vertexIndices = new ArrayList<>();
+        vertexIndices.addAll(list);
         textureVertexIndices = new ArrayList<>();
         normalIndices = new ArrayList<>();
     }

@@ -94,6 +94,8 @@ public class GuiController {
             mesh = ObjReader.read(fileContent);
         } catch (IOException ignored) {
             System.err.println("Error reading file: " + fileName);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

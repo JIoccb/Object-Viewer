@@ -16,7 +16,7 @@ public class ObjReader {
     private static final String OBJ_NORMAL_TOKEN = "vn";
     private static final String OBJ_FACE_TOKEN = "f";
 
-    public static Model read(String fileContent) {
+    public static Model read(String fileContent) throws Exception {
         Model result = new Model();
 
         int lineInd = 0;
