@@ -3,16 +3,16 @@ package objreader;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.objreader.ObjReader;
 import com.cgvsu.objreader.ObjReaderException;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ObjReaderTest {
+class ObjReaderTest {
 
     @Test
-    public void testParseVertex01() {
+    void testParseVertex01() {
         ArrayList<String> wordsInLineWithoutToken = new ArrayList<>(Arrays.asList("1.01", "1.02", "1.03"));
         Vector3D result = ObjReader.parseVertex(wordsInLineWithoutToken, 5);
         Vector3D expectedResult = new Vector3D(new double[]{1.01d, 1.02d, 1.03d});

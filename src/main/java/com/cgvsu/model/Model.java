@@ -9,17 +9,17 @@ import java.util.*;
 
 public class Model {
 
-    public ArrayList<Vector3D> vertices = new ArrayList<Vector3D>();
-    public ArrayList<Vector2D> textureVertices = new ArrayList<Vector2D>();
+    public ArrayList<Vector3D> vertices = new ArrayList<>();
+    public ArrayList<Vector2D> textureVertices = new ArrayList<>();
     public ArrayList<Polygon> polygons = new ArrayList<>();
     public ArrayList<Vector3D> normals = calculateNormals();
 
 
-    public Model() throws Exception {
+    public Model() {
     }
 
 
-    public ArrayList<Vector3D> calculateNormals() throws Exception {
+    public ArrayList<Vector3D> calculateNormals() {
 
         ArrayList<Vector3D> temporaryNormals = new ArrayList<>();
         ArrayList<Vector3D> normals = new ArrayList<>();
@@ -48,7 +48,7 @@ public class Model {
         return normals;
     }
 
-    public Vector3D calcNormalOfPolygon(Polygon polygon) throws Exception {
+    public Vector3D calcNormalOfPolygon(Polygon polygon) {
         Vector3D vertice1, vertice2, vertice3;
         vertice1 = vertices.get(polygon.getVertexIndices().get(0));
         vertice2 = vertices.get(polygon.getVertexIndices().get(1));
@@ -67,7 +67,7 @@ public class Model {
         return vectorC.normalize().toVector3D();
     }
 
-    public Vector3D calcNormalOfVertex(List<Vector3D> vertices) throws Exception {
+    public Vector3D calcNormalOfVertex(List<Vector3D> vertices) {
         double xx = 0.0, yy = 0.0, zz = 0.0;
 
         for (Vector3D v : vertices) {
@@ -80,7 +80,7 @@ public class Model {
         Vector normal = new Vector3D(dataForNormal);
         return normal.normalize().toVector3D();
     }
-
+    //todo переделать под библиотеку для линейной алгебры
     private double determinant(Vector3D a, Vector3D b, Vector3D c) {
         return a.get(0) * (b.get(1) * c.get(2)) -
                 a.get(1) * (b.get(0) * c.get(2) - c.get(0) * b.get(2)) +
