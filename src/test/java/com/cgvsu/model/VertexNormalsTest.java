@@ -42,7 +42,6 @@ class VertexNormalsTest {
 
     @BeforeAll
     static void init() throws Exception {
-        //ArrayList<Vector3D> normals = m.calculateNormals();
         m.normals = m.calculateNormals();
     }
 

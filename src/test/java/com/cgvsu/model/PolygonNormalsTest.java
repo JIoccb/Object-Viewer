@@ -36,7 +36,6 @@ class PolygonNormalsTest {
 
 
         for (Polygon p : m.polygons) { //нормали полигонов получатся в том порядке, в каком и идут сами полигоны
-            //  p.getVertexIndices().set(0, p.getVertexIndices().get(0) - 1) ;
             temporaryNormals.add(m.calcNormalOfPolygon(p));
         }
 
@@ -47,7 +46,6 @@ class PolygonNormalsTest {
                     polygonNormalsList.add(temporaryNormals.get(j));
                 }
             }
-
             m.normals.add(m.calcNormalOfVertex(polygonNormalsList));
         }
 
@@ -56,45 +54,40 @@ class PolygonNormalsTest {
 
     @Test
     void calcPolygonNormalForCube0() {
-        assertEquals(temporaryNormals.get(0).get(0), -1.0);
+        Vector3D vector3D = new Vector3D(new double[]{-1,0,0});
+        assertEquals(temporaryNormals.get(0), vector3D);
         assertEquals(temporaryNormals.get(0).get(1), 0.0);
         assertEquals(temporaryNormals.get(0).get(2), 0.0);
     }
 
     @Test
     void calcPolygonNormalForCube1() {
-        assertEquals(temporaryNormals.get(1).get(0), 0.0);
-        assertEquals(temporaryNormals.get(1).get(1), -0.0);
-        assertEquals(temporaryNormals.get(1).get(2), -1.0);
+        Vector3D vector3D = new Vector3D(new double[]{0,0,-1});
+        assertEquals(temporaryNormals.get(1), vector3D);
     }
 
     @Test
     void calcPolygonNormalForCube2() {
-        assertEquals(temporaryNormals.get(2).get(0), 1.0);
-        assertEquals(temporaryNormals.get(2).get(1), 0.0);
-        assertEquals(temporaryNormals.get(2).get(2), 0.0);
+        Vector3D vector3D = new Vector3D(new double[]{1,0,0});
+        assertEquals(temporaryNormals.get(2), vector3D);
     }
 
     @Test
     void calcPolygonNormalForCube3() {
-        assertEquals(temporaryNormals.get(3).get(0), 0.0);
-        assertEquals(temporaryNormals.get(3).get(1), 0.0);
-        assertEquals(temporaryNormals.get(3).get(2), 1.0);
+        Vector3D vector3D = new Vector3D(new double[]{0,0,1});
+        assertEquals(temporaryNormals.get(3), vector3D);
     }
 
     @Test
     void calcPolygonNormalForCube4() {
-        assertEquals(temporaryNormals.get(4).get(0), -0.0);
-        assertEquals(temporaryNormals.get(4).get(1), -1.0);
-        assertEquals(temporaryNormals.get(4).get(2), 0.0);
-
+        Vector3D vector3D = new Vector3D(new double[]{0,-1,0});
+        assertEquals(temporaryNormals.get(4), vector3D);
     }
 
     @Test
     void calcPolygonNormalForCube5() {
-        assertEquals(temporaryNormals.get(5).get(0), -0.0);
-        assertEquals(temporaryNormals.get(5).get(1), 1.0);
-        assertEquals(temporaryNormals.get(5).get(2), 0.0);
+        Vector3D vector3D = new Vector3D(new double[]{0,1,0});
+        assertEquals(temporaryNormals.get(5), vector3D);
     }
 
 }
