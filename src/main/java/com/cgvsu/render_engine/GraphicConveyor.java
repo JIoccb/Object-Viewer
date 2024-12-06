@@ -16,24 +16,29 @@ public class GraphicConveyor {
     }
 
     public static Matrix4D lookAt(Vector3D eye, Vector3D target) throws Exception {
-        return lookAt(eye, target, new Vector3D(new double[]{0, 1, 0}));
+        return lookAt(eye, target, new Vector3D(new double[]{0, -1, 0}));
     }
 
     public static Matrix4D lookAt(Vector3D eye, Vector3D target, Vector3D up) throws Exception {
+        Vector3D resultZ = BinaryOperations.add(target, eye, false).normalize().toVector3D(); // Z-ось (направление взгляда)
+        Vector3D adjustedUp = up;
 
+        // Проверяем, не параллелен ли up направлению взгляда
+        if (BinaryOperations.cross(up, resultZ).norm() < 1e-6) {
+            adjustedUp = new Vector3D(new double[]{0, 0, 1}); // Сменить "вверх" на безопасное значение
+            if (BinaryOperations.cross(adjustedUp, resultZ).norm() < 1e-6) {
+                adjustedUp = new Vector3D(new double[]{0, 1, 0}); // Если все еще параллельно, сменить снова
+            }
+        }
 
-        Vector3D resultZ = BinaryOperations.add(target, eye, false);
-        Vector3D resultX = BinaryOperations.cross(up, resultZ);
-        Vector3D resultY = BinaryOperations.cross(resultZ, resultX);
+        Vector3D resultX = BinaryOperations.cross(adjustedUp, resultZ).normalize().toVector3D(); // X-ось
+        Vector3D resultY = BinaryOperations.cross(resultZ, resultX).normalize().toVector3D(); // Y-ось
 
-
-        resultX = resultX.normalize().toVector3D();
-        resultY = resultY.normalize().toVector3D();
-        resultZ = resultZ.normalize().toVector3D();
-
-        Matrix4D trans = AffineTransformations.translation(-BinaryOperations.dot(resultX, eye),
-                -BinaryOperations.dot(resultY, eye), -BinaryOperations.dot(resultZ, eye));
-
+        Matrix4D trans = AffineTransformations.translation(
+                -BinaryOperations.dot(resultX, eye),
+                -BinaryOperations.dot(resultY, eye),
+                -BinaryOperations.dot(resultZ, eye)
+        );
 
         Matrix4D proj = new Matrix4D(new double[][]{
                 {resultX.get(0), resultY.get(0), resultZ.get(0), 0},
@@ -45,22 +50,31 @@ public class GraphicConveyor {
         return BinaryOperations.product(proj, trans).toMatrix4D();
     }
 
+
     public static Matrix4D perspective(
             final float fov,
             final float aspectRatio,
             final float nearPlane,
             final float farPlane) {
         Matrix4D result = new Matrix4D();
-        float tangentMinusOnDegree = (float) (1.0F / (Math.tan(fov)));
 
-        result.set(0, 0, tangentMinusOnDegree);
-        result.set(1, 1, tangentMinusOnDegree / aspectRatio);
-        result.set(2, 2, (farPlane + nearPlane) / (farPlane - nearPlane));
-        result.set(2, 3, 2 * nearPlane * farPlane / (nearPlane - farPlane));
-        result.set(3, 2, 1);
+        float fovRadians = (float) Math.toRadians(fov); // fov в градусах -> радианы
+        float tangent = (float) Math.tan(fovRadians / 2.0); // Тангенс половины угла обзора
+
+        float yScale = 1.0F / tangent; // Масштабирование по Y
+        float xScale = yScale / aspectRatio; // Масштабирование по X, учитывающее aspectRatio
+        float frustumLength = farPlane - nearPlane;
+
+        result.set(0, 0, xScale); // Масштабирование по ширине
+        result.set(1, 1, yScale); // Масштабирование по высоте
+        result.set(2, 2, -(farPlane + nearPlane) / frustumLength); // Z-координата
+        result.set(2, 3, -2 * nearPlane * farPlane / frustumLength); // Смещение по глубине
+        result.set(3, 2, -1); // W для перспективного деления
+        result.set(3, 3, 0); // Перспективное деление
 
         return result;
     }
+
 
     /*public static Vector3D multiplyMatrix4ByVector3(final Matrix4D matrix, final Vector3D vertex) {
         final float x = (vertex.x * matrix.m00) + (vertex.y * matrix.m10) + (vertex.z * matrix.m20) + matrix.m30;
