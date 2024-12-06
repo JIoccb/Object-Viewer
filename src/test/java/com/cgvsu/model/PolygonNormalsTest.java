@@ -11,10 +11,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PolygonNormalsTest {
-    private static ArrayList<Vector3D> temporaryNormals = new ArrayList<>();
+    private static final ArrayList<Vector3D> temporaryNormals = new ArrayList<>();
 
     @BeforeAll
-    static void init() throws Exception {
+    static void init() {
         Model m = new Model();
 
         m.vertices.add(new Vector3D(new double[]{-1, -1, 1}));

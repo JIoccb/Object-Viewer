@@ -26,7 +26,7 @@ class VectorTest {
     }
 
     @Test
-    void normalize() throws Exception {
+    void normalize() {
         assertEquals(vector.normalize(), new Vector(new double[]{0.18257418583505536, 0.3651483716701107, 0.5477225575051661, 0.7302967433402214}));
     }
 
