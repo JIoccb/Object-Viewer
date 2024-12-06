@@ -2,6 +2,7 @@ package com.cgvsu.render_engine;
 
 import java.util.ArrayList;
 
+import com.cgvsu.math.matrices.Matrix;
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
@@ -25,8 +26,8 @@ public class RenderEngine {
             return; // Нечего отрисовывать
         }
 
-        //Matrix4D modelMatrix = Matrix.id(4).toMatrix4D();
-        Matrix4D modelMatrix = rotateScaleTranslate(new Vector3D(new double[]{0, 0, 0}), 0, 0, 0, 1, 1, 1);
+        Matrix4D modelMatrix = Matrix.id(4).toMatrix4D();
+        //Matrix4D modelMatrix = rotateScaleTranslate(new Vector3D(new double[]{0, 0, 0}), 0, 0, 0, 1, 1, 1);
         Matrix4D viewMatrix = camera.getViewMatrix();
         Matrix4D projectionMatrix = camera.getProjectionMatrix();
 
@@ -48,7 +49,10 @@ public class RenderEngine {
 
                 if (w != 0) {
                     result = result.scale(1 / w).toVector4D();
+                } else {
+                    continue; // Если w = 0, пропускаем эту вершину (вырождение)
                 }
+
 
                 Vector2D resultPoint = vertexToPoint(new Vector3D(new double[]{result.get(0), result.get(1), result.get(2)}), width, height);
                 resultPoints.add(resultPoint);
