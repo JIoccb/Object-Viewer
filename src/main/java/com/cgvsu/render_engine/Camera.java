@@ -70,20 +70,15 @@ public class Camera {
      * @param pitch Угол поворота по вертикали (в градусах)
      */
     public void updateTarget(double yaw, double pitch) {
-        // Преобразование углов в радианы
         double radYaw = Math.toRadians(yaw);
         double radPitch = Math.toRadians(pitch);
 
-        // Вычисление новой целевой точки на основе углов
         double x = Math.cos(radPitch) * Math.sin(radYaw);
         double y = Math.sin(radPitch);
         double z = Math.cos(radPitch) * Math.cos(radYaw);
 
-        // Установка нового значения target относительно текущей позиции
-        this.target = BinaryOperations.add(
-                position,
-                new Vector3D(new double[]{x, y, z}),
-                true
-        );
+        Vector3D direction = new Vector3D(new double[]{x, y, z}).normalize().toVector3D(); // Нормализуем направление
+        this.target = BinaryOperations.add(position, direction, true);
     }
+
 }
