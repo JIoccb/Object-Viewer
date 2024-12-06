@@ -36,7 +36,7 @@ public class GuiController {
     private Model mesh = null;
 
     private final Camera camera = new Camera(
-            new Vector3D(new double[]{0, 0, 100}),
+            new Vector3D(new double[]{0, 0, 200}),
             new Vector3D(new double[]{0, 0, 0}),
             1.0F, 1, 0.01F, 100);
 
@@ -73,6 +73,7 @@ public class GuiController {
         timeline.play();
 
         setupMouseControls();
+        setupKeyboardControls(); // Добавляем обработку клавиш
     }
 
     @FXML
@@ -127,6 +128,21 @@ public class GuiController {
         canvas.setOnScroll((ScrollEvent event) -> {
             double zoom = event.getDeltaY();
             camera.movePosition(new Vector3D(new double[]{0, 0, -zoom * ZOOM_SPEED}));
+        });
+    }
+
+    private void setupKeyboardControls() {
+        canvas.setFocusTraversable(true);
+
+        canvas.setOnKeyPressed(event -> {
+            switch (event.getCode()) {
+                case W -> handleCameraForward();
+                case S -> handleCameraBackward();
+                case A -> handleCameraLeft();
+                case D -> handleCameraRight();
+                case Q -> handleCameraUp();
+                case E -> handleCameraDown();
+            }
         });
     }
 
