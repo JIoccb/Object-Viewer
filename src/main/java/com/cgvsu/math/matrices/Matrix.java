@@ -86,7 +86,7 @@ public class Matrix {
         if (length != cols) {
             throw new Exception("Length of vector must be equal to count of cols in matrix. Provided: " + length);
         }
-        Matrix res = new Matrix();
+        Matrix res = this;
         for (int i = 0; i < cols; i++) {
             res.set(index, i, vector.get(i));
         }
@@ -103,7 +103,7 @@ public class Matrix {
         if (length != rows) {
             throw new Exception("Length of vector must be equal to count of rows in matrix. Provided: " + length);
         }
-        Matrix res = new Matrix();
+        Matrix res = this;
         for (int i = 0; i < rows; i++) {
             res.set(i, index, vector.get(i));
         }
