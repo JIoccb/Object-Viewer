@@ -1,5 +1,6 @@
 package com.cgvsu.model;
 
+import com.cgvsu.math.matrices.Matrix3D;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector;
 import com.cgvsu.math.vectors.Vector2D;
@@ -15,11 +16,11 @@ public class Model {
     public ArrayList<Vector3D> normals = calculateNormals();
 
 
-    public Model() {
+    public Model() throws Exception {
     }
 
 
-    public ArrayList<Vector3D> calculateNormals() {
+    public ArrayList<Vector3D> calculateNormals() throws Exception {
 
         ArrayList<Vector3D> temporaryNormals = new ArrayList<>();
         ArrayList<Vector3D> normals = new ArrayList<>();
@@ -48,7 +49,7 @@ public class Model {
         return normals;
     }
 
-    public Vector3D calcNormalOfPolygon(Polygon polygon) {
+    public Vector3D calcNormalOfPolygon(Polygon polygon) throws Exception {
         Vector3D vertice1, vertice2, vertice3;
         vertice1 = vertices.get(polygon.getVertexIndices().get(0));
         vertice2 = vertices.get(polygon.getVertexIndices().get(1));
@@ -57,11 +58,17 @@ public class Model {
 
         Vector3D vectorA = BinaryOperations.add(vertice2, vertice1, false).toVector3D();
         Vector3D vectorB = BinaryOperations.add(vertice3, vertice1, false).toVector3D();
-
         Vector3D vectorC = BinaryOperations.cross(vectorA, vectorB);
-        if (determinant(vectorA, vectorB, vectorC) < 0) {
+
+        Matrix3D matrix = new Matrix3D();
+        matrix = matrix.setRow(0, vectorA).toMatrix3D();
+        matrix = matrix.setRow(1, vectorB).toMatrix3D();
+        matrix = matrix.setRow(2, vectorC).toMatrix3D();
+
+        if (matrix.det() < 0) vectorC = BinaryOperations.cross(vectorB, vectorA);
+        /*if (determinant(vectorA, vectorB, vectorC) < 0) {
             vectorC = BinaryOperations.cross(vectorB, vectorA);
-        }
+        }*/
 
 // приходится делать приведение к 3-х мерному вектору, тк библиотека реализована так, что операции работают для произвольных векторов
         return vectorC.normalize().toVector3D();
@@ -80,12 +87,12 @@ public class Model {
         Vector normal = new Vector3D(dataForNormal);
         return normal.normalize().toVector3D();
     }
-    //todo переделать под библиотеку для линейной алгебры
-    private double determinant(Vector3D a, Vector3D b, Vector3D c) {
+
+    /*private double determinant(Vector3D a, Vector3D b, Vector3D c) {
         return a.get(0) * (b.get(1) * c.get(2)) -
                 a.get(1) * (b.get(0) * c.get(2) - c.get(0) * b.get(2)) +
                 a.get(2) * (b.get(0) * c.get(1) - c.get(0) * b.get(1));
         //return a.x * (b.y * c.z) - a.y * (b.x * c.z - c.x * b.z) + a.z * (b.x * c.y - c.x * b.y);
-    }
+    }*/
 
 }
