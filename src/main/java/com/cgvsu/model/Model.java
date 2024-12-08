@@ -1,10 +1,12 @@
 package com.cgvsu.model;
 
 import com.cgvsu.math.matrices.Matrix3D;
+import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
+import com.cgvsu.math.vectors.Vector4D;
 
 import java.util.*;
 
@@ -86,6 +88,30 @@ public class Model {
 
         Vector normal = new Vector3D(dataForNormal);
         return normal.normalize().toVector3D();
+    }
+    public Model transform(Matrix4D TRS) {
+        Model res = this;
+        for (int i = 0; i < this.vertices.size(); i++) {
+            Vector3D vertex = this.vertices.get(i);
+
+            // Добавляем четвертую координату w=1 для аффинного преобразования
+            Vector4D vertex4d = vertex.increaseDimension().toVector4D();
+
+            // Умножаем вектор вершины на матрицу трансформации
+            Vector4D transformed = BinaryOperations.product(TRS, vertex4d).toVector4D();
+
+            // Создаем новый вектор из преобразованных координат (игнорируем w)
+            double w = transformed.get(3);
+            Vector3D transformedVertex = new Vector3D(new double[]{
+                    transformed.get(0),
+                    transformed.get(1),
+                    transformed.get(2)}
+            ).scale(w).toVector3D();
+
+            // Обновляем вершину модели
+            res.vertices.set(i, transformedVertex);
+        }
+        return res;
     }
 
     /*private double determinant(Vector3D a, Vector3D b, Vector3D c) {
