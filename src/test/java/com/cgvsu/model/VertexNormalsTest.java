@@ -70,7 +70,7 @@ class VertexNormalsTest {
     }
 
     @BeforeAll
-    static void init() {
+    static void init() throws Exception {
         m.normals = m.calculateNormals();
     }
 

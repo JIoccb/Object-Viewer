@@ -14,7 +14,7 @@ class PolygonNormalsTest {
     private static final ArrayList<Vector3D> temporaryNormals = new ArrayList<>();
 
     @BeforeAll
-    static void init() {
+    static void init() throws Exception {
         Model m = new Model();
 
         m.vertices.add(new Vector3D(new double[]{-1, -1, 1}));
