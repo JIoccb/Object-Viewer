@@ -1,13 +1,13 @@
 package math;
 
 
+
 import com.cgvsu.math.matrices.Matrix;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector3D;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.*;
 
 class BinaryOperationsTest {
     Matrix matrix = new Matrix(new double[][]{

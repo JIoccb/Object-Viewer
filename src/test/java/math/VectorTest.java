@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
 class VectorTest {
 
     Vector vector = new Vector(new double[]{1, 2, 3, 4});
