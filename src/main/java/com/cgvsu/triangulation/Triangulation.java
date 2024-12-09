@@ -3,12 +3,9 @@ package com.cgvsu.triangulation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-
-//import static com.github.traunin.triangulation.VectorMath.EPSILON;
-import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.*;
+import static com.cgvsu.triangulation.VectorMath.EPSILON;
 
-//import static com.github.traunin.triangulation.VectorMath.EPSILON;
 
 /**
  * A utility class for triangulating a 2D polygon.
@@ -164,11 +161,9 @@ public final class Triangulation {
                 Vector2D curVertex = vertices.get(curVertexIndex);
                 Vector2D nextVertex = vertices.get(nextVertexIndex);
 
-               // float crossProduct = VectorMath.crossProduct(prevVertex, curVertex, nextVertex);
-                // TODO: 08.12.2024 вроде по названию должно считаться векторное произведение, а его метод возвращает скаляр 
-                double crossProduct = BinaryOperations.cross(prevVertex, curVertex, nextVertex);
+                double dis = VectorMath.dis(prevVertex, curVertex, nextVertex);
                 // check if convex
-                if ((isCCW ? crossProduct : -crossProduct) < EPSILON) {
+                if ((isCCW ? dis : -dis) < EPSILON) {
                     continue;
                 }
                 
@@ -186,7 +181,6 @@ public final class Triangulation {
                     }
 
                     Vector2D checkedVertex = vertices.get(checkedVertexIndex);
-                    // TODO: 08.12.2024 здесь тоже сам исправь, я хз какой метод из твоей библиотеки тут нужен 
                     if (VectorMath.isPointInTriangle(prevVertex, curVertex, nextVertex, checkedVertex)) {
                         isEar = false;
                         break;
@@ -224,13 +218,10 @@ public final class Triangulation {
         float area = 0;
         int vertexIndicesCount = vertexIndices.size();
 
-        Vector2D prevVertex = vertices.get(vertexIndices.get(0));
+        Vector2D prevVertex = vertices.get(vertexIndices.getFirst());
         for (int i = 1; i <= vertexIndicesCount; i++) {
             Vector2D currentVertex = vertices.get(vertexIndices.get(i % vertexIndicesCount));
-            
-            //преобразование типов засунул я, чтоб idea глаза не мозолила
-            // TODO: 08.12.2024 проверь правильно ли исправил
-            //area += (currentVertex.x() - prevVertex.x()) * (currentVertex.y() + prevVertex.y());
+
             area += (float) ((currentVertex.get(0) - prevVertex.get(0)) * (currentVertex.get(1) + prevVertex.get(1)));
             prevVertex = currentVertex;
         }
