@@ -1,5 +1,8 @@
 package com.cgvsu.triangulation;
 
+import com.cgvsu.math.operations.BinaryOperations;
+import com.cgvsu.math.vectors.Vector2D;
+
 /**
  * A utility class for working with {@link //Vector2f}
  */
@@ -25,11 +28,11 @@ final class VectorMath {
      * @param c C coordinates
      * @return cross product of vectors (BA) x (BC)
      */
-    static float crossProduct(Vector2f a, Vector2f b, Vector2f c) {
-        float dx1 = b.x() - a.x();
-        float dy1 = b.y() - a.y();
-        float dx2 = c.x() - a.x();
-        float dy2 = c.y() - a.y();
+    static double dis(Vector2D a, Vector2D b, Vector2D c) {
+        double dx1 = b.get(0) - a.get(0);
+        double dy1 = b.get(1) - a.get(1);
+        double dx2 = c.get(0) - a.get(0);
+        double dy2 = c.get(1) - a.get(1);
 
         return dx1 * dy2 - dx2 * dy1;
     }
@@ -43,10 +46,10 @@ final class VectorMath {
      * @param p P coordinates
      * @return true if P is inside ABC
      */
-    static boolean isPointInTriangle(Vector2f a, Vector2f b, Vector2f c, Vector2f p) {
-        float check1 = crossProduct(a, b, p);
-        float check2 = crossProduct(p, b, c);
-        float check3 = crossProduct(p, c, a);
+    static boolean isPointInTriangle(Vector2D a, Vector2D b, Vector2D c, Vector2D p) {
+        double check1 = dis(a, b, p);
+        double check2 = dis(p, b, c);
+        double check3 = dis(p, c, a);
 
         return (check1 >= -EPSILON && check2 >= -EPSILON && check3 >= -EPSILON) ||
          (check1 <= EPSILON && check2 <= EPSILON && check3 <= EPSILON);
@@ -58,9 +61,8 @@ final class VectorMath {
      * @param b B coordinates
      * @return length of vector AB
      */
-    static float edgeLength(Vector2f a, Vector2f b) {
-        float dx = a.x() - b.x();
-        float dy = a.y() - b.y();
-        return (float) Math.sqrt(dx * dx + dy * dy);
+    double euclidNorm(Vector2D a, Vector2D b) {
+        Vector2D d = BinaryOperations.add(b, a, false);
+        return d.norm();
     }
 }
