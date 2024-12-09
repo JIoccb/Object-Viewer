@@ -4,7 +4,6 @@ package com.cgvsu.math.matrices;
 import com.cgvsu.math.vectors.Vector;
 
 
-
 public class Matrix {
     private int rows;
     private int cols;
@@ -154,7 +153,7 @@ public class Matrix {
     public Matrix gaussianElimination() {
         int rows = getRows();
         int cols = getCols();
-        Matrix A = new Matrix(getData());
+        Matrix A = this;
         for (int k = 0; k < rows; k++) {
             // Поиск максимального элемента в столбце k
             int maxRow = k;
@@ -186,15 +185,14 @@ public class Matrix {
     public Vector backSubstitution() {
         int rows = getRows();
         int cols = getCols();
-        double[][] data = getData();
         Vector solution = new Vector(rows);
 
         for (int i = rows - 1; i >= 0; i--) {
             double sum = 0;
             for (int j = i + 1; j < cols - 1; j++) {
-                sum += data[i][j] * solution.get(j);
+                sum += get(i, j) * solution.get(j);
             }
-            solution.set(i, (data[i][cols - 1] - sum) / data[i][i]);
+            solution.set(i, (get(i, cols - 1) - sum) / get(i, i));
         }
 
         return solution;
@@ -278,11 +276,10 @@ public class Matrix {
         if (rows != cols) {
             throw new IllegalArgumentException("The matrix must be square. Provided shapes: (" + rows + ", " + cols + ").");
         }
-        double[][] data = getData();
 
         double res = 0;
         for (int i = 0; i < rows; i++) {
-            res += data[i][i];
+            res += get(i, i);
         }
         return res;
     }
@@ -301,14 +298,13 @@ public class Matrix {
         if (col < 0 || col >= cols) {
             throw new IndexOutOfBoundsException("Column index is out of matrix bounds");
         }
-        double[][] data = getData();
         Matrix newMatrix = new Matrix(rows, cols - 1);
 
         for (int i = 0; i < rows; i++) {
             int newCol = 0;
             for (int j = 0; j < cols; j++) {
                 if (j != col) {
-                    newMatrix.set(i, newCol, data[i][j]);
+                    newMatrix.set(i, newCol, get(i, j));
                     newCol++;
                 }
             }
@@ -330,14 +326,13 @@ public class Matrix {
         if (row < 0 || row >= rows) {
             throw new IndexOutOfBoundsException("Column index is out of matrix bounds");
         }
-        double[][] data = getData();
         Matrix newMatrix = new Matrix(rows - 1, cols);
 
         int newRow = 0;
         for (int i = 0; i < rows; i++) {
             if (i != row) {
                 for (int j = 0; j < cols; j++) {
-                    newMatrix.set(newRow, j, data[i][j]);
+                    newMatrix.set(newRow, j, get(i, j));
                 }
                 newRow++;
             }
@@ -361,6 +356,7 @@ public class Matrix {
         res.set(rows, cols, 1);
         return res;
     }
+
     public Matrix4D toMatrix4D() throws Exception {
         if (getRows() != 4 || getCols() != 4) {
             throw new Exception("Shapes of matrix must be equal to 4x4. Provided: " + getRows() + ", " + getCols() + ".");
@@ -441,5 +437,4 @@ public class Matrix {
         }
         return true;
     }
-
 }
