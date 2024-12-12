@@ -7,6 +7,7 @@ import com.cgvsu.math.vectors.Vector;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
+import com.cgvsu.triangulation.Triangulation;
 
 import java.util.*;
 
@@ -14,13 +15,40 @@ public class Model {
 
     public ArrayList<Vector3D> vertices = new ArrayList<>();
     public ArrayList<Vector2D> textureVertices = new ArrayList<>();
-    public ArrayList<Polygon> polygons = new ArrayList<>();
+    public ArrayList<Polygon> polygons = triangulateModel();
     public ArrayList<Vector3D> normals = calculateNormals();
 
 
     public Model() throws Exception {
     }
 
+    public ArrayList<Polygon> triangulateModel() {
+        ArrayList<Polygon> ps = new ArrayList<>();
+        assert polygons != null;
+        for (Polygon p : polygons) {
+            List<int[]> listWithVertexIndices = Triangulation.convexPolygonTriangulate(p.getVertexIndices());
+            List<int[]> listWithTextureIndices = Triangulation.convexPolygonTriangulate(p.getTextureVertexIndices());
+            for (int i = 0; i < listWithVertexIndices.size(); i++) {
+                Polygon newP = getPolygon(listWithVertexIndices, i, listWithTextureIndices);
+                ps.add(newP);
+            }
+        }
+
+        return ps;
+    }
+
+    private static Polygon getPolygon(List<int[]> listWithVertexIndices, int i, List<int[]> listWithTextureIndices) {
+        ArrayList<Integer> newVertices = new ArrayList<>();
+        ArrayList<Integer> newTVertices = new ArrayList<>();
+        for (int j = 0; j < listWithVertexIndices.get(i).length; j++) {
+            newVertices.add(listWithVertexIndices.get(i)[j]);
+            newTVertices.add(listWithTextureIndices.get(i)[j]);
+        }
+        Polygon newP = new Polygon();
+        newP.setVertexIndices(newVertices);
+        newP.setTextureVertexIndices(newTVertices);
+        return newP;
+    }
 
     public ArrayList<Vector3D> calculateNormals() throws Exception {
 
@@ -89,6 +117,7 @@ public class Model {
         Vector normal = new Vector3D(dataForNormal);
         return normal.normalize().toVector3D();
     }
+
     public Model transform(Matrix4D TRS) {
         Model res = this;
         for (int i = 0; i < this.vertices.size(); i++) {
@@ -113,12 +142,5 @@ public class Model {
         }
         return res;
     }
-
-    /*private double determinant(Vector3D a, Vector3D b, Vector3D c) {
-        return a.get(0) * (b.get(1) * c.get(2)) -
-                a.get(1) * (b.get(0) * c.get(2) - c.get(0) * b.get(2)) +
-                a.get(2) * (b.get(0) * c.get(1) - c.get(0) * b.get(1));
-        //return a.x * (b.y * c.z) - a.y * (b.x * c.z - c.x * b.z) + a.z * (b.x * c.y - c.x * b.y);
-    }*/
 
 }
