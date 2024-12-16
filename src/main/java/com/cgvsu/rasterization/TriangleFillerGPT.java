@@ -1,19 +1,23 @@
 package com.cgvsu.rasterization;
+import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.model.Polygon;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
+
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 
-/*public class TriangleFiller extends Canvas {
+public class TriangleFiller extends Canvas {
 
     private final Polygon polygon;
-    private final List<Vertex> vertices;
+    private final List<Vector3D> vertices;
     private final float[][] zBuffer;
 
-    public TriangleFiller(Polygon polygon, List<Vertex> vertices, int canvasWidth, int canvasHeight) {
+    public TriangleFiller(Polygon polygon, List<Vector3D> vertices, int canvasWidth, int canvasHeight) {
         this.polygon = polygon;
         this.vertices = vertices;
         this.zBuffer = new float[canvasHeight][canvasWidth];
@@ -33,11 +37,13 @@ import java.util.List;
         int index3 = polygon.getVertexIndices().get(2);
 
         // Извлекаем координаты вершин из общего списка
-        Vertex v1 = vertices.get(index1);
-        Vertex v2 = vertices.get(index2);
-        Vertex v3 = vertices.get(index3);
+        Vector3D v1 = vertices.get(index1);
+        Vector3D v2 = vertices.get(index2);
+        Vector3D v3 = vertices.get(index3);
 
         // Преобразуем вершины в экранные координаты
+        //todo: реализовать переход в экранные координаты
+        // P.S. Я не разобрался где искомый метод растеризации это делает, поэтому придется заниматься этим вместе
         int[] xPoints = {(int) v1.getScreenX(), (int) v2.getScreenX(), (int) v3.getScreenX()};
         int[] yPoints = {(int) v1.getScreenY(), (int) v2.getScreenY(), (int) v3.getScreenY()};
         float[] zPoints = {v1.getScreenZ(), v2.getScreenZ(), v3.getScreenZ()};
@@ -145,6 +151,6 @@ import java.util.List;
     }
 }
 
- */
+
 
 
