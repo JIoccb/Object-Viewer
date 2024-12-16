@@ -15,7 +15,8 @@ public class Model {
 
     public ArrayList<Vector3D> vertices = new ArrayList<>();
     public ArrayList<Vector2D> textureVertices = new ArrayList<>();
-    public ArrayList<Polygon> polygons = triangulateModel();
+    public ArrayList<Polygon> polygons = new ArrayList<>();
+    public ArrayList<Polygon> triangulatingPolygons = triangulateModel();
     public ArrayList<Vector3D> normals = calculateNormals();
 
 

@@ -7,7 +7,7 @@ import javafx.scene.paint.Color;
 import java.util.List;
 
 
-public class TriangleFiller extends Canvas {
+/*public class TriangleFiller extends Canvas {
 
     private final Polygon polygon;
     private final List<Vertex> vertices;
@@ -144,5 +144,7 @@ public class TriangleFiller extends Canvas {
         System.arraycopy(sortedZ, 0, zPoints, 0, 3);
     }
 }
+
+ */
 
 
