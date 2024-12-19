@@ -8,6 +8,7 @@ import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
+import com.cgvsu.rasterization.Z_Buffer;
 import javafx.scene.canvas.GraphicsContext;
 
 import com.cgvsu.model.Model;
@@ -34,6 +35,8 @@ public class RenderEngine {
         Matrix4D modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix,
                 BinaryOperations.product(viewMatrix, modelMatrix));
 
+        Z_Buffer zBuffer = new Z_Buffer(width, height);
+
         final int nPolygons = mesh.polygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
             final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
@@ -54,8 +57,11 @@ public class RenderEngine {
                 }
 
 
-                Vector2D resultPoint = vertexToPoint(new Vector3D(new double[]{result.get(0), result.get(1), result.get(2)}), width, height);
-                resultPoints.add(resultPoint);
+                    Vector2D resultPoint = vertexToPoint(new Vector3D(new double[]{result.get(0), result.get(1), result.get(2)}), width, height);
+                if (result.get(2) < zBuffer.get((int) resultPoint.get(0),(int) resultPoint.get(1))){
+                    //???????
+                }
+                    resultPoints.add(resultPoint);
             }
 
             for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {

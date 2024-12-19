@@ -11,13 +11,13 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class TriangleFiller extends Canvas {
+public class TriangleFillerGPT extends Canvas {
 
     private final Polygon polygon;
     private final List<Vector3D> vertices;
     private final float[][] zBuffer;
 
-    public TriangleFiller(Polygon polygon, List<Vector3D> vertices, int canvasWidth, int canvasHeight) {
+    public TriangleFillerGPT(Polygon polygon, List<Vector3D> vertices, int canvasWidth, int canvasHeight) {
         this.polygon = polygon;
         this.vertices = vertices;
         this.zBuffer = new float[canvasHeight][canvasWidth];
