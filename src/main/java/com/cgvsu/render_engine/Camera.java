@@ -6,12 +6,18 @@ import com.cgvsu.math.vectors.Vector3D;
 
 public class Camera {
 
-    private Vector3D position;  // Позиция камеры
-    private Vector3D target;    // Точка, на которую смотрит камера
-    private final float fov;          // Угол обзора
-    private float aspectRatio;  // Соотношение сторон
-    private final float nearPlane;    // Ближняя плоскость отсечения
-    private final float farPlane;     // Дальняя плоскость отсечения
+    private Vector3D position;
+    private Vector3D target;
+    private final float fov;
+    private float aspectRatio;
+    private final float nearPlane;
+    private final float farPlane;
+    private double yaw; // Угол поворота по горизонтали
+    private double pitch; // Угол поворота по вертикали
+
+    public void setAspectRatio(float aspectRatio) {
+        this.aspectRatio = aspectRatio;
+    }
 
     public Camera(
             final Vector3D position,
@@ -26,34 +32,37 @@ public class Camera {
         this.aspectRatio = aspectRatio;
         this.nearPlane = nearPlane;
         this.farPlane = farPlane;
-    }
-
-    public void setPosition(final Vector3D position) {
-        this.position = position;
-    }
-
-    public void setTarget(final Vector3D target) {
-        this.target = target;
-    }
-
-    public void setAspectRatio(final float aspectRatio) {
-        this.aspectRatio = aspectRatio;
-    }
-
-    public Vector3D getPosition() {
-        return position;
-    }
-
-    public Vector3D getTarget() {
-        return target;
+        this.yaw = 0;
+        this.pitch = 0;
     }
 
     public void movePosition(final Vector3D translation) {
         this.position = BinaryOperations.add(position, translation, true);
+        updateTarget();
     }
 
-    public void moveTarget(final Vector3D translation) {
-        this.target = BinaryOperations.add(target, translation, true);
+    public void rotate(double deltaYaw, double deltaPitch) {
+        // Параметры сглаживания
+        double rotationSmoothing = 0.1;
+        this.yaw += deltaYaw * rotationSmoothing; // Сглаживаем поворот
+        this.pitch += deltaPitch * rotationSmoothing;
+
+        // Ограничение угла наклона камеры
+        this.pitch = Math.max(-89, Math.min(89, this.pitch));
+
+        updateTarget();
+    }
+
+    private void updateTarget() {
+        double radYaw = Math.toRadians(yaw);
+        double radPitch = Math.toRadians(pitch);
+
+        double x = Math.cos(radPitch) * Math.cos(radYaw);
+        double y = Math.sin(radPitch);
+        double z = Math.cos(radPitch) * Math.sin(radYaw);
+
+        Vector3D direction = new Vector3D(new double[]{x, y, z}).normalize().toVector3D();
+        this.target = BinaryOperations.add(this.position, direction, true);
     }
 
     public Matrix4D getViewMatrix() throws Exception {
@@ -63,22 +72,4 @@ public class Camera {
     public Matrix4D getProjectionMatrix() {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
-
-    /**
-     * Обновляет целевую точку камеры (target) на основе углов yaw и pitch.
-     * @param yaw   Угол поворота по горизонтали (в градусах)
-     * @param pitch Угол поворота по вертикали (в градусах)
-     */
-    public void updateTarget(double yaw, double pitch) {
-        double radYaw = Math.toRadians(yaw);
-        double radPitch = Math.toRadians(pitch);
-
-        double x = Math.cos(radPitch) * Math.sin(radYaw);
-        double y = Math.sin(radPitch);
-        double z = Math.cos(radPitch) * Math.cos(radYaw);
-
-        Vector3D direction = new Vector3D(new double[]{x, y, z}).normalize().toVector3D(); // Нормализуем направление
-        this.target = BinaryOperations.add(position, direction, true);
-    }
-
 }
