@@ -35,7 +35,7 @@ public class RenderEngine {
         Matrix4D modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix,
                 BinaryOperations.product(viewMatrix, modelMatrix));
 
-        Z_Buffer zBuffer = new Z_Buffer(width, height);
+        //Z_Buffer zBuffer = new Z_Buffer(width, height);
 
         final int nPolygons = mesh.polygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
@@ -55,13 +55,8 @@ public class RenderEngine {
                 } else {
                     continue; // Если w = 0, пропускаем эту вершину (вырождение)
                 }
-
-
-                    Vector2D resultPoint = vertexToPoint(new Vector3D(new double[]{result.get(0), result.get(1), result.get(2)}), width, height);
-                if (result.get(2) < zBuffer.get((int) resultPoint.get(0),(int) resultPoint.get(1))){
-                    //???????
-                }
-                    resultPoints.add(resultPoint);
+                Vector2D resultPoint = vertexToPoint(new Vector3D(new double[]{result.get(0), result.get(1), result.get(2)}), width, height);
+                resultPoints.add(resultPoint);
             }
 
             for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
