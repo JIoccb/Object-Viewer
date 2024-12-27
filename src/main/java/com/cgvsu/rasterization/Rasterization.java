@@ -8,7 +8,10 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
 import java.util.List;
-
+/*
+лучше метод сделать универсальным и для текстуры и для заливки цветом, можно сделать так чтобы метод принмал какю-либо
+структуру с флагами: рисовать текстуру, рисовать просто цветом, или просто сетка
+ */
 public class Rasterization {
     public static void fillTriangleWithTexture(
             final GraphicsContext graphicsContext,
@@ -17,7 +20,7 @@ public class Rasterization {
             final double[] arrZ,
             final List<Vector2D> textureVert,
             // final double[][] uvCoords, // Текстурные координаты вершин { {u1, v1}, {u2, v2}, {u3, v3} }
-            final Image texture, // Текстура
+            final Image texture,
             final double[][] zBuffer) {
 
         final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
@@ -50,6 +53,7 @@ public class Rasterization {
                 if (baryCoords == null) continue;
 
                 double z = baryCoords[0] * arrZ[0] + baryCoords[1] * arrZ[1] + baryCoords[2] * arrZ[2];
+                //добавить проверку что если z больше, то мы дропаем дальнейшие действия (не отрисовываем)
                 if (z < zBuffer[x][y]) {
                     zBuffer[x][y] = z;
 

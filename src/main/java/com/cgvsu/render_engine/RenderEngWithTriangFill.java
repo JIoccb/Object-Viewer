@@ -9,6 +9,7 @@ import com.cgvsu.math.vectors.Vector4D;
 import com.cgvsu.model.Model;
 import com.cgvsu.rasterization.Z_Buffer;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +43,15 @@ public class RenderEngWithTriangFill {
         double[] arrZ = new double[3];
         List<Vector2D> textureVertices = new ArrayList<>();
 
+
         final int nPolygons = mesh.triangulatingPolygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
             final int nVerticesInPolygon = mesh.triangulatingPolygons.get(polygonInd).getVertexIndices().size();
 
             if (nVerticesInPolygon < 2) continue; // Пропуск недопустимого полигона
-
+            /*
+            вместо всего остального снизу будем вызывать растеризацию нашего полигона
+             */
             ArrayList<Vector2D> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 Vector3D vertex = mesh.vertices.get(mesh.triangulatingPolygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
