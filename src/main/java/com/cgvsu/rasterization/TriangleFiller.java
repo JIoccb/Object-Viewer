@@ -11,23 +11,21 @@ import java.util.Comparator;
 
 // для того чтобы методы корректно работали с векторами, нужно применить к ним .getData()
 public class TriangleFiller extends Canvas {
+    private static int[] x_Points;
+    private static int[] y_Points;
+    private static Color col;
 
-    private final int[] xPoints;
-    private final int[] yPoints;
-    private final Color[] colors;
+    public static void fillTriangle(GraphicsContext gc,
+                                    final int[] xPoints,
+                                    final int[] yPoints,
+                                    final Color color) {
 
-    public TriangleFiller(int[] xPoints, int[] yPoints, Color[] colors) {
-        if (xPoints.length != 3 || yPoints.length != 3 || colors.length != 3) {
+        if (xPoints.length != 3 || yPoints.length != 3) {
             throw new IllegalArgumentException("Triangle requires exactly 3 vertices and 3 colors.");
         }
-        this.xPoints = xPoints;
-        this.yPoints = yPoints;
-        this.colors = colors;
-    }
-
-
-    public void fillTriangle(GraphicsContext gc) {
-
+        x_Points = xPoints;
+        y_Points = yPoints;
+        col = color;
         sortVerticesByY(xPoints, yPoints);
 
         int x0 = xPoints[0], y0 = yPoints[0];
@@ -46,7 +44,7 @@ public class TriangleFiller extends Canvas {
         }
     }
 
-    private void fillFlatBottomTriangle(GraphicsContext gc, int x0, int y0, int x1, int y1, int x2, int y2) {
+    private static void fillFlatBottomTriangle(GraphicsContext gc, int x0, int y0, int x1, int y1, int x2, int y2) {
         double slopeLeft = (double) (x1 - x0) / (y1 - y0);
         double slopeRight = (double) (x2 - x0) / (y2 - y0);
 
@@ -64,7 +62,7 @@ public class TriangleFiller extends Canvas {
         }
     }
 
-    private void fillFlatTopTriangle(GraphicsContext gc, int x0, int y0, int x1, int y1, int x2, int y2) {
+    private static void fillFlatTopTriangle(GraphicsContext gc, int x0, int y0, int x1, int y1, int x2, int y2) {
         double slopeLeft = (double) (x2 - x0) / (y2 - y0);
         double slopeRight = (double) (x2 - x1) / (y2 - y1);
 
@@ -82,36 +80,18 @@ public class TriangleFiller extends Canvas {
         }
     }
 
-    private void drawScanline(PixelWriter pw, int xStart, int xEnd, int y) {
+    private static void drawScanline(PixelWriter pw, int xStart, int xEnd, int y) {
         for (int x = xStart; x <= xEnd; x++) {
-            double coverage = calculateCoverage(x, y, xPoints, yPoints);
+            double coverage = calculateCoverage(x, y, x_Points, y_Points);
             if (coverage > 0) {
-                // Получаем цвет треугольника через интерполяцию
-                Color triangleColor = interpolateColor(x, y, xPoints, yPoints, colors);
-
-                // Получаем текущий цвет пикселя (например, фон может быть белым)
-                Color currentColor = Color.WHITE;
-
-                // Смешиваем цвета по формуле: итоговый = coverage * triangleColor + (1 - coverage) * currentColor
-                Color blendedColor = blendColors(currentColor, triangleColor, coverage);
 
                 // Устанавливаем смешанный цвет
-                pw.setColor(x, y, blendedColor);
+                pw.setColor(x, y, col);
             }
         }
     }
 
-    // Метод для смешивания двух цветов
-    private Color blendColors(Color background, Color foreground, double alpha) {
-        double r = alpha * foreground.getRed() + (1 - alpha) * background.getRed();
-        double g = alpha * foreground.getGreen() + (1 - alpha) * background.getGreen();
-        double b = alpha * foreground.getBlue() + (1 - alpha) * background.getBlue();
-
-        return new Color(clamp(r), clamp(g), clamp(b), 1.0); // Итоговая альфа-канал фиксирован на 1.0
-    }
-
-
-    private void sortVerticesByY(int[] xPoints, int[] yPoints) {
+    private static void sortVerticesByY(int[] xPoints, int[] yPoints) {
         int[][] vertices = {{xPoints[0], yPoints[0]}, {xPoints[1], yPoints[1]}, {xPoints[2], yPoints[2]}};
         Arrays.sort(vertices, Comparator.comparingInt(v -> v[1]));
 
@@ -121,20 +101,7 @@ public class TriangleFiller extends Canvas {
         }
     }
 
-
-    private Color interpolateColor(int x, int y, int[] xPoints, int[] yPoints, Color[] colors) {
-        double[] barycentric = calculateBarycentricCoordinates(x, y, xPoints, yPoints);
-        if (barycentric != null) {
-            double r = barycentric[0] * colors[0].getRed() + barycentric[1] * colors[1].getRed() + barycentric[2] * colors[2].getRed();
-            double g = barycentric[0] * colors[0].getGreen() + barycentric[1] * colors[1].getGreen() + barycentric[2] * colors[2].getGreen();
-            double b = barycentric[0] * colors[0].getBlue() + barycentric[1] * colors[1].getBlue() + barycentric[2] * colors[2].getBlue();
-
-            return new Color(clamp(r), clamp(g), clamp(b), 1.0);
-        }
-        return Color.TRANSPARENT;
-    }
-
-    private double[] calculateBarycentricCoordinates(int x, int y, int[] xPoints, int[] yPoints) {
+    private static double[] calculateBarycentricCoordinates(int x, int y, int[] xPoints, int[] yPoints) {
         double denominator = (yPoints[1] - yPoints[2]) * (xPoints[0] - xPoints[2]) + (xPoints[2] - xPoints[1]) * (yPoints[0] - yPoints[2]);
         double alpha = ((yPoints[1] - yPoints[2]) * (x - xPoints[2]) + (xPoints[2] - xPoints[1]) * (y - yPoints[2])) / denominator;
         double beta = ((yPoints[2] - yPoints[0]) * (x - xPoints[2]) + (xPoints[0] - xPoints[2]) * (y - yPoints[2])) / denominator;
@@ -147,7 +114,7 @@ public class TriangleFiller extends Canvas {
         return Math.max(0.0, Math.min(1.0, value));
     }
 
-    private double calculateCoverage(int x, int y, int[] xPoints, int[] yPoints) {
+    private static double calculateCoverage(int x, int y, int[] xPoints, int[] yPoints) {
         if (!isBoundingBoxIntersect(x, y, xPoints, yPoints)) {
             return 0.0;
         }
@@ -169,7 +136,7 @@ public class TriangleFiller extends Canvas {
         return (double) insideCount / subPixelCount;
     }
 
-    private boolean isBoundingBoxIntersect(int x, int y, int[] xPoints, int[] yPoints) {
+    private static boolean isBoundingBoxIntersect(int x, int y, int[] xPoints, int[] yPoints) {
         int minX = Math.min(Math.min(xPoints[0], xPoints[1]), xPoints[2]);
         int maxX = Math.max(Math.max(xPoints[0], xPoints[1]), xPoints[2]);
         int minY = Math.min(Math.min(yPoints[0], yPoints[1]), yPoints[2]);
@@ -178,7 +145,7 @@ public class TriangleFiller extends Canvas {
         return (x >= minX && x <= maxX && y >= minY && y <= maxY);
     }
 
-    private boolean isPointInTriangle(double px, double py, int[] xPoints, int[] yPoints) {
+    private static boolean isPointInTriangle(double px, double py, int[] xPoints, int[] yPoints) {
         double denominator = (yPoints[1] - yPoints[2]) * (xPoints[0] - xPoints[2]) +
                 (xPoints[2] - xPoints[1]) * (yPoints[0] - yPoints[2]);
         double alpha = ((yPoints[1] - yPoints[2]) * (px - xPoints[2]) +

@@ -8,15 +8,17 @@ import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
 import com.cgvsu.triangulation.Triangulation;
+import javafx.scene.image.Image;
 
 import java.util.*;
 
 public class Model {
+    Image texture = new Image("file:your_texture.png");
 
     public ArrayList<Vector3D> vertices = new ArrayList<>();
     public ArrayList<Vector2D> textureVertices = new ArrayList<>();
     public ArrayList<Polygon> polygons = new ArrayList<>();
-    public ArrayList<Polygon> triangulatingpolygons = triangulateModel();
+    public ArrayList<Polygon> triangulatingPolygons = triangulateModel();
     public ArrayList<Vector3D> normals = calculateNormals();
 
 
