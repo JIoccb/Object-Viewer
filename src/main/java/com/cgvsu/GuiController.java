@@ -1,6 +1,7 @@
 package com.cgvsu;
 
 import com.cgvsu.math.vectors.Vector3D;
+import com.cgvsu.render_engine.RenderEngWithTriangFill;
 import com.cgvsu.render_engine.RenderEngine;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -59,7 +60,7 @@ public class GuiController {
 
             if (mesh != null) {
                 try {
-                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+                    RenderEngWithTriangFill.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
