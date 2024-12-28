@@ -15,11 +15,47 @@ import java.util.*;
 public class Model {
     Image texture = new Image("file:your_texture.png");
 
-    public ArrayList<Vector3D> vertices = new ArrayList<>();
-    public ArrayList<Vector2D> textureVertices = new ArrayList<>();
-    public ArrayList<Polygon> polygons = new ArrayList<>();
-    public ArrayList<Polygon> triangulatingPolygons = triangulateModel();
-    public ArrayList<Vector3D> normals = calculateNormals();
+    private final ArrayList<Vector3D> addVertex = new ArrayList<>();
+    private final ArrayList<Vector2D> textureVertices = new ArrayList<>();
+    private final ArrayList<Polygon> polygons = new ArrayList<>();
+    private final ArrayList<Polygon> triangulatingPolygons = triangulateModel();
+    private ArrayList<Vector3D> normals = calculateNormals();
+
+    public void addPolygon(Polygon polygon) {
+        polygons.add(polygon);
+    }
+
+    public void addVertex(Vector3D vertex) {
+        addVertex.add(vertex);
+    }
+
+    public void addNormal(Vector3D normal) {
+        addVertex.add(normal);
+    }
+
+    public ArrayList<Vector3D> getNormals() {
+        return normals;
+    }
+
+    public ArrayList<Polygon> getTriangulatingPolygons() {
+        return triangulatingPolygons;
+    }
+
+    public ArrayList<Polygon> getPolygons() {
+        return polygons;
+    }
+
+    public ArrayList<Vector2D> getTextureVertices() {
+        return textureVertices;
+    }
+
+    public ArrayList<Vector3D> getVertices() {
+        return addVertex;
+    }
+
+    public void setNormals(ArrayList<Vector3D> normals) {
+        this.normals = normals;
+    }
 
 
     public Model() throws Exception {
@@ -27,7 +63,6 @@ public class Model {
 
     public ArrayList<Polygon> triangulateModel() {
         ArrayList<Polygon> ps = new ArrayList<>();
-        assert polygons != null;
         for (Polygon p : polygons) {
             List<int[]> listWithVertexIndices = Triangulation.convexPolygonTriangulate(p.getVertexIndices());
             List<int[]> listWithTextureIndices = Triangulation.convexPolygonTriangulate(p.getTextureVertexIndices());
@@ -75,7 +110,7 @@ public class Model {
             }
         }
 
-        for (int i = 0; i < vertices.size(); i++) {
+        for (int i = 0; i < addVertex.size(); i++) {
             normals.add(calcNormalOfVertex(vertexPolygonsMap.get(i)));
         }
 
@@ -84,9 +119,9 @@ public class Model {
 
     public Vector3D calcNormalOfPolygon(Polygon polygon) throws Exception {
         Vector3D vertice1, vertice2, vertice3;
-        vertice1 = vertices.get(polygon.getVertexIndices().get(0));
-        vertice2 = vertices.get(polygon.getVertexIndices().get(1));
-        vertice3 = vertices.get(polygon.getVertexIndices().get(2));
+        vertice1 = addVertex.get(polygon.getVertexIndices().get(0));
+        vertice2 = addVertex.get(polygon.getVertexIndices().get(1));
+        vertice3 = addVertex.get(polygon.getVertexIndices().get(2));
 
 
         Vector3D vectorA = BinaryOperations.add(vertice2, vertice1, false).toVector3D();
@@ -123,8 +158,8 @@ public class Model {
 
     public Model transform(Matrix4D TRS) {
         Model res = this;
-        for (int i = 0; i < this.vertices.size(); i++) {
-            Vector3D vertex = this.vertices.get(i);
+        for (int i = 0; i < this.addVertex.size(); i++) {
+            Vector3D vertex = this.addVertex.get(i);
 
             // Добавляем четвертую координату w=1 для аффинного преобразования
             Vector4D vertex4d = vertex.increaseDimension().toVector4D();
@@ -141,7 +176,7 @@ public class Model {
             ).scale(w).toVector3D();
 
             // Обновляем вершину модели
-            res.vertices.set(i, transformedVertex);
+            res.addVertex.set(i, transformedVertex);
         }
         return res;
     }
