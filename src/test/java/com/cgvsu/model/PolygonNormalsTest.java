@@ -17,36 +17,36 @@ class PolygonNormalsTest {
     static void init() throws Exception {
         Model m = new Model();
 
-        m.vertices.add(new Vector3D(new double[]{-1, -1, 1}));
-        m.vertices.add(new Vector3D(new double[]{-1, 1, 1}));
-        m.vertices.add(new Vector3D(new double[]{-1, -1, -1}));
-        m.vertices.add(new Vector3D(new double[]{-1, 1, -1}));
+        m.addVertex(new Vector3D(new double[]{-1, -1, 1}));
+        m.addVertex(new Vector3D(new double[]{-1, 1, 1}));
+        m.addVertex(new Vector3D(new double[]{-1, -1, -1}));
+        m.addVertex(new Vector3D(new double[]{-1, 1, -1}));
 
-        m.vertices.add(new Vector3D(new double[]{1, -1, 1}));
-        m.vertices.add(new Vector3D(new double[]{1, 1, 1}));
-        m.vertices.add(new Vector3D(new double[]{1, -1, -1}));
-        m.vertices.add(new Vector3D(new double[]{1, 1, -1}));
+        m.addVertex(new Vector3D(new double[]{1, -1, 1}));
+        m.addVertex(new Vector3D(new double[]{1, 1, 1}));
+        m.addVertex(new Vector3D(new double[]{1, -1, -1}));
+        m.addVertex(new Vector3D(new double[]{1, 1, -1}));
 
-        m.polygons.add(new Polygon(Arrays.asList(0, 1, 3, 2)));
-        m.polygons.add(new Polygon(Arrays.asList(2, 3, 7, 6)));
-        m.polygons.add(new Polygon(Arrays.asList(6, 7, 5, 6)));
-        m.polygons.add(new Polygon(Arrays.asList(4, 5, 1, 0)));
-        m.polygons.add(new Polygon(Arrays.asList(2, 6, 4, 0)));
-        m.polygons.add(new Polygon(Arrays.asList(7, 3, 1, 5)));
+        m.addPolygon(new Polygon(Arrays.asList(0, 1, 3, 2)));
+        m.addPolygon(new Polygon(Arrays.asList(2, 3, 7, 6)));
+        m.addPolygon(new Polygon(Arrays.asList(6, 7, 5, 6)));
+        m.addPolygon(new Polygon(Arrays.asList(4, 5, 1, 0)));
+        m.addPolygon(new Polygon(Arrays.asList(2, 6, 4, 0)));
+        m.addPolygon(new Polygon(Arrays.asList(7, 3, 1, 5)));
 
-
-        for (Polygon p : m.polygons) { //нормали полигонов получатся в том порядке, в каком и идут сами полигоны
+        ArrayList<Polygon> polygons = m.getPolygons();
+        for (Polygon p : polygons) { //нормали полигонов получатся в том порядке, в каком и идут сами полигоны
             temporaryNormals.add(m.calcNormalOfPolygon(p));
         }
 
-        for (int i = 0; i < m.vertices.size(); i++) {
+        for (int i = 0; i < m.getVertices().size(); i++) {
             List<Vector3D> polygonNormalsList = new ArrayList<>();
-            for (int j = 0; j < m.polygons.size(); j++) {
-                if (m.polygons.get(j).getVertexIndices().contains(i)) {
+            for (int j = 0; j < polygons.size(); j++) {
+                if (polygons.get(j).getVertexIndices().contains(i)) {
                     polygonNormalsList.add(temporaryNormals.get(j));
                 }
             }
-            m.normals.add(m.calcNormalOfVertex(polygonNormalsList));
+            m.addNormal(m.calcNormalOfVertex(polygonNormalsList));
         }
 
 
