@@ -13,16 +13,29 @@ import javafx.scene.image.Image;
 import java.util.*;
 
 public class Model {
-    Image texture = new Image("file:your_texture.png");
+   private Image texture; //= new Image("D:/My/java/cg/Object-Viewer/3DModels/CaracalCube/caracal_texture.png");
 
     public ArrayList<Vector3D> vertices = new ArrayList<>();
     public ArrayList<Vector2D> textureVertices = new ArrayList<>();
     public ArrayList<Polygon> polygons = new ArrayList<>();
-    public ArrayList<Polygon> triangulatingPolygons = triangulateModel();
-    public ArrayList<Vector3D> normals = calculateNormals();
-
+    public ArrayList<Polygon> triangulatingPolygons = new ArrayList<>();
+    public ArrayList<Vector3D> normals = new ArrayList<>();
+/*
+вызов методов для триангуляции и расчета нормалей не должен происходить в момент создания экземпляра модели
+это делается по необходимости в методах
+ */
 
     public Model() throws Exception {
+      triangulatingPolygons = triangulateModel();
+      normals = calculateNormals();
+    }
+
+    public Image getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Image texture) {
+        this.texture = texture;
     }
 
     public ArrayList<Polygon> triangulateModel() {
