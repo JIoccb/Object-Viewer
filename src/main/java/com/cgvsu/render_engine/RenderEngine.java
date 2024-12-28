@@ -35,7 +35,7 @@ public class RenderEngine {
         Matrix4D modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix,
                 BinaryOperations.product(viewMatrix, modelMatrix));
 
-        //Z_Buffer zBuffer = new Z_Buffer(width, height);
+        Z_Buffer zBuffer = new Z_Buffer(width, height);
 
         final int nPolygons = mesh.polygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
