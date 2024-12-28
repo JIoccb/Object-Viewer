@@ -7,6 +7,7 @@ import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
 import com.cgvsu.model.Model;
+import com.cgvsu.model.Polygon;
 import com.cgvsu.rasterization.Z_Buffer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -24,8 +25,8 @@ public class RenderEngWithTriangFill {
             final Model mesh,
             final int width,
             final int height) throws Exception {
-
-        if (mesh == null || mesh.triangulatingPolygons.isEmpty() || mesh.vertices.isEmpty()) {
+        ArrayList<Polygon> triangulatingPolygons = mesh.getTriangulatingPolygons();
+        if (triangulatingPolygons.isEmpty() || mesh.getVertices().isEmpty()) {
             return; // Нечего отрисовывать
         }
 
@@ -44,9 +45,9 @@ public class RenderEngWithTriangFill {
         List<Vector2D> textureVertices = new ArrayList<>();
 
 
-        final int nPolygons = mesh.triangulatingPolygons.size();
+        final int nPolygons = triangulatingPolygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
-            final int nVerticesInPolygon = mesh.triangulatingPolygons.get(polygonInd).getVertexIndices().size();
+            final int nVerticesInPolygon = triangulatingPolygons.get(polygonInd).getVertexIndices().size();
 
             if (nVerticesInPolygon < 2) continue; // Пропуск недопустимого полигона
             /*
@@ -54,8 +55,8 @@ public class RenderEngWithTriangFill {
              */
             ArrayList<Vector2D> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                Vector3D vertex = mesh.vertices.get(mesh.triangulatingPolygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
-                Vector2D textVert = mesh.textureVertices.get(mesh.triangulatingPolygons.get(polygonInd).getTextureVertexIndices().get(vertexInPolygonInd));
+                Vector3D vertex = mesh.getVertices().get(triangulatingPolygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+                Vector2D textVert = mesh.getTextureVertices().get(triangulatingPolygons.get(polygonInd).getTextureVertexIndices().get(vertexInPolygonInd));
 
                 arrZ[vertexInPolygonInd] = vertex.get(2);
 
@@ -68,8 +69,8 @@ public class RenderEngWithTriangFill {
                     continue; // Если w = 0, пропускаем эту вершину (вырождение)
                 }
                 Vector2D resultPoint = vertexToPoint(new Vector3D(new double[]{result.get(0), result.get(1), result.get(2)}), width, height);
-                arrX[vertexInPolygonInd] = (int)resultPoint.get(0);
-                arrY[vertexInPolygonInd] = (int)resultPoint.get(1);
+                arrX[vertexInPolygonInd] = (int) resultPoint.get(0);
+                arrY[vertexInPolygonInd] = (int) resultPoint.get(1);
                 textureVertices.add(textVert);
                 resultPoints.add(resultPoint);
             }

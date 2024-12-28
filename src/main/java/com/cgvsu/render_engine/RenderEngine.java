@@ -8,6 +8,7 @@ import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
+import com.cgvsu.model.Polygon;
 import com.cgvsu.rasterization.Z_Buffer;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -22,8 +23,9 @@ public class RenderEngine {
             final Model mesh,
             final int width,
             final int height) throws Exception {
-
-        if (mesh == null || mesh.polygons.isEmpty() || mesh.vertices.isEmpty()) {
+        ArrayList<Polygon> polygons = mesh.getPolygons();
+        ArrayList<Vector3D> vertices = mesh.getVertices();
+        if (polygons.isEmpty() || vertices.isEmpty()) {
             return; // Нечего отрисовывать
         }
 
@@ -37,15 +39,15 @@ public class RenderEngine {
 
         //Z_Buffer zBuffer = new Z_Buffer(width, height);
 
-        final int nPolygons = mesh.polygons.size();
+        final int nPolygons = polygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
-            final int nVerticesInPolygon = mesh.polygons.get(polygonInd).getVertexIndices().size();
+            final int nVerticesInPolygon = polygons.get(polygonInd).getVertexIndices().size();
 
             if (nVerticesInPolygon < 2) continue; // Пропуск недопустимого полигона
 
             ArrayList<Vector2D> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                Vector3D vertex = mesh.vertices.get(mesh.polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+                Vector3D vertex = vertices.get(polygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
 
                 Vector4D result = BinaryOperations.product(modelViewProjectionMatrix, vertex.increaseDimension()).toVector4D();
                 double w = result.get(3);
