@@ -24,7 +24,7 @@ import com.cgvsu.render_engine.Camera;
 public class GuiController {
 
     private static final float TRANSLATION_SPEED = 0.5F;
-    private static final float ZOOM_SPEED = 0.1F;
+    private static final float ZOOM_SPEED = 0.4F;
 
     @FXML
     private AnchorPane anchorPane;
