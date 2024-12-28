@@ -9,10 +9,11 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 /*
-лучше метод сделать универсальным и для текстуры и для заливки цветом, можно сделать так чтобы метод принмал какю-либо
+лучше метод сделать универсальным и для текстуры и для заливки цветом, можно сделать так, чтобы метод принимал какю-либо
 структуру с флагами: рисовать текстуру, рисовать просто цветом, или просто сетка
  */
 public class Rasterization {
+    private static final double EPS = 1e-6;
     public static void fillTriangleWithTexture(
             final GraphicsContext graphicsContext,
             final int[] arrX,
@@ -21,7 +22,7 @@ public class Rasterization {
             final List<Vector2D> textureVert,
             // final double[][] uvCoords, // Текстурные координаты вершин { {u1, v1}, {u2, v2}, {u3, v3} }
             final Image texture,
-            final double[][] zBuffer) {
+            final Z_Buffer zBuffer) {
 
         final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
         final int textureWidth = (int) texture.getWidth();
@@ -36,8 +37,8 @@ public class Rasterization {
 
         sort(arrX, arrY, arrZ, uvCoords);
 
-        int width = zBuffer.length;
-        int height = zBuffer[0].length;
+        int width = zBuffer.getWidth();
+        int height = zBuffer.getHeight();
 
         // Верхняя часть треугольника
         for (int y = arrY[1]; y <= arrY[2]; y++) {
@@ -54,8 +55,8 @@ public class Rasterization {
 
                 double z = baryCoords[0] * arrZ[0] + baryCoords[1] * arrZ[1] + baryCoords[2] * arrZ[2];
                 //добавить проверку что если z больше, то мы дропаем дальнейшие действия (не отрисовываем)
-                if (z < zBuffer[x][y]) {
-                    zBuffer[x][y] = z;
+                if (z < zBuffer.get(x, y) || Math.abs(z - zBuffer.get(x, y)) < EPS) {
+                    zBuffer.set(x, y, z);
 
                     // Вычисление текстурных координат
                     double u = baryCoords[0] * uvCoords[0][0] + baryCoords[1] * uvCoords[1][0] + baryCoords[2] * uvCoords[2][0];
@@ -85,8 +86,8 @@ public class Rasterization {
                 if (baryCoords == null) continue;
 
                 double z = baryCoords[0] * arrZ[0] + baryCoords[1] * arrZ[1] + baryCoords[2] * arrZ[2];
-                if (z < zBuffer[x][y]) {
-                    zBuffer[x][y] = z;
+                if (z < zBuffer.get(x, y) || Math.abs(z - zBuffer.get(x, y)) < EPS) {
+                    zBuffer.set(x, y, z);
 
                     // Вычисление текстурных координат
                     double u = baryCoords[0] * uvCoords[0][0] + baryCoords[1] * uvCoords[1][0] + baryCoords[2] * uvCoords[2][0];
