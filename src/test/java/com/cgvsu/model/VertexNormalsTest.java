@@ -71,25 +71,25 @@ class VertexNormalsTest {
 
     @BeforeAll
     static void init() throws Exception {
-        m.normals = m.calculateNormals();
+        m.setNormals(m.calculateNormals());
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2, 3})
     void findVertexTestX(int i) {
-        assertEquals(Math.abs(Math.round(m.normals.get(i).get(0) * 100)), 58);
+        assertEquals(58, Math.abs(Math.round(m.getNormals().get(i).get(0) * 100)));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2, 3})
     void findVertexTestY(int i) {
-        assertEquals(Math.abs(Math.round(m.normals.get(i).get(1) * 100)), 58);
+        assertEquals(58, Math.abs(Math.round(m.getNormals().get(i).get(1) * 100)));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0, 1, 2, 3})
     void findVertexTestZ(int i) {
-        assertEquals(Math.abs(Math.round(m.normals.get(i).get(2) * 100)), 58);
+        assertEquals(58, Math.abs(Math.round(m.getNormals().get(i).get(2) * 100)));
     }
 
 }
