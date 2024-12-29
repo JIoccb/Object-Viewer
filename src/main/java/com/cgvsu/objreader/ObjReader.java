@@ -57,9 +57,9 @@ public class ObjReader {
 
     public static Vector3D parseVertex(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
         try {
-            return new Vector3D(new double[]{Double.parseDouble(wordsInLineWithoutToken.get(0)),
+            return new Vector3D(Double.parseDouble(wordsInLineWithoutToken.get(0)),
                     Double.parseDouble(wordsInLineWithoutToken.get(1)),
-                    Double.parseDouble(wordsInLineWithoutToken.get(2))});
+                    Double.parseDouble(wordsInLineWithoutToken.get(2)));
 
 
         } catch (NumberFormatException e) {
@@ -72,9 +72,9 @@ public class ObjReader {
 
     protected static Vector2D parseTextureVertex(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
         try {
-            return new Vector2D(new double[]{
+            return new Vector2D(
                     Double.parseDouble(wordsInLineWithoutToken.get(0)),
-                    Double.parseDouble(wordsInLineWithoutToken.get(1))});
+                    Double.parseDouble(wordsInLineWithoutToken.get(1)));
 
         } catch (NumberFormatException e) {
             throw new ObjReaderException("Failed to parse double value.", lineInd);
@@ -86,10 +86,10 @@ public class ObjReader {
 
     protected static Vector3D parseNormal(final ArrayList<String> wordsInLineWithoutToken, int lineInd) {
         try {
-            return new Vector3D(new double[]{
+            return new Vector3D(
                     Double.parseDouble(wordsInLineWithoutToken.get(0)),
                     Double.parseDouble(wordsInLineWithoutToken.get(1)),
-                    Double.parseDouble(wordsInLineWithoutToken.get(2))});
+                    Double.parseDouble(wordsInLineWithoutToken.get(2)));
 
         } catch (NumberFormatException e) {
             throw new ObjReaderException("Failed to parse double value.", lineInd);

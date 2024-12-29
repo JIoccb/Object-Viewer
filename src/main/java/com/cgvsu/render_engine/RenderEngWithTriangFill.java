@@ -31,7 +31,6 @@ public class RenderEngWithTriangFill {
         }
 
         Matrix4D modelMatrix = Matrix.id(4).toMatrix4D();
-        //Matrix4D modelMatrix = rotateScaleTranslate(new Vector3D(new double[]{0, 0, 0}), 0, 0, 0, 1, 1, 1);
         Matrix4D viewMatrix = camera.getViewMatrix();
         Matrix4D projectionMatrix = camera.getProjectionMatrix();
 
@@ -68,7 +67,7 @@ public class RenderEngWithTriangFill {
                 } else {
                     continue; // Если w = 0, пропускаем эту вершину (вырождение)
                 }
-                Vector2D resultPoint = vertexToPoint(new Vector3D(new double[]{result.get(0), result.get(1), result.get(2)}), width, height);
+                Vector2D resultPoint = vertexToPoint(new Vector3D(result.get(0), result.get(1), result.get(2)), width, height);
                 arrX[vertexInPolygonInd] = (int) resultPoint.get(0);
                 arrY[vertexInPolygonInd] = (int) resultPoint.get(1);
                 textureVertices.add(textVert);
