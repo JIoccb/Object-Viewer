@@ -1,6 +1,7 @@
 package com.cgvsu.math.vectors;
 
 public class Vector4D extends Vector{
+
     public Vector4D(double[] vector) {
         if (vector.length != 4) {
             throw new IllegalArgumentException(String.format("Length of vector must be equal to 4. Provided: %d.", vector.length));

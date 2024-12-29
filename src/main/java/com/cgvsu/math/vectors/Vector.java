@@ -193,12 +193,4 @@ public class Vector {
         }
         return true;
     }
-    /*public Matrix transpose() {
-        int length = getLength();
-        Matrix res = new Matrix(length, 1);
-        for (int i = 0; i < length; i++) {
-            res.set(i, 0, get(i));
-        }
-        return res;
-    }*/
 }
