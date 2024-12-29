@@ -134,11 +134,7 @@ public class Model {
         matrix = matrix.setRow(2, vectorC).toMatrix3D();
 
         if (matrix.det() < 0) vectorC = BinaryOperations.cross(vectorB, vectorA);
-        /*if (determinant(vectorA, vectorB, vectorC) < 0) {
-            vectorC = BinaryOperations.cross(vectorB, vectorA);
-        }*/
 
-// приходится делать приведение к 3-х мерному вектору, тк библиотека реализована так, что операции работают для произвольных векторов
         return vectorC.normalize().toVector3D();
     }
 
@@ -150,9 +146,8 @@ public class Model {
             yy += v.get(1);
             zz += v.get(2);
         }
-        double[] dataForNormal = {xx / vertices.size(), yy / vertices.size(), zz / vertices.size()};
 
-        Vector normal = new Vector3D(dataForNormal);
+        Vector normal = new Vector3D(xx / vertices.size(), yy / vertices.size(), zz / vertices.size());
         return normal.normalize().toVector3D();
     }
 
@@ -169,16 +164,14 @@ public class Model {
 
             // Создаем новый вектор из преобразованных координат (игнорируем w)
             double w = transformed.get(3);
-            Vector3D transformedVertex = new Vector3D(new double[]{
+            Vector3D transformedVertex = new Vector3D(
                     transformed.get(0),
                     transformed.get(1),
-                    transformed.get(2)}
-            ).scale(w).toVector3D();
+                    transformed.get(2)).scale(w).toVector3D();
 
             // Обновляем вершину модели
             res.addVertex.set(i, transformedVertex);
         }
         return res;
     }
-
 }
