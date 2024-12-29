@@ -21,8 +21,8 @@ class BinaryOperationsTest {
             {7, 8, 9}
     });
 
-    Vector3D vector3D = new Vector3D(new double[]{1, 2, 3});
-    Vector3D vector3D1 = new Vector3D(new double[]{6, 5, 4});
+    Vector3D vector3D = new Vector3D(1, 2, 3);
+    Vector3D vector3D1 = new Vector3D(6, 5, 4);
 
     @Test
     void product() {
@@ -108,7 +108,7 @@ class BinaryOperationsTest {
 
     @Test
     void cross() {
-        Vector3D expected = new Vector3D(new double[]{-7, 14, -7});
+        Vector3D expected = new Vector3D(-7, 14, -7);
         Vector3D result = BinaryOperations.cross(vector3D, vector3D1);
         assertEquals(expected, result);
     }

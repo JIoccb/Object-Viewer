@@ -61,7 +61,7 @@ public class Camera {
         double y = Math.sin(radPitch);
         double z = Math.cos(radPitch) * Math.sin(radYaw);
 
-        Vector3D direction = new Vector3D(new double[]{x, y, z}).normalize().toVector3D();
+        Vector3D direction = new Vector3D(x, y, z).normalize().toVector3D();
         this.target = BinaryOperations.add(this.position, direction, true);
     }
 
