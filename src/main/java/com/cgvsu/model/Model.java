@@ -7,6 +7,7 @@ import com.cgvsu.math.vectors.Vector;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
+import com.cgvsu.rasterization.Z_Buffer;
 import com.cgvsu.triangulation.Triangulation;
 import javafx.scene.image.Image;
 
@@ -15,12 +16,12 @@ import java.util.*;
 public class Model {
    private Image texture; //= new Image("D:/My/java/cg/Object-Viewer/3DModels/CaracalCube/caracal_texture.png");
 
+    private final ArrayList<Vector3D> vertices = new ArrayList<>();
+    private final ArrayList<Vector2D> textureVertices = new ArrayList<>();
+    private final ArrayList<Polygon> polygons = new ArrayList<>();
+    private ArrayList<Polygon> triangulatingPolygons = new ArrayList<>();
+    private ArrayList<Vector3D> normals;
 
-    public ArrayList<Vector3D> vertices = new ArrayList<>();
-    public ArrayList<Vector2D> textureVertices = new ArrayList<>();
-    public ArrayList<Polygon> polygons = new ArrayList<>();
-    public ArrayList<Polygon> triangulatingPolygons = new ArrayList<>();
-    public ArrayList<Vector3D> normals = new ArrayList<>();
 /*
 вызов методов для триангуляции и расчета нормалей не должен происходить в момент создания экземпляра модели
 это делается по необходимости в методах
@@ -88,7 +89,7 @@ public class Model {
             }
         }
 
-        for (int i = 0; i < addVertex.size(); i++) {
+        for (int i = 0; i < vertices.size(); i++) {
             normals.add(calcNormalOfVertex(vertexPolygonsMap.get(i)));
         }
 
@@ -97,9 +98,9 @@ public class Model {
 
     public Vector3D calcNormalOfPolygon(Polygon polygon) throws Exception {
         Vector3D vertice1, vertice2, vertice3;
-        vertice1 = addVertex.get(polygon.getVertexIndices().get(0));
-        vertice2 = addVertex.get(polygon.getVertexIndices().get(1));
-        vertice3 = addVertex.get(polygon.getVertexIndices().get(2));
+        vertice1 = vertices.get(polygon.getVertexIndices().get(0));
+        vertice2 = vertices.get(polygon.getVertexIndices().get(1));
+        vertice3 = vertices.get(polygon.getVertexIndices().get(2));
 
 
         Vector3D vectorA = BinaryOperations.add(vertice2, vertice1, false).toVector3D();
@@ -131,8 +132,8 @@ public class Model {
 
     public Model transform(Matrix4D TRS) {
         Model res = this;
-        for (int i = 0; i < this.addVertex.size(); i++) {
-            Vector3D vertex = this.addVertex.get(i);
+        for (int i = 0; i < this.vertices.size(); i++) {
+            Vector3D vertex = this.vertices.get(i);
 
             // Добавляем четвертую координату w=1 для аффинного преобразования
             Vector4D vertex4d = vertex.increaseDimension().toVector4D();
@@ -148,8 +149,48 @@ public class Model {
                     transformed.get(2)).scale(w).toVector3D();
 
             // Обновляем вершину модели
-            res.addVertex.set(i, transformedVertex);
+            res.vertices.set(i, transformedVertex);
         }
         return res;
+    }
+
+    public ArrayList<Polygon> getPolygons() {
+        return polygons;
+    }
+
+    public ArrayList<Vector3D> getVertices() {
+        return vertices;
+    }
+
+    public ArrayList<Polygon> getTriangulatingPolygons() {
+        return triangulatingPolygons;
+    }
+
+    public void addVertex(Vector3D vector3D) {
+        vertices.add(vector3D);
+    }
+
+    public void setNormals(ArrayList<Vector3D> normals) {
+        this.normals = normals;
+    }
+
+    public ArrayList<Vector3D> getNormals() {
+        return normals;
+    }
+
+    public void addPolygon(Polygon polygon) {
+        polygons.add(polygon);
+    }
+
+    public void addNormal(Vector3D vector3D) {
+        normals.add(vector3D);
+    }
+
+    public ArrayList<Vector2D> getTextureVertices() {
+        return textureVertices;
+    }
+
+    public void setTriangulatingPolygons(ArrayList<Polygon> triangulatingPolygons) {
+        this.triangulatingPolygons = triangulatingPolygons;
     }
 }
