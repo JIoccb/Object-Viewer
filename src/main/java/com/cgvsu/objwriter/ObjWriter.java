@@ -24,10 +24,10 @@ public class ObjWriter {
         if (!createFile(file))
             return;
         try (PrintWriter writer = new PrintWriter(file)) {
-            model.vertices.forEach(v -> writer.println(vertexToString(v)));
-            model.textureVertices.forEach(v -> writer.println(textureVertexToString(v)));
-            model.normals.forEach(v -> writer.println(normalToString(v)));
-            model.polygons.forEach(v -> writer.println(polygonToString(v)));
+            model.getVertices().forEach(v -> writer.println(vertexToString(v)));
+            model.getTextureVertices().forEach(v -> writer.println(textureVertexToString(v)));
+            model.getNormals().forEach(v -> writer.println(normalToString(v)));
+            model.getPolygons().forEach(v -> writer.println(polygonToString(v)));
         } catch (IOException e) {
             System.out.println("Error while writing file");
         }

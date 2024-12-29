@@ -15,6 +15,7 @@ import java.util.*;
 public class Model {
    private Image texture; //= new Image("D:/My/java/cg/Object-Viewer/3DModels/CaracalCube/caracal_texture.png");
 
+
     public ArrayList<Vector3D> vertices = new ArrayList<>();
     public ArrayList<Vector2D> textureVertices = new ArrayList<>();
     public ArrayList<Polygon> polygons = new ArrayList<>();
@@ -40,7 +41,6 @@ public class Model {
 
     public ArrayList<Polygon> triangulateModel() {
         ArrayList<Polygon> ps = new ArrayList<>();
-        assert polygons != null;
         for (Polygon p : polygons) {
             List<int[]> listWithVertexIndices = Triangulation.convexPolygonTriangulate(p.getVertexIndices());
             List<int[]> listWithTextureIndices = Triangulation.convexPolygonTriangulate(p.getTextureVertexIndices());
@@ -88,7 +88,7 @@ public class Model {
             }
         }
 
-        for (int i = 0; i < vertices.size(); i++) {
+        for (int i = 0; i < addVertex.size(); i++) {
             normals.add(calcNormalOfVertex(vertexPolygonsMap.get(i)));
         }
 
@@ -97,9 +97,9 @@ public class Model {
 
     public Vector3D calcNormalOfPolygon(Polygon polygon) throws Exception {
         Vector3D vertice1, vertice2, vertice3;
-        vertice1 = vertices.get(polygon.getVertexIndices().get(0));
-        vertice2 = vertices.get(polygon.getVertexIndices().get(1));
-        vertice3 = vertices.get(polygon.getVertexIndices().get(2));
+        vertice1 = addVertex.get(polygon.getVertexIndices().get(0));
+        vertice2 = addVertex.get(polygon.getVertexIndices().get(1));
+        vertice3 = addVertex.get(polygon.getVertexIndices().get(2));
 
 
         Vector3D vectorA = BinaryOperations.add(vertice2, vertice1, false).toVector3D();
@@ -112,11 +112,7 @@ public class Model {
         matrix = matrix.setRow(2, vectorC).toMatrix3D();
 
         if (matrix.det() < 0) vectorC = BinaryOperations.cross(vectorB, vectorA);
-        /*if (determinant(vectorA, vectorB, vectorC) < 0) {
-            vectorC = BinaryOperations.cross(vectorB, vectorA);
-        }*/
 
-// приходится делать приведение к 3-х мерному вектору, тк библиотека реализована так, что операции работают для произвольных векторов
         return vectorC.normalize().toVector3D();
     }
 
@@ -128,16 +124,15 @@ public class Model {
             yy += v.get(1);
             zz += v.get(2);
         }
-        double[] dataForNormal = {xx / vertices.size(), yy / vertices.size(), zz / vertices.size()};
 
-        Vector normal = new Vector3D(dataForNormal);
+        Vector normal = new Vector3D(xx / vertices.size(), yy / vertices.size(), zz / vertices.size());
         return normal.normalize().toVector3D();
     }
 
     public Model transform(Matrix4D TRS) {
         Model res = this;
-        for (int i = 0; i < this.vertices.size(); i++) {
-            Vector3D vertex = this.vertices.get(i);
+        for (int i = 0; i < this.addVertex.size(); i++) {
+            Vector3D vertex = this.addVertex.get(i);
 
             // Добавляем четвертую координату w=1 для аффинного преобразования
             Vector4D vertex4d = vertex.increaseDimension().toVector4D();
@@ -147,16 +142,14 @@ public class Model {
 
             // Создаем новый вектор из преобразованных координат (игнорируем w)
             double w = transformed.get(3);
-            Vector3D transformedVertex = new Vector3D(new double[]{
+            Vector3D transformedVertex = new Vector3D(
                     transformed.get(0),
                     transformed.get(1),
-                    transformed.get(2)}
-            ).scale(w).toVector3D();
+                    transformed.get(2)).scale(w).toVector3D();
 
             // Обновляем вершину модели
-            res.vertices.set(i, transformedVertex);
+            res.addVertex.set(i, transformedVertex);
         }
         return res;
     }
-
 }

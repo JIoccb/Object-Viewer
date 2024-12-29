@@ -14,4 +14,9 @@ public class Vector3D extends Vector {
         setLength(3);
         setData(new double[3]);
     }
+
+    public Vector3D(double x, double y, double z) {
+        setLength(3);
+        setData(new double[]{x, y, z});
+    }
 }

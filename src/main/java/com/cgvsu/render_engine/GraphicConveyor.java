@@ -9,7 +9,7 @@ import com.cgvsu.math.vectors.Vector3D;
 public class GraphicConveyor {
 
     public static Matrix4D lookAt(Vector3D eye, Vector3D target) throws Exception {
-        return lookAt(eye, target, new Vector3D(new double[]{0, -1, 0}));
+        return lookAt(eye, target, new Vector3D(0, -1, 0));
     }
 
     public static Matrix4D lookAt(Vector3D eye, Vector3D target, Vector3D up) throws Exception {
@@ -18,9 +18,9 @@ public class GraphicConveyor {
 
         // Проверяем, не параллелен ли up направлению взгляда
         if (BinaryOperations.cross(up, resultZ).norm() < 1e-6) {
-            adjustedUp = new Vector3D(new double[]{0, 0, 1}); // Сменить "вверх" на безопасное значение
+            adjustedUp = new Vector3D(0, 0, 1); // Сменить "вверх" на безопасное значение
             if (BinaryOperations.cross(adjustedUp, resultZ).norm() < 1e-6) {
-                adjustedUp = new Vector3D(new double[]{0, 1, 0}); // Если все еще параллельно, сменить снова
+                adjustedUp = new Vector3D(0, 1, 0); // Если все еще параллельно, сменить снова
             }
         }
 
@@ -68,11 +68,8 @@ public class GraphicConveyor {
         return result;
     }
 
-    /*public static Vector2D vertexToPoint(final Vector3D vertex, final int width, final int height) {
-        return new Vector2D(new double[]{vertex.get(0) * width + width / 2.0F, -vertex.get(1) * height + height / 2.0F});
-    }*/
 
     public static Vector2D vertexToPoint(final Vector3D vertex, final int width, final int height) {
-        return new Vector2D(new double[]{(width - 1) / 2.0D * (vertex.get(0) + 1), (height - 1) / 2.0D * (-vertex.get(1) + 1)});
+        return new Vector2D((width - 1) / 2.0D * (vertex.get(0) + 1), (height - 1) / 2.0D * (-vertex.get(1) + 1));
     }
 }

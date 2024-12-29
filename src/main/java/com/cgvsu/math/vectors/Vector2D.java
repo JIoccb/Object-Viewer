@@ -14,4 +14,9 @@ public class Vector2D extends Vector {
         setLength(2);
         setData(new double[2]);
     }
+
+    public Vector2D(double x, double y) {
+        setLength(2);
+        setData(new double[]{x, y});
+    }
 }

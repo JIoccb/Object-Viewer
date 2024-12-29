@@ -16,17 +16,17 @@ class MatrixTest {
 
     @Test
     void getRows() {
-        assertEquals(matrix.getRows(), 3);
+        assertEquals(3, matrix.getRows());
     }
 
     @Test
     void getCols() {
-        assertEquals(matrix.getCols(), 3);
+        assertEquals(3, matrix.getCols());
     }
 
     @Test
     void get() {
-        assertEquals(matrix.get(0, 0), -10);
+        assertEquals(-10, matrix.get(0, 0));
     }
 
     @Test
@@ -61,7 +61,7 @@ class MatrixTest {
 
     @Test
     void rank() {
-        assertEquals(matrix.rank(), 2);
+        assertEquals(2, matrix.rank());
     }
 
     @Test
@@ -86,7 +86,7 @@ class MatrixTest {
 
     @Test
     void trace() {
-        assertEquals(matrix.trace(), -18);
+        assertEquals(-18, matrix.trace());
     }
 
     @Test
