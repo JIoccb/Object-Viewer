@@ -51,11 +51,11 @@ public class BinaryOperations {
     }
 
     /**
-     * Sum or difference of two vectors
+     * Sum or subtraction of two vectors
      *
      * @param x          first vector
      * @param y          second vector
-     * @param isAddition {@code true} for addition and {@code false} for difference
+     * @param isAddition {@code true} for addition and {@code false} for subtraction
      */
     public static Vector add(Vector x, Vector y, boolean isAddition) throws Exception {
         int xLength = x.getLength();

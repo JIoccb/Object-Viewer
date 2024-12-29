@@ -1,6 +1,7 @@
 package com.cgvsu;
 
 import com.cgvsu.math.vectors.Vector3D;
+import com.cgvsu.render_engine.RenderEngWithTriangFill;
 import com.cgvsu.render_engine.RenderEngine;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -24,7 +25,8 @@ import com.cgvsu.render_engine.Camera;
 public class GuiController {
 
     private static final float TRANSLATION_SPEED = 0.5F;
-    private static final float ZOOM_SPEED = 0.4F;
+    private static final float ZOOM_SPEED = 0.6F;
+
 
     @FXML
     private AnchorPane anchorPane;
@@ -35,8 +37,11 @@ public class GuiController {
     private Model mesh = null;
 
     private final Camera camera = new Camera(
-            new Vector3D(0, 0, 200),
+
+            new Vector3D(0, 0, 1500),
             new Vector3D(0, 0, 0),
+
+
             1.0F, 1, 0.01F, 100);
 
     private double mousePrevX = 0;

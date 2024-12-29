@@ -13,52 +13,30 @@ import javafx.scene.image.Image;
 import java.util.*;
 
 public class Model {
-    Image texture = new Image("file:your_texture.png");
+   private Image texture; //= new Image("D:/My/java/cg/Object-Viewer/3DModels/CaracalCube/caracal_texture.png");
 
-    private final ArrayList<Vector3D> addVertex = new ArrayList<>();
-    private final ArrayList<Vector2D> textureVertices = new ArrayList<>();
-    private final ArrayList<Polygon> polygons = new ArrayList<>();
-    private final ArrayList<Polygon> triangulatingPolygons = triangulateModel();
-    private ArrayList<Vector3D> normals = calculateNormals();
 
-    public void addPolygon(Polygon polygon) {
-        polygons.add(polygon);
-    }
-
-    public void addVertex(Vector3D vertex) {
-        addVertex.add(vertex);
-    }
-
-    public void addNormal(Vector3D normal) {
-        addVertex.add(normal);
-    }
-
-    public ArrayList<Vector3D> getNormals() {
-        return normals;
-    }
-
-    public ArrayList<Polygon> getTriangulatingPolygons() {
-        return triangulatingPolygons;
-    }
-
-    public ArrayList<Polygon> getPolygons() {
-        return polygons;
-    }
-
-    public ArrayList<Vector2D> getTextureVertices() {
-        return textureVertices;
-    }
-
-    public ArrayList<Vector3D> getVertices() {
-        return addVertex;
-    }
-
-    public void setNormals(ArrayList<Vector3D> normals) {
-        this.normals = normals;
-    }
-
+    public ArrayList<Vector3D> vertices = new ArrayList<>();
+    public ArrayList<Vector2D> textureVertices = new ArrayList<>();
+    public ArrayList<Polygon> polygons = new ArrayList<>();
+    public ArrayList<Polygon> triangulatingPolygons = new ArrayList<>();
+    public ArrayList<Vector3D> normals = new ArrayList<>();
+/*
+вызов методов для триангуляции и расчета нормалей не должен происходить в момент создания экземпляра модели
+это делается по необходимости в методах
+ */
 
     public Model() throws Exception {
+      triangulatingPolygons = triangulateModel();
+      normals = calculateNormals();
+    }
+
+    public Image getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Image texture) {
+        this.texture = texture;
     }
 
     public ArrayList<Polygon> triangulateModel() {

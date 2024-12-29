@@ -7,11 +7,17 @@ import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
 import com.cgvsu.model.Model;
+
 import com.cgvsu.model.Polygon;
+import com.cgvsu.rasterization.RasterezationOneColor;
+import com.cgvsu.rasterization.Rasterization;
+
 import com.cgvsu.rasterization.Z_Buffer;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -25,7 +31,15 @@ public class RenderEngWithTriangFill {
             final Model mesh,
             final int width,
             final int height) throws Exception {
+
         ArrayList<Polygon> triangulatingPolygons = mesh.getTriangulatingPolygons();
+    
+
+        Image texture = new Image("D:/My/java/cg/Object-Viewer/3DModels/CaracalCube/caracal_texture.png"); //пока так, но должно быть так:
+       //Image texture1 = mesh.getTexture();
+
+        mesh.triangulatingPolygons = mesh.triangulateModel();
+
         if (triangulatingPolygons.isEmpty() || mesh.getVertices().isEmpty()) {
             return; // Нечего отрисовывать
         }
@@ -54,8 +68,11 @@ public class RenderEngWithTriangFill {
              */
             ArrayList<Vector2D> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                Vector3D vertex = mesh.getVertices().get(triangulatingPolygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
-                Vector2D textVert = mesh.getTextureVertices().get(triangulatingPolygons.get(polygonInd).getTextureVertexIndices().get(vertexInPolygonInd));
+
+                //идем по точкам полигона
+                Vector3D vertex = mesh.vertices.get(mesh.triangulatingPolygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+                Vector2D textVert = mesh.textureVertices.get(mesh.triangulatingPolygons.get(polygonInd).getTextureVertexIndices().get(vertexInPolygonInd));
+
 
                 arrZ[vertexInPolygonInd] = vertex.get(2);
 
@@ -67,14 +84,21 @@ public class RenderEngWithTriangFill {
                 } else {
                     continue; // Если w = 0, пропускаем эту вершину (вырождение)
                 }
+                
                 Vector2D resultPoint = vertexToPoint(new Vector3D(result.get(0), result.get(1), result.get(2)), width, height);
                 arrX[vertexInPolygonInd] = (int) resultPoint.get(0);
                 arrY[vertexInPolygonInd] = (int) resultPoint.get(1);
                 textureVertices.add(textVert);
                 resultPoints.add(resultPoint);
-            }
 
-            for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
+
+            }
+            //здесь мы вызываем ту или иную растерезацию
+
+               //RasterezationOneColor.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.ORANGE, zBuffer);
+            Rasterization.fillTriangleWithTexture(graphicsContext, arrX,arrY,arrZ, textureVertices, texture, zBuffer);
+
+           /* for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 graphicsContext.strokeLine(
                         resultPoints.get(vertexInPolygonInd - 1).get(0),
                         resultPoints.get(vertexInPolygonInd - 1).get(1),
@@ -82,14 +106,21 @@ public class RenderEngWithTriangFill {
                         resultPoints.get(vertexInPolygonInd).get(1));
             }
 
+            */
+
             /*
             насколько я понимаю, вызов растеризации треугольника с текстурой, должен быть где-то здесь
              */
-            graphicsContext.strokeLine(
+
+            /*graphicsContext.strokeLine(
                     resultPoints.get(nVerticesInPolygon - 1).get(0),
                     resultPoints.get(nVerticesInPolygon - 1).get(1),
                     resultPoints.getFirst().get(0),
                     resultPoints.getFirst().get(1));
+
+             */
+
+
         }
     }
 }
