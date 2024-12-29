@@ -38,7 +38,7 @@ public class RenderEngWithTriangFill {
         Image texture = new Image("D:/My/java/cg/Object-Viewer/3DModels/CaracalCube/caracal_texture.png"); //пока так, но должно быть так:
        //Image texture1 = mesh.getTexture();
 
-        mesh.triangulatingPolygons = mesh.triangulateModel();
+        mesh.setTriangulatingPolygons(mesh.triangulateModel());
 
         if (triangulatingPolygons.isEmpty() || mesh.getVertices().isEmpty()) {
             return; // Нечего отрисовывать
@@ -70,8 +70,8 @@ public class RenderEngWithTriangFill {
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
 
                 //идем по точкам полигона
-                Vector3D vertex = mesh.vertices.get(mesh.triangulatingPolygons.get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
-                Vector2D textVert = mesh.textureVertices.get(mesh.triangulatingPolygons.get(polygonInd).getTextureVertexIndices().get(vertexInPolygonInd));
+                Vector3D vertex = mesh.getVertices().get(mesh.getTriangulatingPolygons().get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+                Vector2D textVert = mesh.getTextureVertices().get(mesh.getTriangulatingPolygons().get(polygonInd).getTextureVertexIndices().get(vertexInPolygonInd));
 
 
                 arrZ[vertexInPolygonInd] = vertex.get(2);
