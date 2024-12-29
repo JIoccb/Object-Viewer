@@ -8,6 +8,7 @@ import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
 import com.cgvsu.model.Polygon;
+import com.cgvsu.rasterization.Z_Buffer;
 import javafx.scene.canvas.GraphicsContext;
 
 import com.cgvsu.model.Model;
