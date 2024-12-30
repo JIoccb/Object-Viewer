@@ -1,4 +1,4 @@
-package com.cgvsu.rasterization;
+/*package com.cgvsu.rasterization;
 
 
 import com.cgvsu.math.Global;
@@ -167,6 +167,7 @@ public class RatmirRasterization {
                         finalColor = new Color(finalColor.getRed() * (1 - k), finalColor.getGreen() * (1 - k), finalColor.getBlue() * (1 - k), 1);
                     }
                 }*/
+/*
                 pixelWriter.setColor(col, row, finalColor);
                 //zBuffer[col][row] = z;
                 //}
@@ -243,6 +244,7 @@ public class RatmirRasterization {
                             finalColor = new Color(finalColor.getRed() * (1 - k), finalColor.getGreen() * (1 - k), finalColor.getBlue() * (1 - k), 1);
                         }
                     }*/
+/*
                     pixelWriter.setColor(col, row, finalColor);
                     //zBuffer[col][row] = z;
                     //}
@@ -315,7 +317,7 @@ public class RatmirRasterization {
     }
 
      */
-
+/*
     private static float[] calculateBarycentricCoordinates(int x, int y, Point2f d0, Point2f d1, Point2f d2) {
         float denominator = (d1.y - d2.y) * (d0.x - d2.x) + (d2.x - d1.x) * (d0.y - d2.y);
         float alpha;
@@ -388,4 +390,4 @@ public class RatmirRasterization {
 }
 
 
-
+*/
