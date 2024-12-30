@@ -13,11 +13,9 @@ import com.cgvsu.rasterization.Z_Buffer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+
 
 import static com.cgvsu.render_engine.GraphicConveyor.vertexToPoint;
 
