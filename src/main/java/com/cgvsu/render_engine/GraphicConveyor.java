@@ -63,7 +63,6 @@ public class GraphicConveyor {
         result.set(2, 2, -(farPlane + nearPlane) / frustumLength); // Z-координата
         result.set(2, 3, -2 * nearPlane * farPlane / frustumLength); // Смещение по глубине
         result.set(3, 2, -1); // W для перспективного деления
-        result.set(3, 3, 0); // Перспективное деление
 
         return result;
     }
