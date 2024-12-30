@@ -7,15 +7,15 @@ import javafx.scene.paint.Color;
 
 public class RasterezationOneColor {
     private static final double EPS = 1e-6;
+
     public static void fillTriangle(
             final GraphicsContext graphicsContext,
             final int[] arrX,
             final int[] arrY,
             final double[] arrZ,
             final Color color,
-           // final double[][] zBuffer
+            // final double[][] zBuffer
             final Z_Buffer zBuffer) {
-
 
 
         final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
@@ -59,6 +59,7 @@ public class RasterezationOneColor {
             }
         }
     }
+
     private static double[] calculateBarycentricCoordinates(int x, int y, int[] xPoints, int[] yPoints) {
         double denominator = (yPoints[1] - yPoints[2]) * (xPoints[0] - xPoints[2]) + (xPoints[2] - xPoints[1]) * (yPoints[0] - yPoints[2]);
         if (denominator == 0) return null; // Предотвращение деления на ноль
@@ -67,11 +68,13 @@ public class RasterezationOneColor {
         double gamma = 1 - alpha - beta;
         return (alpha >= 0 && beta >= 0 && gamma >= 0) ? new double[]{alpha, beta, gamma} : null;
     }
+
     private static void sort(int[] x, int[] y, double[] z) {
         if (y[0] > y[1]) swap(x, y, z, 0, 1);
         if (y[1] > y[2]) swap(x, y, z, 1, 2);
         if (y[0] > y[1]) swap(x, y, z, 0, 1);
     }
+
     private static void swap(int[] x, int[] y, double[] z, int i, int j) {
         int tempX = x[i];
         int tempY = y[i];

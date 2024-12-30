@@ -8,12 +8,14 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
 import java.util.List;
+
 /*
 лучше метод сделать универсальным и для текстуры и для заливки цветом, можно сделать так, чтобы метод принимал как-либо
 структуру с флагами: рисовать текстуру, рисовать просто цветом, или просто сетка
  */
 public class Rasterization {
     private static final double EPS = 1e-6;
+
     public static void fillTriangleWithTexture(
             final GraphicsContext graphicsContext,
             final int[] arrX,
