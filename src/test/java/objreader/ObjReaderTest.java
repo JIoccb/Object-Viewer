@@ -15,7 +15,7 @@ class ObjReaderTest {
     void testParseVertex01() {
         ArrayList<String> wordsInLineWithoutToken = new ArrayList<>(Arrays.asList("1.01", "1.02", "1.03"));
         Vector3D result = ObjReader.parseVertex(wordsInLineWithoutToken, 5);
-        Vector3D expectedResult = new Vector3D(new double[]{1.01d, 1.02d, 1.03d});
+        Vector3D expectedResult = new Vector3D(1.01d, 1.02d, 1.03d);
         Assertions.assertEquals(result, expectedResult);
     }
 
@@ -23,7 +23,7 @@ class ObjReaderTest {
     public void testParseVertex02() {
         ArrayList<String> wordsInLineWithoutToken = new ArrayList<>(Arrays.asList("1.01", "1.02", "1.03"));
         Vector3D result = ObjReader.parseVertex(wordsInLineWithoutToken, 5);
-        Vector3D expectedResult = new Vector3D(new double[]{1.01d, 1.02d, 1.10d});
+        Vector3D expectedResult = new Vector3D(1.01d, 1.02d, 1.10d);
         Assertions.assertNotEquals(result, expectedResult);
     }
 

@@ -109,7 +109,7 @@ public class Vector {
      */
     public Vector2D toVector2D() {
         if (length != 2) {
-            throw new IllegalArgumentException(String.format("Length of vector must be equal to 2. Provided: %d.", length));
+            throw new IllegalVectorLengthException(length, 2);
         }
         Vector2D res = new Vector2D();
         res.set(0, get(0));
@@ -125,7 +125,7 @@ public class Vector {
      */
     public Vector3D toVector3D() {
         if (length != 3) {
-            throw new IllegalArgumentException(String.format("Length of vector must be equal to 3. Provided: %d.", length));
+            throw new IllegalVectorLengthException(length, 3);
         }
         Vector3D res = new Vector3D();
         res.set(0, get(0));
@@ -142,7 +142,7 @@ public class Vector {
      */
     public Vector4D toVector4D() {
         if (length != 4) {
-            throw new IllegalArgumentException(String.format("Length of vector must be equal to 4. Provided: %d.", length));
+            throw new IllegalVectorLengthException(length, 4);
         }
         Vector4D res = new Vector4D();
         res.set(0, get(0));
@@ -193,12 +193,4 @@ public class Vector {
         }
         return true;
     }
-    /*public Matrix transpose() {
-        int length = getLength();
-        Matrix res = new Matrix(length, 1);
-        for (int i = 0; i < length; i++) {
-            res.set(i, 0, get(i));
-        }
-        return res;
-    }*/
 }

@@ -27,7 +27,8 @@ import com.cgvsu.render_engine.Camera;
 public class GuiController {
 
     private static final float TRANSLATION_SPEED = 0.5F;
-    private static final float ZOOM_SPEED = 0.1F;
+    private static final float ZOOM_SPEED = 0.6F;
+
 
     @FXML
     private AnchorPane anchorPane;
@@ -38,8 +39,11 @@ public class GuiController {
     private Model mesh = null;
 
     private final Camera camera = new Camera(
-            new Vector3D(new double[]{0, 0, 200}),
-            new Vector3D(new double[]{0, 0, 0}),
+
+            new Vector3D(0, 0, 1500),
+            new Vector3D(0, 0, 0),
+
+
             1.0F, 1, 0.01F, 100);
 
     private double mousePrevX = 0;
@@ -159,7 +163,7 @@ public class GuiController {
 
         canvas.setOnScroll((ScrollEvent event) -> {
             double zoom = event.getDeltaY();
-            camera.movePosition(new Vector3D(new double[]{0, 0, -zoom * ZOOM_SPEED}));
+            camera.movePosition(new Vector3D(0, 0, -zoom * ZOOM_SPEED));
         });
     }
 
@@ -179,21 +183,21 @@ public class GuiController {
 
     @FXML
     public void handleCameraLeft() {
-        camera.movePosition(new Vector3D(new double[]{TRANSLATION_SPEED, 0, 0}));
+        camera.movePosition(new Vector3D(TRANSLATION_SPEED, 0, 0));
     }
 
     @FXML
     public void handleCameraRight() {
-        camera.movePosition(new Vector3D(new double[]{-TRANSLATION_SPEED, 0, 0}));
+        camera.movePosition(new Vector3D(-TRANSLATION_SPEED, 0, 0));
     }
 
     @FXML
     public void handleCameraUp() {
-        camera.movePosition(new Vector3D(new double[]{0, -TRANSLATION_SPEED, 0}));
+        camera.movePosition(new Vector3D(0, -TRANSLATION_SPEED, 0));
     }
 
     @FXML
     public void handleCameraDown() {
-        camera.movePosition(new Vector3D(new double[]{0, TRANSLATION_SPEED, 0}));
+        camera.movePosition(new Vector3D(0, TRANSLATION_SPEED, 0));
     }
 }

@@ -103,20 +103,4 @@ public class Matrix3D extends Matrix {
             return new Vector(new double[]{lambda});
         }
     }
-
-    /** Matrix of eigenvectors of matrix*/
-    /*public Matrix eigenvectors() throws Exception{
-        int cols = getCols();
-        int rows = getRows();
-        if (cols != rows){
-            throw new Exception("Matrix must be square. Provided: (" + rows + ", " + cols + ").");
-        }
-        Matrix eigenvectors = new Matrix();
-        Vector eigenvalues = eigenvalues();
-        for (int i = 0; i < eigenvalues.getLength(); i++){
-            Vector res = BinaryOperations.add(this, Matrix.id(rows).scale(eigenvalues.get(i)), false).solveSystem();
-            eigenvectors.setCol(i, res);
-        }
-        return eigenvectors;
-    }*/
 }

@@ -7,6 +7,7 @@ import com.cgvsu.math.vectors.Vector;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
+import com.cgvsu.rasterization.Z_Buffer;
 import com.cgvsu.triangulation.Triangulation;
 import javafx.scene.image.Image;
 
@@ -15,11 +16,12 @@ import java.util.*;
 public class Model {
    private Image texture; //= new Image("D:/My/java/cg/Object-Viewer/3DModels/CaracalCube/caracal_texture.png");
 
-    public ArrayList<Vector3D> vertices = new ArrayList<>();
-    public ArrayList<Vector2D> textureVertices = new ArrayList<>();
-    public ArrayList<Polygon> polygons = new ArrayList<>();
-    public ArrayList<Polygon> triangulatingPolygons = new ArrayList<>();
-    public ArrayList<Vector3D> normals = new ArrayList<>();
+    private final ArrayList<Vector3D> vertices = new ArrayList<>();
+    private final ArrayList<Vector2D> textureVertices = new ArrayList<>();
+    private final ArrayList<Polygon> polygons = new ArrayList<>();
+    private ArrayList<Polygon> triangulatingPolygons = new ArrayList<>();
+    private ArrayList<Vector3D> normals;
+
 /*
 вызов методов для триангуляции и расчета нормалей не должен происходить в момент создания экземпляра модели
 это делается по необходимости в методах
@@ -40,7 +42,6 @@ public class Model {
 
     public ArrayList<Polygon> triangulateModel() {
         ArrayList<Polygon> ps = new ArrayList<>();
-        assert polygons != null;
         for (Polygon p : polygons) {
             List<int[]> listWithVertexIndices = Triangulation.convexPolygonTriangulate(p.getVertexIndices());
             List<int[]> listWithTextureIndices = Triangulation.convexPolygonTriangulate(p.getTextureVertexIndices());
@@ -112,11 +113,7 @@ public class Model {
         matrix = matrix.setRow(2, vectorC).toMatrix3D();
 
         if (matrix.det() < 0) vectorC = BinaryOperations.cross(vectorB, vectorA);
-        /*if (determinant(vectorA, vectorB, vectorC) < 0) {
-            vectorC = BinaryOperations.cross(vectorB, vectorA);
-        }*/
 
-// приходится делать приведение к 3-х мерному вектору, тк библиотека реализована так, что операции работают для произвольных векторов
         return vectorC.normalize().toVector3D();
     }
 
@@ -128,9 +125,8 @@ public class Model {
             yy += v.get(1);
             zz += v.get(2);
         }
-        double[] dataForNormal = {xx / vertices.size(), yy / vertices.size(), zz / vertices.size()};
 
-        Vector normal = new Vector3D(dataForNormal);
+        Vector normal = new Vector3D(xx / vertices.size(), yy / vertices.size(), zz / vertices.size());
         return normal.normalize().toVector3D();
     }
 
@@ -147,11 +143,10 @@ public class Model {
 
             // Создаем новый вектор из преобразованных координат (игнорируем w)
             double w = transformed.get(3);
-            Vector3D transformedVertex = new Vector3D(new double[]{
+            Vector3D transformedVertex = new Vector3D(
                     transformed.get(0),
                     transformed.get(1),
-                    transformed.get(2)}
-            ).scale(w).toVector3D();
+                    transformed.get(2)).scale(w).toVector3D();
 
             // Обновляем вершину модели
             res.vertices.set(i, transformedVertex);
@@ -159,4 +154,43 @@ public class Model {
         return res;
     }
 
+    public ArrayList<Polygon> getPolygons() {
+        return polygons;
+    }
+
+    public ArrayList<Vector3D> getVertices() {
+        return vertices;
+    }
+
+    public ArrayList<Polygon> getTriangulatingPolygons() {
+        return triangulatingPolygons;
+    }
+
+    public void addVertex(Vector3D vector3D) {
+        vertices.add(vector3D);
+    }
+
+    public void setNormals(ArrayList<Vector3D> normals) {
+        this.normals = normals;
+    }
+
+    public ArrayList<Vector3D> getNormals() {
+        return normals;
+    }
+
+    public void addPolygon(Polygon polygon) {
+        polygons.add(polygon);
+    }
+
+    public void addNormal(Vector3D vector3D) {
+        normals.add(vector3D);
+    }
+
+    public ArrayList<Vector2D> getTextureVertices() {
+        return textureVertices;
+    }
+
+    public void setTriangulatingPolygons(ArrayList<Polygon> triangulatingPolygons) {
+        this.triangulatingPolygons = triangulatingPolygons;
+    }
 }

@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 /*
-лучше метод сделать универсальным и для текстуры и для заливки цветом, можно сделать так, чтобы метод принимал какю-либо
+лучше метод сделать универсальным и для текстуры и для заливки цветом, можно сделать так, чтобы метод принимал как-либо
 структуру с флагами: рисовать текстуру, рисовать просто цветом, или просто сетка
  */
 public class Rasterization {
@@ -54,9 +54,11 @@ public class Rasterization {
                 if (baryCoords == null) continue;
 
                 double z = baryCoords[0] * arrZ[0] + baryCoords[1] * arrZ[1] + baryCoords[2] * arrZ[2];
+
                 //добавить проверку что если z больше, то мы дропаем дальнейшие действия (не отрисовываем)
                 if (z < zBuffer.get(x, y) || Math.abs(z - zBuffer.get(x, y)) < EPS) {
                     zBuffer.set(x, y, z);
+
 
                     // Вычисление текстурных координат
                     double u = baryCoords[0] * uvCoords[0][0] + baryCoords[1] * uvCoords[1][0] + baryCoords[2] * uvCoords[2][0];
