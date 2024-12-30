@@ -7,12 +7,8 @@ import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
 import com.cgvsu.model.Model;
-
 import com.cgvsu.model.Polygon;
 import com.cgvsu.rasterization.FullRasterization;
-import com.cgvsu.rasterization.RasterezationOneColor;
-import com.cgvsu.rasterization.Rasterization;
-
 import com.cgvsu.rasterization.Z_Buffer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -34,10 +30,7 @@ public class RenderEngWithTriangFill {
             final int height) throws Exception {
 
         ArrayList<Polygon> triangulatingPolygons = mesh.getTriangulatingPolygons();
-    
-
-       // Image texture = new Image("D:/My/java/cg/Object-Viewer/3DModels/CaracalCube/caracal_texture.png"); //пока так, но должно быть так:
-       Image texture = mesh.getTexture();
+        Image texture = mesh.getTexture();
 
         mesh.setTriangulatingPolygons(mesh.triangulateModel());
 
@@ -85,7 +78,7 @@ public class RenderEngWithTriangFill {
                 } else {
                     continue; // Если w = 0, пропускаем эту вершину (вырождение)
                 }
-                
+
                 Vector2D resultPoint = vertexToPoint(new Vector3D(result.get(0), result.get(1), result.get(2)), width, height);
                 arrX[vertexInPolygonInd] = (int) resultPoint.get(0);
                 arrY[vertexInPolygonInd] = (int) resultPoint.get(1);
@@ -94,36 +87,8 @@ public class RenderEngWithTriangFill {
 
 
             }
-            //здесь мы вызываем ту или иную растерезацию
-
-               //RasterezationOneColor.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.ORANGE, zBuffer);
-           // Rasterization.fillTriangleWithTexture(graphicsContext, arrX,arrY,arrZ, textureVertices, texture, zBuffer);
-            FullRasterization.fillTriangle(graphicsContext, arrX,arrY,arrZ,  Color.BLUE, texture, textureVertices, zBuffer, false);
+            FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.BLUE, texture, textureVertices, zBuffer, false);
             textureVertices.clear();
-
-           /* for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                graphicsContext.strokeLine(
-                        resultPoints.get(vertexInPolygonInd - 1).get(0),
-                        resultPoints.get(vertexInPolygonInd - 1).get(1),
-                        resultPoints.get(vertexInPolygonInd).get(0),
-                        resultPoints.get(vertexInPolygonInd).get(1));
-            }
-
-            */
-
-            /*
-            насколько я понимаю, вызов растеризации треугольника с текстурой, должен быть где-то здесь
-             */
-
-            /*graphicsContext.strokeLine(
-                    resultPoints.get(nVerticesInPolygon - 1).get(0),
-                    resultPoints.get(nVerticesInPolygon - 1).get(1),
-                    resultPoints.getFirst().get(0),
-                    resultPoints.getFirst().get(1));
-
-             */
-
-
         }
     }
 }
