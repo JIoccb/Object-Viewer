@@ -9,6 +9,7 @@ import com.cgvsu.math.vectors.Vector4D;
 import com.cgvsu.model.Model;
 
 import com.cgvsu.model.Polygon;
+import com.cgvsu.rasterization.FullRasterization;
 import com.cgvsu.rasterization.RasterezationOneColor;
 import com.cgvsu.rasterization.Rasterization;
 
@@ -35,8 +36,8 @@ public class RenderEngWithTriangFill {
         ArrayList<Polygon> triangulatingPolygons = mesh.getTriangulatingPolygons();
     
 
-        Image texture = new Image("D:/My/java/cg/Object-Viewer/3DModels/CaracalCube/caracal_texture.png"); //пока так, но должно быть так:
-       //Image texture1 = mesh.getTexture();
+       // Image texture = new Image("D:/My/java/cg/Object-Viewer/3DModels/CaracalCube/caracal_texture.png"); //пока так, но должно быть так:
+       Image texture = mesh.getTexture();
 
         mesh.setTriangulatingPolygons(mesh.triangulateModel());
 
@@ -96,7 +97,9 @@ public class RenderEngWithTriangFill {
             //здесь мы вызываем ту или иную растерезацию
 
                //RasterezationOneColor.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.ORANGE, zBuffer);
-            Rasterization.fillTriangleWithTexture(graphicsContext, arrX,arrY,arrZ, textureVertices, texture, zBuffer);
+           // Rasterization.fillTriangleWithTexture(graphicsContext, arrX,arrY,arrZ, textureVertices, texture, zBuffer);
+            FullRasterization.fillTriangle(graphicsContext, arrX,arrY,arrZ,  Color.BLUE, texture, textureVertices, zBuffer, false);
+            textureVertices.clear();
 
            /* for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 graphicsContext.strokeLine(

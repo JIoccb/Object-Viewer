@@ -97,8 +97,9 @@ public class Rasterization {
 
                     // Нормализация и получение цвета из текстуры
                     int texX = (int) (u * (textureWidth - 1));
-                    //int texY = (int) (v * (textureHeight - 1));
-                    int texY = (int) ((1-v) * (textureHeight - 1));
+                    //int texX = (int) ((1-u) * (textureWidth - 1));
+                    int texY = (int) (v * (textureHeight - 1));
+                    //int texY = (int) ((1-v) * (textureHeight - 1));
                     Color textureColor = pixelReader.getColor(texX, texY);
 
                     pixelWriter.setColor(x, y, textureColor);
