@@ -8,10 +8,12 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+import javafx.scene.image.Image;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,7 +62,7 @@ public class GuiController {
 
             if (mesh != null) {
                 try {
-                    RenderEngWithTriangFill.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -95,6 +97,48 @@ public class GuiController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @FXML
+    private void onOpenTextureMenuItemClick() {
+        if (mesh == null) {
+            showError("No Model Loaded", "Please load a model before applying a texture.");
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Load Texture");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        File selectedFile = fileChooser.showOpenDialog(canvas.getScene().getWindow());
+        if (selectedFile != null) {
+            try {
+                // Загружаем текстуру как Image
+                Image texture = new Image(selectedFile.toURI().toString());
+                mesh.setTexture(texture); //присваиваем текстуру для модели
+                showInfo("Texture Loaded", "The texture has been successfully applied.");
+            } catch (Exception e) {
+                showError("Texture Load Failed", "Failed to load texture: " + e.getMessage());
+            }
+        }
+    }
+
+    private void showInfo(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void showError(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     private void setupMouseControls() {
