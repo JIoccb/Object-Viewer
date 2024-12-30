@@ -4,8 +4,9 @@ public class Vector4D extends Vector {
 
 
     public Vector4D(double[] vector) {
-        if (vector.length != 4) {
-            throw new IllegalArgumentException(String.format("Length of vector must be equal to 4. Provided: %d.", vector.length));
+        int length = vector.length;
+        if (length != 4) {
+            throw new IllegalVectorLengthException(length, 4);
         }
         setLength(4);
         setData(vector);

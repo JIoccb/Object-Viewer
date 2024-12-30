@@ -3,8 +3,9 @@ package com.cgvsu.math.vectors;
 public class Vector2D extends Vector {
 
     public Vector2D(double[] vector) {
-        if (vector.length != 2) {
-            throw new IllegalArgumentException(String.format("Length of vector must be equal to 2. Provided: %d.", vector.length));
+        int length = vector.length;
+        if (length != 2) {
+            throw new IllegalVectorLengthException(length, 2);
         }
         setLength(2);
         setData(vector);
