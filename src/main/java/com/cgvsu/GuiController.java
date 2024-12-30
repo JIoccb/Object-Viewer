@@ -66,7 +66,7 @@ public class GuiController {
 
             if (mesh != null) {
                 try {
-                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
+                    RenderEngWithTriangFill.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
