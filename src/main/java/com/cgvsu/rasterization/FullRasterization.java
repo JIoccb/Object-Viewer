@@ -72,9 +72,13 @@ public class FullRasterization {
                             double u = baryCoords[0] * uvCoords[0][0] + baryCoords[1] * uvCoords[1][0] + baryCoords[2] * uvCoords[2][0];
                             double v = baryCoords[0] * uvCoords[0][1] + baryCoords[1] * uvCoords[1][1] + baryCoords[2] * uvCoords[2][1];
 
+                            u = Math.max(0, Math.min(1, u));
+                            v = Math.max(0, Math.min(1, v));
+
+
                             // Нормализация текстурных координат
                             int texX = (int) (u * (textureWidth - 1));
-                            int texY = (int) (v * (textureHeight - 1));
+                            int texY = (int) ((1-v) * (textureHeight - 1));
 
                             // Получаем цвет пикселя из текстуры
                             Color textureColor = pixelReader.getColor(texX, texY);
@@ -109,9 +113,13 @@ public class FullRasterization {
                             double u = baryCoords[0] * uvCoords[0][0] + baryCoords[1] * uvCoords[1][0] + baryCoords[2] * uvCoords[2][0];
                             double v = baryCoords[0] * uvCoords[0][1] + baryCoords[1] * uvCoords[1][1] + baryCoords[2] * uvCoords[2][1];
 
+                            u = Math.max(0, Math.min(1, u));
+                            v = Math.max(0, Math.min(1, v));
+
+
                             // Нормализация текстурных координат
                             int texX = (int) (u * (textureWidth - 1));
-                            int texY = (int) (v * (textureHeight - 1));
+                            int texY = (int) ((1-v) * (textureHeight - 1));
 
                             // Получаем цвет пикселя из текстуры
                             Color textureColor = pixelReader.getColor(texX, texY);
