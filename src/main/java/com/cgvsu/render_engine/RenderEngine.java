@@ -1,6 +1,6 @@
 package com.cgvsu.render_engine;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
@@ -16,60 +16,80 @@ import com.cgvsu.model.Model;
 import static com.cgvsu.render_engine.GraphicConveyor.*;
 
 public class RenderEngine {
+
     public static void render(
             final GraphicsContext graphicsContext,
             final Camera camera,
             final Model mesh,
             final int width,
             final int height) throws Exception {
-        ArrayList<Polygon> polygons = mesh.getPolygons();
-        ArrayList<Vector3D> vertices = mesh.getVertices();
+
+        List<Polygon> polygons = mesh.getPolygons();
+        List<Vector3D> vertices = mesh.getVertices();
+
+        // Прерываем, если нет полигонов или вершин
         if (polygons.isEmpty() || vertices.isEmpty()) {
-            return; // Нечего отрисовывать
+            return;
         }
 
-        //Matrix4D modelMatrix = Matrix.id(4).toMatrix4D();
+        // Получаем необходимые матрицы
         Matrix4D viewMatrix = camera.getViewMatrix();
         Matrix4D projectionMatrix = camera.getProjectionMatrix();
-
         Matrix4D modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix, viewMatrix);
 
         Z_Buffer zBuffer = new Z_Buffer(width, height);
 
+        // Итерация по полигонам
         for (Polygon polygon : polygons) {
-            final int nVerticesInPolygon = polygon.getVertexIndices().size();
 
-            if (nVerticesInPolygon < 2) continue; // Пропуск недопустимого полигона
+            // Пропускаем полигоны с менее чем 2 вершинами
+            List<Integer> vertexIndices = polygon.getVertexIndices();
+            int nVerticesInPolygon = vertexIndices.size();
+            if (nVerticesInPolygon < 2) {
+                continue;
+            }
 
-            ArrayList<Vector2D> resultPoints = new ArrayList<>();
-            for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                Vector3D vertex = vertices.get(polygon.getVertexIndices().get(vertexInPolygonInd));
+            // Массив для хранения точек после преобразования
+            Vector2D[] resultPoints = new Vector2D[nVerticesInPolygon];
 
+            // Преобразуем вершины в 2D точки
+            for (int i = 0; i < nVerticesInPolygon; i++) {
+                Vector3D vertex = vertices.get(vertexIndices.get(i));
+
+                // Умножение матрицы на вершину
                 Vector4D result = BinaryOperations.product(modelViewProjectionMatrix, vertex.increaseDimension()).toVector4D();
                 double w = result.get(3);
 
-                if (w != 0) {
-                    result = result.scale(1 / w).toVector4D();
-                } else {
-                    continue; // Если w = 0, пропускаем эту вершину (вырождение)
+                // Пропускаем вырождение (w == 0)
+                if (w == 0) {
+                    continue;
                 }
+
+                // Нормализация и преобразование в 2D
+                result = result.scale(1 / w).toVector4D();
                 Vector2D resultPoint = vertexToPoint(new Vector3D(result.get(0), result.get(1), result.get(2)), width, height);
-                resultPoints.add(resultPoint);
+
+                // Запоминаем результат
+                resultPoints[i] = resultPoint;
             }
 
-            for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
+            // Отрисовка полигона (соединение вершин)
+            for (int i = 1; i < nVerticesInPolygon; i++) {
                 graphicsContext.strokeLine(
-                        resultPoints.get(vertexInPolygonInd - 1).get(0),
-                        resultPoints.get(vertexInPolygonInd - 1).get(1),
-                        resultPoints.get(vertexInPolygonInd).get(0),
-                        resultPoints.get(vertexInPolygonInd).get(1));
+                        resultPoints[i - 1].get(0),
+                        resultPoints[i - 1].get(1),
+                        resultPoints[i].get(0),
+                        resultPoints[i].get(1)
+                );
             }
 
+            // Закрытие полигона
             graphicsContext.strokeLine(
-                    resultPoints.get(nVerticesInPolygon - 1).get(0),
-                    resultPoints.get(nVerticesInPolygon - 1).get(1),
-                    resultPoints.getFirst().get(0),
-                    resultPoints.getFirst().get(1));
+                    resultPoints[nVerticesInPolygon - 1].get(0),
+                    resultPoints[nVerticesInPolygon - 1].get(1),
+                    resultPoints[0].get(0),
+                    resultPoints[0].get(1)
+            );
         }
     }
 }
