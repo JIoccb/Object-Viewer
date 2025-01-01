@@ -1,13 +1,18 @@
 package com.cgvsu.rasterization;
 
 
+import com.cgvsu.math.operations.BinaryOperations;
+import com.cgvsu.math.vectors.Vector;
 import com.cgvsu.math.vectors.Vector2D;
+import com.cgvsu.math.vectors.Vector3D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 public class FullRasterization {
     private static final double EPS = 1e-6;
@@ -16,11 +21,14 @@ public class FullRasterization {
             final int[] arrX,
             final int[] arrY,
             final double[] arrZ,
-            final Color color, // Используется для заливки или линий, если текстура не задана
-            final Image texture, // Текстура (может быть null, если текстура не используется)
-            final List<Vector2D> textureVert, // Текстурные координаты (используются, если текстура задана)
+            final Color color,
+            final Image texture,
+            final List<Vector2D> textureVert,
             final Z_Buffer zBuffer,
-            final boolean drawWireframe // Флаг: true для отрисовки полигональной сетки
+            final boolean drawWireframe,
+            final boolean useLighting, // Новый флаг
+            final List<Vector3D> normals, // Список нормалей
+            final Vector3D lightDirection // Направление источника света
     ) {
         final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
         final int width = zBuffer.getWidth();
@@ -31,6 +39,7 @@ public class FullRasterization {
         int textureHeight = 0;
         double[][] uvCoords = null;
 
+
         if (texture != null && textureVert != null) {
             pixelReader = texture.getPixelReader();
             textureWidth = (int) texture.getWidth();
@@ -40,25 +49,26 @@ public class FullRasterization {
             uvCoords[1] = textureVert.get(1).getData();
             uvCoords[2] = textureVert.get(2).getData();
             sort(arrX, arrY, arrZ, uvCoords);
-        }else {
+        } else {
             sort(arrX, arrY, arrZ);
         }
 
+        // Сортируем нормали так же, как вершины
+        List<Vector3D> sortedNormals = new ArrayList<>(normals);
+        sortNormals(sortedNormals);
+
         if (drawWireframe) {
-            // Отрисовка полигональной сетки
             drawWireframeLine(graphicsContext, arrX[0], arrY[0], arrZ[0], arrX[1], arrY[1], arrZ[1], color, zBuffer);
             drawWireframeLine(graphicsContext, arrX[1], arrY[1], arrZ[1], arrX[2], arrY[2], arrZ[2], color, zBuffer);
             drawWireframeLine(graphicsContext, arrX[2], arrY[2], arrZ[2], arrX[0], arrY[0], arrZ[0], color, zBuffer);
         } else {
-            // Верхняя часть треугольника
+            //верхняя часть треугольника
             for (int y = arrY[1]; y <= arrY[2]; y++) {
-                final int x1 = (arrY[2] - arrY[1] == 0) ? arrX[1] :
-                        (y - arrY[1]) * (arrX[2] - arrX[1]) / (arrY[2] - arrY[1]) + arrX[1];
-                final int x2 = (arrY[0] - arrY[2] == 0) ? arrX[2] :
-                        (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
+                final int x1 = calculateEdge(y, arrX[1], arrY[1], arrX[2], arrY[2]);
+                final int x2 = calculateEdge(y, arrX[0], arrY[0], arrX[2], arrY[2]);
 
                 for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-                    if (x < 0 || x >= width || y < 0 || y >= height) continue; // Проверка границ
+                    if (x < 0 || x >= width || y < 0 || y >= height) continue;
 
                     double[] baryCoords = calculateBarycentricCoordinates(x, y, arrX, arrY);
                     if (baryCoords == null) continue;
@@ -67,39 +77,43 @@ public class FullRasterization {
                     if (z < zBuffer.get(x, y) || Math.abs(z - zBuffer.get(x, y)) < EPS) {
                         zBuffer.set(x, y, z);
 
+                        Color finalColor = color;
+                        double intensity = 1.0; // Значение по умолчанию для освещения
+
+                        if (useLighting) {
+                            Vector3D interpolatedNormal = interpolateNormal(baryCoords, sortedNormals);
+                            intensity = Math.max(0, BinaryOperations.dot(interpolatedNormal, lightDirection.normalize()));
+                            //intensity = Math.max(0, interpolatedNormal.dot(lightDirection.normalize()));
+                            finalColor = color.deriveColor(0, 1, intensity, 1);
+                        }
+
                         if (texture != null && uvCoords != null) {
-                            // Если текстура задана, вычисляем текстурные координаты
                             double u = baryCoords[0] * uvCoords[0][0] + baryCoords[1] * uvCoords[1][0] + baryCoords[2] * uvCoords[2][0];
                             double v = baryCoords[0] * uvCoords[0][1] + baryCoords[1] * uvCoords[1][1] + baryCoords[2] * uvCoords[2][1];
-
                             u = Math.max(0, Math.min(1, u));
                             v = Math.max(0, Math.min(1, v));
 
-
-                            // Нормализация текстурных координат
                             int texX = (int) (u * (textureWidth - 1));
-                            int texY = (int) ((1-v) * (textureHeight - 1));
-
-                            // Получаем цвет пикселя из текстуры
+                            int texY = (int) ((1 - v) * (textureHeight - 1));
                             Color textureColor = pixelReader.getColor(texX, texY);
+
+                            if (useLighting) {
+                                textureColor = textureColor.deriveColor(0, 1, intensity, 1);
+                            }
                             pixelWriter.setColor(x, y, textureColor);
                         } else {
-                            // Если текстура не задана, используем сплошной цвет
-                            pixelWriter.setColor(x, y, color);
+                            pixelWriter.setColor(x, y, finalColor);
                         }
                     }
                 }
             }
-
             // Нижняя часть треугольника
-            for (int y = arrY[1]; y >= arrY[0]; y--) {
-                final int x1 = (arrY[1] - arrY[0] == 0) ? arrX[0] :
-                        (y - arrY[0]) * (arrX[1] - arrX[0]) / (arrY[1] - arrY[0]) + arrX[0];
-                final int x2 = (arrY[0] - arrY[2] == 0) ? arrX[2] :
-                        (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
+            for (int y = arrY[0]; y < arrY[1]; y++) {
+                final int x1 = calculateEdge(y, arrX[0], arrY[0], arrX[1], arrY[1]);
+                final int x2 = calculateEdge(y, arrX[0], arrY[0], arrX[2], arrY[2]);
 
                 for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-                    if (x < 0 || x >= width || y < 0 || y >= height) continue; // Проверка границ
+                    if (x < 0 || x >= width || y < 0 || y >= height) continue;
 
                     double[] baryCoords = calculateBarycentricCoordinates(x, y, arrX, arrY);
                     if (baryCoords == null) continue;
@@ -108,25 +122,31 @@ public class FullRasterization {
                     if (z < zBuffer.get(x, y) || Math.abs(z - zBuffer.get(x, y)) < EPS) {
                         zBuffer.set(x, y, z);
 
+                        Color finalColor = color;
+                        double intensity = 1.0; // Значение по умолчанию для освещения
+
+                        if (useLighting) {
+                            Vector3D interpolatedNormal = interpolateNormal(baryCoords, sortedNormals);
+                            intensity = Math.max(0, BinaryOperations.dot(interpolatedNormal, lightDirection.normalize()));
+                            finalColor = color.deriveColor(0, 1, intensity, 1);
+                        }
+
                         if (texture != null && uvCoords != null) {
-                            // Если текстура задана, вычисляем текстурные координаты
                             double u = baryCoords[0] * uvCoords[0][0] + baryCoords[1] * uvCoords[1][0] + baryCoords[2] * uvCoords[2][0];
                             double v = baryCoords[0] * uvCoords[0][1] + baryCoords[1] * uvCoords[1][1] + baryCoords[2] * uvCoords[2][1];
-
                             u = Math.max(0, Math.min(1, u));
                             v = Math.max(0, Math.min(1, v));
 
-
-                            // Нормализация текстурных координат
                             int texX = (int) (u * (textureWidth - 1));
-                            int texY = (int) ((1-v) * (textureHeight - 1));
-
-                            // Получаем цвет пикселя из текстуры
+                            int texY = (int) ((1 - v) * (textureHeight - 1));
                             Color textureColor = pixelReader.getColor(texX, texY);
+
+                            if (useLighting) {
+                                textureColor = textureColor.deriveColor(0, 1, intensity, 1);
+                            }
                             pixelWriter.setColor(x, y, textureColor);
                         } else {
-                            // Если текстура не задана, используем сплошной цвет
-                            pixelWriter.setColor(x, y, color);
+                            pixelWriter.setColor(x, y, finalColor);
                         }
                     }
                 }
@@ -134,9 +154,9 @@ public class FullRasterization {
         }
     }
 
-    /**
-     * Метод для отрисовки линии с использованием Z-буфера.
-     */
+        /**
+         * Метод для отрисовки линии с использованием Z-буфера.
+         */
     private static void drawWireframeLine(
             final GraphicsContext graphicsContext,
             final int x1, final int y1, final double z1,
@@ -179,6 +199,27 @@ public class FullRasterization {
     }
 
 
+    /**
+     * Вычисляет значение координаты X на ребре треугольника для заданной координаты Y.
+     *
+     * @param y     Координата Y, для которой вычисляется X.
+     * @param x1    Координата X первой вершины ребра.
+     * @param y1    Координата Y первой вершины ребра.
+     * @param x2    Координата X второй вершины ребра.
+     * @param y2    Координата Y второй вершины ребра.
+     * @return Значение X для заданного Y на ребре между точками (x1, y1) и (x2, y2).
+     */
+    private static int calculateEdge(int y, int x1, int y1, int x2, int y2) {
+        // Проверка на горизонтальное ребро
+        if (y1 == y2) {
+            return x1; // Или x2 — значение будет одинаковым
+        }
+
+        // Линейная интерполяция X для заданного Y
+        return x1 + (y - y1) * (x2 - x1) / (y2 - y1);
+    }
+
+
     private static void sort(int[] x, int[] y, double[] z, double[][] uv) {
         if (y[0] > y[1]) swap(x, y, z, uv, 0, 1);
         if (y[1] > y[2]) swap(x, y, z, uv, 1, 2);
@@ -188,6 +229,17 @@ public class FullRasterization {
         if (y[0] > y[1]) swap(x, y, z, null, 0, 1);
         if (y[1] > y[2]) swap(x, y, z, null, 1, 2);
         if (y[0] > y[1]) swap(x, y, z, null, 0, 1);
+    }
+    // Вспомогательный метод для сортировки нормалей
+    private static void sortNormals(List<Vector3D> normals) {
+        /*
+        if (normals.get(0).getY() > normals.get(1).getY()) Collections.swap(normals, 0, 1);
+        if (normals.get(1).getY() > normals.get(2).getY()) Collections.swap(normals, 1, 2);
+        if (normals.get(0).getY() > normals.get(1).getY()) Collections.swap(normals, 0, 1);
+         */
+        if (normals.get(0).get(1) > normals.get(1).get(1)) Collections.swap(normals, 0, 1);
+        if (normals.get(1).get(1) > normals.get(2).get(1)) Collections.swap(normals, 1, 2);
+        if (normals.get(0).get(1) > normals.get(1).get(1)) Collections.swap(normals, 0, 1);
     }
 
     private static void swap(int[] x, int[] y, double[] z, double[][] uv, int i, int j) {
@@ -221,6 +273,18 @@ public class FullRasterization {
 
         return (alpha >= 0 && beta >= 0 && gamma >= 0) ? new double[]{alpha, beta, gamma} : null;
     }
+
+    private static Vector3D interpolateNormal(double[] baryCoords, List<Vector3D> normals) {
+        double x = baryCoords[0] * normals.get(0).get(0) + baryCoords[1] * normals.get(1).get(0) + baryCoords[2] * normals.get(2).get(0);
+        double y = baryCoords[0] * normals.get(0).get(1) + baryCoords[1] * normals.get(1).get(1) + baryCoords[2] * normals.get(2).get(1);
+        double z = baryCoords[0] * normals.get(0).get(2) + baryCoords[1] * normals.get(1).get(2) + baryCoords[2] * normals.get(2).get(2);
+        return new Vector(new double[]{x,y,z}).normalize().toVector3D();
+
+    }
+
+
+
+
 
 
 

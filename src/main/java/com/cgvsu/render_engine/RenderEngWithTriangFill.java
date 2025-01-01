@@ -13,6 +13,7 @@ import com.cgvsu.rasterization.Z_Buffer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class RenderEngWithTriangFill {
         Image texture = mesh.getTexture();
 
         mesh.setTriangulatingPolygons(mesh.triangulateModel());
+        mesh.setNormals(mesh.calculateNormals());
 
         if (triangulatingPolygons.isEmpty() || mesh.getVertices().isEmpty()) {
             return; // Нечего отрисовывать
@@ -85,7 +87,8 @@ public class RenderEngWithTriangFill {
 
 
             }
-            FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.BLUE, texture, textureVertices, zBuffer, false);
+            FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.BLUE, texture, textureVertices, zBuffer,
+                    false, true, mesh.getNormals(),  new Vector3D(0, 0, 500));
             textureVertices.clear();
         }
     }
