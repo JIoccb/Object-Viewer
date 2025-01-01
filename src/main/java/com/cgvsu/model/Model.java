@@ -22,10 +22,6 @@ public class Model {
     private ArrayList<Polygon> triangulatingPolygons = new ArrayList<>();
     private ArrayList<Vector3D> normals;
 
-/*
-вызов методов для триангуляции и расчета нормалей не должен происходить в момент создания экземпляра модели
-это делается по необходимости в методах
- */
 
     public Model() throws Exception {
         triangulatingPolygons = triangulateModel();
