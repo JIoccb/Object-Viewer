@@ -1,6 +1,5 @@
 package com.cgvsu.rasterization;
 
-
 import com.cgvsu.math.vectors.Vector2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -9,8 +8,10 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
 import java.util.List;
+
 public class FullRasterization {
     private static final double EPS = 1e-6;
+
     public static void fillTriangle(
             final GraphicsContext graphicsContext,
             final int[] arrX,
@@ -26,6 +27,7 @@ public class FullRasterization {
         final int width = zBuffer.getWidth();
         final int height = zBuffer.getHeight();
 
+        // Проверка наличия текстуры
         PixelReader pixelReader = null;
         int textureWidth = 0;
         int textureHeight = 0;
@@ -36,11 +38,11 @@ public class FullRasterization {
             textureWidth = (int) texture.getWidth();
             textureHeight = (int) texture.getHeight();
             uvCoords = new double[3][2];
-            uvCoords[0] = textureVert.get(0).getData();
-            uvCoords[1] = textureVert.get(1).getData();
-            uvCoords[2] = textureVert.get(2).getData();
+            for (int i = 0; i < 3; i++) {
+                uvCoords[i] = textureVert.get(i).getData();
+            }
             sort(arrX, arrY, arrZ, uvCoords);
-        }else {
+        } else {
             sort(arrX, arrY, arrZ);
         }
 
@@ -50,15 +52,16 @@ public class FullRasterization {
             drawWireframeLine(graphicsContext, arrX[1], arrY[1], arrZ[1], arrX[2], arrY[2], arrZ[2], color, zBuffer);
             drawWireframeLine(graphicsContext, arrX[2], arrY[2], arrZ[2], arrX[0], arrY[0], arrZ[0], color, zBuffer);
         } else {
-            // Верхняя часть треугольника
+            // Отрисовка верхней части треугольника
             for (int y = arrY[1]; y <= arrY[2]; y++) {
                 final int x1 = (arrY[2] - arrY[1] == 0) ? arrX[1] :
                         (y - arrY[1]) * (arrX[2] - arrX[1]) / (arrY[2] - arrY[1]) + arrX[1];
                 final int x2 = (arrY[0] - arrY[2] == 0) ? arrX[2] :
                         (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
 
+                // Растеризация линии по X
                 for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-                    if (x < 0 || x >= width || y < 0 || y >= height) continue; // Проверка границ
+                    if (x < 0 || x >= width || y < 0 || y >= height) continue;
 
                     double[] baryCoords = calculateBarycentricCoordinates(x, y, arrX, arrY);
                     if (baryCoords == null) continue;
@@ -67,18 +70,17 @@ public class FullRasterization {
                     if (z < zBuffer.get(x, y) || Math.abs(z - zBuffer.get(x, y)) < EPS) {
                         zBuffer.set(x, y, z);
 
+                        // Если текстура задана, вычисляем текстурные координаты
                         if (texture != null && uvCoords != null) {
-                            // Если текстура задана, вычисляем текстурные координаты
                             double u = baryCoords[0] * uvCoords[0][0] + baryCoords[1] * uvCoords[1][0] + baryCoords[2] * uvCoords[2][0];
                             double v = baryCoords[0] * uvCoords[0][1] + baryCoords[1] * uvCoords[1][1] + baryCoords[2] * uvCoords[2][1];
 
                             u = Math.max(0, Math.min(1, u));
                             v = Math.max(0, Math.min(1, v));
 
-
                             // Нормализация текстурных координат
                             int texX = (int) (u * (textureWidth - 1));
-                            int texY = (int) ((1-v) * (textureHeight - 1));
+                            int texY = (int) ((1 - v) * (textureHeight - 1));
 
                             // Получаем цвет пикселя из текстуры
                             Color textureColor = pixelReader.getColor(texX, texY);
@@ -91,15 +93,16 @@ public class FullRasterization {
                 }
             }
 
-            // Нижняя часть треугольника
+            // Отрисовка нижней части треугольника
             for (int y = arrY[1]; y >= arrY[0]; y--) {
                 final int x1 = (arrY[1] - arrY[0] == 0) ? arrX[0] :
                         (y - arrY[0]) * (arrX[1] - arrX[0]) / (arrY[1] - arrY[0]) + arrX[0];
                 final int x2 = (arrY[0] - arrY[2] == 0) ? arrX[2] :
                         (y - arrY[2]) * (arrX[0] - arrX[2]) / (arrY[0] - arrY[2]) + arrX[2];
 
+                // Растеризация линии по X
                 for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
-                    if (x < 0 || x >= width || y < 0 || y >= height) continue; // Проверка границ
+                    if (x < 0 || x >= width || y < 0 || y >= height) continue;
 
                     double[] baryCoords = calculateBarycentricCoordinates(x, y, arrX, arrY);
                     if (baryCoords == null) continue;
@@ -108,18 +111,17 @@ public class FullRasterization {
                     if (z < zBuffer.get(x, y) || Math.abs(z - zBuffer.get(x, y)) < EPS) {
                         zBuffer.set(x, y, z);
 
+                        // Если текстура задана, вычисляем текстурные координаты
                         if (texture != null && uvCoords != null) {
-                            // Если текстура задана, вычисляем текстурные координаты
                             double u = baryCoords[0] * uvCoords[0][0] + baryCoords[1] * uvCoords[1][0] + baryCoords[2] * uvCoords[2][0];
                             double v = baryCoords[0] * uvCoords[0][1] + baryCoords[1] * uvCoords[1][1] + baryCoords[2] * uvCoords[2][1];
 
                             u = Math.max(0, Math.min(1, u));
                             v = Math.max(0, Math.min(1, v));
 
-
                             // Нормализация текстурных координат
                             int texX = (int) (u * (textureWidth - 1));
-                            int texY = (int) ((1-v) * (textureHeight - 1));
+                            int texY = (int) ((1 - v) * (textureHeight - 1));
 
                             // Получаем цвет пикселя из текстуры
                             Color textureColor = pixelReader.getColor(texX, texY);
@@ -134,9 +136,6 @@ public class FullRasterization {
         }
     }
 
-    /**
-     * Метод для отрисовки линии с использованием Z-буфера.
-     */
     private static void drawWireframeLine(
             final GraphicsContext graphicsContext,
             final int x1, final int y1, final double z1,
@@ -148,20 +147,28 @@ public class FullRasterization {
         final int width = zBuffer.getWidth();
         final int height = zBuffer.getHeight();
 
+        // Вычисление разности между x и y координатами
         int dx = Math.abs(x2 - x1), dy = Math.abs(y2 - y1);
         int sx = x1 < x2 ? 1 : -1, sy = y1 < y2 ? 1 : -1;
-        int err = dx - dy;
+        int err = dx - dy;  // Начальная ошибка
 
+        // Начальная глубина (z) и шаг глубины для каждого пикселя
         double z = z1;
         double zStep = (z2 - z1) / Math.max(dx, dy);
 
+        // Начальная точка линии
         int x = x1, y = y1;
+
+        // Алгоритм Брезенхема для отрисовки линии
         while (true) {
+            // Проверка, находится ли точка в пределах экрана и имеет ли она меньшую глубину
             if (x >= 0 && x < width && y >= 0 && y < height && z < zBuffer.get(x, y)) {
+                // Обновляем Z-буфер и рисуем пиксель
                 zBuffer.set(x, y, z);
                 pixelWriter.setColor(x, y, color);
             }
 
+            // Если достигли конечной точки линии, выходим из цикла
             if (x == x2 && y == y2) break;
 
             int e2 = 2 * err;
@@ -174,16 +181,18 @@ public class FullRasterization {
                 y += sy;
             }
 
+            // Обновляем глубину для следующего пикселя
             z += zStep;
         }
     }
 
-
+    // Метод для сортировки вершин
     private static void sort(int[] x, int[] y, double[] z, double[][] uv) {
         if (y[0] > y[1]) swap(x, y, z, uv, 0, 1);
         if (y[1] > y[2]) swap(x, y, z, uv, 1, 2);
         if (y[0] > y[1]) swap(x, y, z, uv, 0, 1);
     }
+
     private static void sort(int[] x, int[] y, double[] z) {
         if (y[0] > y[1]) swap(x, y, z, null, 0, 1);
         if (y[1] > y[2]) swap(x, y, z, null, 1, 2);
@@ -221,7 +230,4 @@ public class FullRasterization {
 
         return (alpha >= 0 && beta >= 0 && gamma >= 0) ? new double[]{alpha, beta, gamma} : null;
     }
-
-
-
 }
