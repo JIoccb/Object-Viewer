@@ -72,4 +72,20 @@ public class Camera {
     public Matrix4D getProjectionMatrix() {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
     }
+
+    public Vector3D getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vector3D position) {
+        this.position = position;
+    }
+
+    public Vector3D getTarget() {
+        return target;
+    }
+
+    public void setTarget(Vector3D target) {
+        this.target = target;
+    }
 }
