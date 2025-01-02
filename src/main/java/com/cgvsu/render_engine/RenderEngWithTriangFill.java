@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -34,6 +35,8 @@ public class RenderEngWithTriangFill {
         mesh.setTriangulatingPolygons(mesh.triangulateModel());
         mesh.setNormals(mesh.calculateNormals());
 
+        Vector3D cameraView = BinaryOperations.add(camera.getTarget(), camera.getPosition(), false).normalize().toVector3D();
+
         if (triangulatingPolygons.isEmpty() || mesh.getVertices().isEmpty()) {
             return; // Нечего отрисовывать
         }
@@ -46,11 +49,13 @@ public class RenderEngWithTriangFill {
                 BinaryOperations.product(viewMatrix, modelMatrix));
 
         Z_Buffer zBuffer = new Z_Buffer(width, height);
+
         int[] arrX = new int[3];
         int[] arrY = new int[3];
         double[] arrZ = new double[3];
-        List<Vector2D> textureVertices = new ArrayList<>();
 
+        List<Vector2D> textureVertices = new ArrayList<>();
+        List<Vector3D> normals = new ArrayList<>();
 
         final int nPolygons = triangulatingPolygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
@@ -65,6 +70,7 @@ public class RenderEngWithTriangFill {
 
                 //идем по точкам полигона
                 Vector3D vertex = mesh.getVertices().get(mesh.getTriangulatingPolygons().get(polygonInd).getVertexIndices().get(vertexInPolygonInd));
+                normals.add(mesh.getNormals().get(mesh.getTriangulatingPolygons().get(polygonInd).getVertexIndices().get(vertexInPolygonInd)));
                 Vector2D textVert = mesh.getTextureVertices().get(mesh.getTriangulatingPolygons().get(polygonInd).getTextureVertexIndices().get(vertexInPolygonInd));
 
 
@@ -87,8 +93,10 @@ public class RenderEngWithTriangFill {
 
 
             }
+            //new Vector3D(1000, 1000, 1000)
             FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.BLUE, texture, textureVertices, zBuffer,
-                    false, true, mesh.getNormals(),  new Vector3D(0, 0, 500));
+                    false, true, normals, cameraView);
+            normals.clear();
             textureVertices.clear();
         }
     }
