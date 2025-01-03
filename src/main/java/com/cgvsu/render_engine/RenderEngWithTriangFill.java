@@ -1,5 +1,6 @@
 package com.cgvsu.render_engine;
 
+import java.util.Vector;
 import com.cgvsu.math.matrices.Matrix;
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
+import static com.cgvsu.render_engine.GraphicConveyor.multiplyMatrix4ByVector3;
 import static com.cgvsu.render_engine.GraphicConveyor.vertexToPoint;
 
 public class RenderEngWithTriangFill {
@@ -45,8 +47,8 @@ public class RenderEngWithTriangFill {
         Matrix4D viewMatrix = camera.getViewMatrix();
         Matrix4D projectionMatrix = camera.getProjectionMatrix();
 
-        Matrix4D modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix,
-                BinaryOperations.product(viewMatrix, modelMatrix));
+        Matrix4D modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix,  BinaryOperations.product(viewMatrix, modelMatrix));
+        //Matrix4D modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix, viewMatrix);
 
         Z_Buffer zBuffer = new Z_Buffer(width, height);
 
@@ -73,8 +75,9 @@ public class RenderEngWithTriangFill {
                 normals.add(mesh.getNormals().get(mesh.getTriangulatingPolygons().get(polygonInd).getVertexIndices().get(vertexInPolygonInd)));
                 Vector2D textVert = mesh.getTextureVertices().get(mesh.getTriangulatingPolygons().get(polygonInd).getTextureVertexIndices().get(vertexInPolygonInd));
 
-
-                arrZ[vertexInPolygonInd] = vertex.get(2);
+                Vector3D vertexVecmath = new Vector3D(vertex.get(0), vertex.get(1), vertex.get(2));
+                vertexVecmath =  multiplyMatrix4ByVector3(viewMatrix, vertexVecmath);
+                arrZ[vertexInPolygonInd] = vertexVecmath.get(2);
 
                 Vector4D result = BinaryOperations.product(modelViewProjectionMatrix, vertex.increaseDimension()).toVector4D();
                 double w = result.get(3);
@@ -94,8 +97,9 @@ public class RenderEngWithTriangFill {
 
             }
             //new Vector3D(1000, 1000, 1000)
+            final Vector3D l = new Vector3D(0, 1, 0);
             FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.BLUE, texture, textureVertices, zBuffer,
-                    true, true, normals, cameraView);
+                    true, true, normals, l);
             normals.clear();
             textureVertices.clear();
         }
