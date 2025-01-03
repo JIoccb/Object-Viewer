@@ -3,6 +3,7 @@ package com.cgvsu.rasterization;
 import java.util.Arrays;
 
 public class Z_Buffer {
+
     private final double[][] zBuffer;
 
     public Z_Buffer(int width, int height) {

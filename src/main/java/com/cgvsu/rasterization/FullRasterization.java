@@ -1,6 +1,5 @@
 package com.cgvsu.rasterization;
 
-
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
@@ -21,9 +20,11 @@ public class FullRasterization {
             final int[] arrX,
             final int[] arrY,
             final double[] arrZ,
+
             final Color baseColor,
             final Image texture,
             final List<Vector2D> textureVert,
+
             final Z_Buffer zBuffer,
             final boolean drawWireframe,
             final boolean useLighting, // Использование освещения
@@ -36,6 +37,7 @@ public class FullRasterization {
         final int width = zBuffer.getWidth();
         final int height = zBuffer.getHeight();
 
+        // Проверка наличия текстуры
         PixelReader pixelReader = null;
         int textureWidth = 0;
         int textureHeight = 0;
@@ -54,8 +56,6 @@ public class FullRasterization {
                 /*if (o1.getY() == o2.getY()){
                     return o1.getX() <= o2.getX() ? -1 : 1;
                 }*/
-
-
                 return o1.getY() <= o2.getY() ? -1 : 1;
             }
         });
@@ -66,6 +66,7 @@ public class FullRasterization {
             textureWidth = (int) texture.getWidth();
             textureHeight = (int) texture.getHeight();
             uvCoords = new double[3][2];
+
             uvCoords[0] = vertexList.get(0).getTextureVert().getData();
             uvCoords[1] = vertexList.get(1).getTextureVert().getData();
             uvCoords[2] = vertexList.get(2).getTextureVert().getData();
@@ -73,6 +74,7 @@ public class FullRasterization {
 
         // Отрисовка каркаса (если включено)
         if (drawWireframe) {
+
             drawLine(graphicsContext, vertexList.get(0).getX(), vertexList.get(0).getY(), vertexList.get(0).getZ(), vertexList.get(1).getX(), vertexList.get(1).getY(), vertexList.get(1).getZ(), zBuffer);
             drawLine(graphicsContext, vertexList.get(1).getX(), vertexList.get(1).getY(), vertexList.get(1).getZ(), vertexList.get(2).getX(), vertexList.get(2).getY(), vertexList.get(2).getZ(), zBuffer);
             drawLine(graphicsContext, vertexList.get(2).getX(), vertexList.get(2).getY(), vertexList.get(2).getZ(), vertexList.get(0).getX(), vertexList.get(0).getY(), vertexList.get(0).getZ(), zBuffer);
@@ -85,11 +87,13 @@ public class FullRasterization {
                     : calculateEdge(y, vertexList.get(1).getX(), vertexList.get(1).getY(), vertexList.get(2).getX(), vertexList.get(2).getY());
             int x2 = calculateEdge(y, vertexList.get(0).getX(), vertexList.get(0).getY(), vertexList.get(2).getX(), vertexList.get(2).getY());
 
+
             for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
                 if (x < 0 || x >= width || y < 0 || y >= height) continue;
 
                 double[] baryCoords = calculateBarycentricCoordinates(x, y, vertexList);
                 if (baryCoords == null) continue;
+
 
                 double z = -(baryCoords[0] * vertexList.get(0).getZ() + baryCoords[1] * vertexList.get(1).getZ() + baryCoords[2] * vertexList.get(2).getZ());
 
@@ -110,6 +114,7 @@ public class FullRasterization {
 
                     } else {
                         finalColor = baseColor;
+
 
                     }
                     // Интерполяция нормалей
@@ -137,6 +142,7 @@ public class FullRasterization {
                     //Color finalColor = baseColor.deriveColor(0, 1, lightingFactor, 1);
                     pixelWriter.setColor(x, y, finalColor);
 
+
                 }
             }
         }
@@ -146,6 +152,8 @@ public class FullRasterization {
     /**
      * Метод для отрисовки линии с использованием Z-буфера.
      */
+
+
     private static void drawWireframeLine(
             final GraphicsContext graphicsContext,
             final int x1, final int y1, final double z1,
@@ -157,20 +165,28 @@ public class FullRasterization {
         final int height = zBuffer.getHeight();
         final Color color = Color.BLACK;
 
+        // Вычисление разности между x и y координатами
         int dx = Math.abs(x2 - x1), dy = Math.abs(y2 - y1);
         int sx = x1 < x2 ? 1 : -1, sy = y1 < y2 ? 1 : -1;
-        int err = dx - dy;
+        int err = dx - dy;  // Начальная ошибка
 
+        // Начальная глубина (z) и шаг глубины для каждого пикселя
         double z = z1;
         double zStep = (z2 - z1) / Math.max(dx, dy);
 
+        // Начальная точка линии
         int x = x1, y = y1;
+
+        // Алгоритм Брезенхема для отрисовки линии
         while (true) {
+
             if (x >= 0 && x < width && y >= 0 && y < height && -z - 0.5 < zBuffer.get(x, y)) {
                 zBuffer.set(x, y, z - 0.5);
+
                 pixelWriter.setColor(x, y, color);
             }
 
+            // Если достигли конечной точки линии, выходим из цикла
             if (x == x2 && y == y2) break;
 
             int e2 = 2 * err;
@@ -183,9 +199,11 @@ public class FullRasterization {
                 y += sy;
             }
 
+            // Обновляем глубину для следующего пикселя
             z += zStep;
         }
     }
+
 
     public static void drawLine(GraphicsContext graphicsContext,
                                 int x0, int y0, double z0,
@@ -300,6 +318,9 @@ public class FullRasterization {
         return (alpha >= 0 && beta >= 0 && gamma >= 0) ? new double[]{alpha, beta, gamma} : null;
     }
 
+
+    // Метод для сортировки вершин
+
     private static void sort(int[] x, int[] y, double[] z, double[][] uv) {
         if (y[0] > y[1]) swap(x, y, z, uv, 0, 1);
         if (y[0] > y[2]) swap(x, y, z, uv, 0, 2);
@@ -348,6 +369,5 @@ public class FullRasterization {
             uv[j] = tempUV;
         }
     }
-
 
 }

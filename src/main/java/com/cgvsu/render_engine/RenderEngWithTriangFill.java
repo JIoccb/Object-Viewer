@@ -1,7 +1,9 @@
 package com.cgvsu.render_engine;
 
+
 import java.util.Vector;
 import com.cgvsu.math.matrices.Matrix;
+
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
@@ -15,15 +17,19 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
+import java.util.ArrayList;
+
 import static com.cgvsu.render_engine.GraphicConveyor.multiplyMatrix4ByVector3;
 import static com.cgvsu.render_engine.GraphicConveyor.vertexToPoint;
 
 public class RenderEngWithTriangFill {
+
     public static void render(
             final GraphicsContext graphicsContext,
             final Camera camera,
