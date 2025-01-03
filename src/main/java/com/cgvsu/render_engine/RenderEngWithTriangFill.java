@@ -95,7 +95,7 @@ public class RenderEngWithTriangFill {
             }
             //new Vector3D(1000, 1000, 1000)
             FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.BLUE, texture, textureVertices, zBuffer,
-                    false, true, normals, cameraView);
+                    true, true, normals, cameraView);
             normals.clear();
             textureVertices.clear();
         }

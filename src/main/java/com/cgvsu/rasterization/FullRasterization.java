@@ -49,6 +49,11 @@ public class FullRasterization {
         vertexList.sort(new Comparator<VertexObject>() {
             @Override
             public int compare(VertexObject o1, VertexObject o2) {
+                /*if (o1.getY() == o2.getY()){
+                    return o1.getX() <= o2.getX() ? -1 : 1;
+                }
+
+                 */
                 return o1.getY() <= o2.getY() ? -1 : 1;
             }
         });
@@ -59,36 +64,51 @@ public class FullRasterization {
             textureWidth = (int) texture.getWidth();
             textureHeight = (int) texture.getHeight();
             uvCoords = new double[3][2];
-            uvCoords[0] = textureVert.get(0).getData();
-            uvCoords[1] = textureVert.get(1).getData();
-            uvCoords[2] = textureVert.get(2).getData();
-            sort(arrX, arrY, arrZ, uvCoords);
-        } else {
-            sort(arrX, arrY, arrZ);
+
+            uvCoords[0] = vertexList.get(0).getTextureVert().getData();
+            uvCoords[1] = vertexList.get(1).getTextureVert().getData();
+            uvCoords[2] = vertexList.get(2).getTextureVert().getData();
+            // sort(arrX, arrY, arrZ, uvCoords);
+        }
+        // Сортировка нормалей в соответствии с вершинами
+        // List<Vector3D> sortedNormals = new ArrayList<>(normals);
+        // sortNormals(sortedNormals);
+
+        if (drawWireframe) {
+            /*
+            drawWireframeLine(graphicsContext, arrX[0], arrY[0], arrZ[0], arrX[1], arrY[1], arrZ[1], baseColor, zBuffer);
+            drawWireframeLine(graphicsContext, arrX[1], arrY[1], arrZ[1], arrX[2], arrY[2], arrZ[2], baseColor, zBuffer);
+            drawWireframeLine(graphicsContext, arrX[2], arrY[2], arrZ[2], arrX[0], arrY[0], arrZ[0], baseColor, zBuffer);
+
+             */
+            drawWireframeLine(graphicsContext, vertexList.get(0).getX(), vertexList.get(0).getY(), vertexList.get(0).getZ(), vertexList.get(1).getX(), vertexList.get(1).getY(), vertexList.get(1).getZ(), zBuffer);
+            drawWireframeLine(graphicsContext, vertexList.get(1).getX(), vertexList.get(1).getY(), vertexList.get(1).getZ(), vertexList.get(2).getX(), vertexList.get(2).getY(), vertexList.get(2).getZ(), zBuffer);
+            drawWireframeLine(graphicsContext, vertexList.get(2).getX(), vertexList.get(2).getY(), vertexList.get(2).getZ(), vertexList.get(0).getX(), vertexList.get(0).getY(), vertexList.get(0).getZ(), zBuffer);
         }
 
-
-        // Сортировка нормалей в соответствии с вершинами
-        List<Vector3D> sortedNormals = new ArrayList<>(normals);
-        sortNormals(sortedNormals);
-
         //отрисовка треугольника
-        for (int y = arrY[0]; y <= arrY[2]; y++) {
-            int x1 = (y <= arrY[1]) ? calculateEdge(y, arrX[0], arrY[0], arrX[1], arrY[1]) : calculateEdge(y, arrX[1], arrY[1], arrX[2], arrY[2]);
-            int x2 = calculateEdge(y, arrX[0], arrY[0], arrX[2], arrY[2]);
+        for (int y = vertexList.get(0).getY(); y <= vertexList.get(2).getY(); y++) {
+            int x1 = (y <= vertexList.get(1).getY()) ? calculateEdge(y, vertexList.get(0).getX(), vertexList.get(0).getY(), vertexList.get(1).getX(), vertexList.get(1).getY()) :
+                    calculateEdge(y, vertexList.get(1).getX(), vertexList.get(1).getY(), vertexList.get(2).getX(), vertexList.get(2).getY());
+            int x2 = calculateEdge(y, vertexList.get(0).getX(), vertexList.get(0).getY(), vertexList.get(2).getX(), vertexList.get(2).getY());
 
             for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
                 if (x < 0 || x >= width || y < 0 || y >= height) continue;
 
-                double[] baryCoords = calculateBarycentricCoordinates(x, y, arrX, arrY);
+                //double[] baryCoords1 = calculateBarycentricCoordinates(x, y, arrX, arrY);
+                double[] baryCoords = calculateBarycentricCoordinates(x, y, vertexList);
                 if (baryCoords == null) continue;
 
-                double z = baryCoords[0] * arrZ[0] + baryCoords[1] * arrZ[1] + baryCoords[2] * arrZ[2];
-                if (z - zBuffer.get(x, y) <= 0 || Math.abs(z - zBuffer.get(x, y)) < EPS) {
+                double z = baryCoords[0] * vertexList.get(0).getZ() + baryCoords[1] * vertexList.get(1).getZ() + baryCoords[2] * vertexList.get(2).getZ();
+
+               /* if (z - zBuffer.get(x, y) <= 0 || Math.abs(z - zBuffer.get(x, y)) < EPS) {
+                    zBuffer.set(x, y, z);*/
+                if (z < zBuffer.get(x, y) || Math.abs(z - zBuffer.get(x, y)) < EPS) {
                     zBuffer.set(x, y, z);
 
                     // Интерполяция нормалей
-                    Vector3D interpolatedNormal = interpolateNormal(baryCoords, sortedNormals);
+                    //Vector3D interpolatedNormal1 = interpolateNormal(baryCoords, sortedNormals);
+                    Vector3D interpolatedNormal = interpolateNormal(baryCoords, vertexList);
 
                     // Вычисление коэффициента освещения, если освещение включено
                     double lightingFactor = 1.0; // По умолчанию освещение отключено
@@ -123,14 +143,9 @@ public class FullRasterization {
                 }
             }
         }
-        if (drawWireframe) {
-            drawWireframeLine(graphicsContext, arrX[0], arrY[0], arrZ[0], arrX[1], arrY[1], arrZ[1], baseColor, zBuffer);
-            drawWireframeLine(graphicsContext, arrX[1], arrY[1], arrZ[1], arrX[2], arrY[2], arrZ[2], baseColor, zBuffer);
-            drawWireframeLine(graphicsContext, arrX[2], arrY[2], arrZ[2], arrX[0], arrY[0], arrZ[0], baseColor, zBuffer);
-        }
+
 
     }
-
 
     /**
      * Метод для отрисовки линии с использованием Z-буфера.
@@ -139,13 +154,12 @@ public class FullRasterization {
             final GraphicsContext graphicsContext,
             final int x1, final int y1, final double z1,
             final int x2, final int y2, final double z2,
-            Color color,
             final Z_Buffer zBuffer
     ) {
         final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
         final int width = zBuffer.getWidth();
         final int height = zBuffer.getHeight();
-        color = Color.BLACK;
+        final Color color = Color.BLACK;
 
         int dx = Math.abs(x2 - x1), dy = Math.abs(y2 - y1);
         int sx = x1 < x2 ? 1 : -1, sy = y1 < y2 ? 1 : -1;
@@ -198,6 +212,42 @@ public class FullRasterization {
         return x1 + (y - y1) * (x2 - x1) / (y2 - y1);
     }
 
+    private static double[] calculateBarycentricCoordinates(int x, int y, List<VertexObject> vertexList) {
+        double denominator = (vertexList.get(1).getY() - vertexList.get(2).getY()) * (vertexList.get(0).getX() - vertexList.get(2).getX()) +
+                (vertexList.get(2).getX() - vertexList.get(1).getX()) * (vertexList.get(0).getY() - vertexList.get(2).getY());
+        if (denominator == 0) return null;
+
+        double alpha = ((vertexList.get(1).getY() - vertexList.get(2).getY()) * (x - vertexList.get(2).getX()) +
+                (vertexList.get(2).getX() - vertexList.get(1).getX()) * (y - vertexList.get(2).getY())) / denominator;
+        double beta = ((vertexList.get(2).getY() - vertexList.get(0).getY()) * (x - vertexList.get(2).getX()) +
+                (vertexList.get(0).getX() - vertexList.get(2).getX()) * (y - vertexList.get(2).getY())) / denominator;
+        double gamma = 1 - alpha - beta;
+
+        return (alpha >= 0 && beta >= 0 && gamma >= 0) ? new double[]{alpha, beta, gamma} : null;
+    }
+
+    // Интерполяция нормалей
+    private static Vector3D interpolateNormal(double[] baryCoords, List<VertexObject> vertexList) {
+        double x = baryCoords[0] * vertexList.get(0).getNormal().get(0) + baryCoords[1] * vertexList.get(1).getNormal().get(0) + baryCoords[2] * vertexList.get(2).getNormal().get(0);
+        double y = baryCoords[0] * vertexList.get(0).getNormal().get(1) + baryCoords[1] * vertexList.get(1).getNormal().get(1) + baryCoords[2] * vertexList.get(2).getNormal().get(1);
+        double z = baryCoords[0] * vertexList.get(0).getNormal().get(2) + baryCoords[1] * vertexList.get(1).getNormal().get(2) + baryCoords[2] * vertexList.get(2).getNormal().get(2);
+        return new Vector3D(new double[]{x, y, z}).normalize().toVector3D();
+    }
+
+
+    private static double[] calculateBarycentricCoordinates1(int x, int y, int[] xPoints, int[] yPoints) {
+        double denominator = (yPoints[1] - yPoints[2]) * (xPoints[0] - xPoints[2]) +
+                (xPoints[2] - xPoints[1]) * (yPoints[0] - yPoints[2]);
+        if (denominator == 0) return null;
+
+        double alpha = ((yPoints[1] - yPoints[2]) * (x - xPoints[2]) +
+                (xPoints[2] - xPoints[1]) * (y - yPoints[2])) / denominator;
+        double beta = ((yPoints[2] - yPoints[0]) * (x - xPoints[2]) +
+                (xPoints[0] - xPoints[2]) * (y - yPoints[2])) / denominator;
+        double gamma = 1 - alpha - beta;
+
+        return (alpha >= 0 && beta >= 0 && gamma >= 0) ? new double[]{alpha, beta, gamma} : null;
+    }
 
     private static void sort(int[] x, int[] y, double[] z, double[][] uv) {
         if (y[0] > y[1]) swap(x, y, z, uv, 0, 1);
@@ -246,31 +296,6 @@ public class FullRasterization {
             uv[i] = uv[j];
             uv[j] = tempUV;
         }
-    }
-
-    private static double[] calculateBarycentricCoordinates(int x, int y, int[] xPoints, int[] yPoints) {
-        double denominator = (yPoints[1] - yPoints[2]) * (xPoints[0] - xPoints[2]) +
-                (xPoints[2] - xPoints[1]) * (yPoints[0] - yPoints[2]);
-        if (denominator == 0) return null;
-
-        double alpha = ((yPoints[1] - yPoints[2]) * (x - xPoints[2]) +
-                (xPoints[2] - xPoints[1]) * (y - yPoints[2])) / denominator;
-        double beta = ((yPoints[2] - yPoints[0]) * (x - xPoints[2]) +
-                (xPoints[0] - xPoints[2]) * (y - yPoints[2])) / denominator;
-        double gamma = 1 - alpha - beta;
-
-        return (alpha >= 0 && beta >= 0 && gamma >= 0) ? new double[]{alpha, beta, gamma} : null;
-    }
-
-
-    // Интерполяция нормалей
-    private static Vector3D interpolateNormal(double[] baryCoords, List<Vector3D> normals) {
-        double x = baryCoords[0] * normals.get(0).get(0) + baryCoords[1] * normals.get(1).get(0) + baryCoords[2] * normals.get(2).get(0);
-        double y = baryCoords[0] * normals.get(0).get(1) + baryCoords[1] * normals.get(1).get(1) + baryCoords[2] * normals.get(2).get(1);
-        double z = baryCoords[0] * normals.get(0).get(2) + baryCoords[1] * normals.get(1).get(2) + baryCoords[2] * normals.get(2).get(2);
-        return new Vector3D(new double[]{x, y, z});//.normalize().toVector3D();
-
-
     }
 
 
