@@ -30,7 +30,7 @@ public class FullRasterization {
             final List<Vector3D> normals, // Список нормалей
             final Vector3D lightDirection // Направление источника света
     ) {
-        final double k = 0.4; // Коэффициент освещения
+        //final double k = 0.4; // Коэффициент освещения
 
         final PixelWriter pixelWriter = graphicsContext.getPixelWriter();
         final int width = zBuffer.getWidth();
@@ -96,20 +96,7 @@ public class FullRasterization {
                 // Проверка и обновление Z-буфера
                 if (z < zBuffer.get(x, y)) {
                     zBuffer.set(x, y, z);
-
-                    // Интерполяция нормалей
-                    Vector3D interpolatedNormal = interpolateNormal(baryCoords, vertexList);
-
-                    // Вычисление освещения
-                    double lightingFactor = 1.0;
-                    if (useLighting) {
-                        double l = -(Math.max(0, -BinaryOperations.dot(interpolatedNormal, lightDirection.normalize())));
-                        lightingFactor = (1 - k) + k * l;
-                    }
-
-                    // Применение цвета с учетом освещения
-                    Color finalColor = baseColor.deriveColor(0, 1, lightingFactor, 1);
-
+                    Color finalColor;
                     // Работа с текстурой
                     if (texture != null && uvCoords != null) {
                         double u = baryCoords[0] * uvCoords[0][0] + baryCoords[1] * uvCoords[1][0] + baryCoords[2] * uvCoords[2][0];
@@ -119,15 +106,37 @@ public class FullRasterization {
 
                         int texX = (int) (u * (textureWidth - 1));
                         int texY = (int) ((1 - v) * (textureHeight - 1));
-                        Color textureColor = pixelReader.getColor(texX, texY);
+                        finalColor = pixelReader.getColor(texX, texY);
 
-                        if (useLighting) {
-                            textureColor = textureColor.deriveColor(0, 1, lightingFactor, 1);
-                        }
-                        pixelWriter.setColor(x, y, textureColor);
                     } else {
-                        pixelWriter.setColor(x, y, finalColor);
+                        finalColor = baseColor;
+
                     }
+                    // Интерполяция нормалей
+                    // Vector3D interpolatedNormal = interpolateNormal(baryCoords, vertexList);
+
+                    // Вычисление освещения
+                    if (useLighting) {
+
+                        Vector3D currentN = new Vector3D(baryCoords[0] * vertexList.get(0).getNormal().get(0) + baryCoords[1] * vertexList.get(1).getNormal().get(0) + baryCoords[2] * vertexList.get(2).getNormal().get(0),
+                                baryCoords[0] * vertexList.get(0).getNormal().get(1) + baryCoords[1] * vertexList.get(1).getNormal().get(1) + baryCoords[2] * vertexList.get(2).getNormal().get(1),
+                                baryCoords[0] * vertexList.get(0).getNormal().get(2) + baryCoords[1] * vertexList.get(1).getNormal().get(2) + baryCoords[2] * vertexList.get(2).getNormal().get(2));
+                        double l = (currentN.get(0) * lightDirection.get(0) + currentN.get(1) * lightDirection.get(1) + currentN.get(2) * lightDirection.get(2));
+                        double k = 0.7F;
+                        if (l > 0) {
+                            if (l > 1) {
+                                l = 1;
+                            }
+                            finalColor = new Color(finalColor.getRed() * (1 - k) + finalColor.getRed() * k * l, finalColor.getGreen() * (1 - k) + finalColor.getGreen() * k * l, finalColor.getBlue() * (1 - k) + finalColor.getBlue() * k * l, 1);
+                        } else {
+                            finalColor = new Color(finalColor.getRed() * (1 - k), finalColor.getGreen() * (1 - k), finalColor.getBlue() * (1 - k), 1);
+                        }
+                    }
+
+                    // Применение цвета с учетом освещения
+                    //Color finalColor = baseColor.deriveColor(0, 1, lightingFactor, 1);
+                    pixelWriter.setColor(x, y, finalColor);
+
                 }
             }
         }
@@ -177,6 +186,7 @@ public class FullRasterization {
             z += zStep;
         }
     }
+
     public static void drawLine(GraphicsContext graphicsContext,
                                 int x0, int y0, double z0,
                                 int x1, int y1, double z1,
@@ -200,9 +210,9 @@ public class FullRasterization {
                 alpha *= denominator;
                 beta *= denominator;
                 double z = -(beta * z0 + alpha * z1);
-                if (zBuffer.get(x0,y0) + 0.03 > z) {
+                if (zBuffer.get(x0, y0) + 0.03 > z) {
                     pixelWriter.setColor(x0, y0, Color.BLACK);
-                    zBuffer.set(x0,y0, z - 0.03);
+                    zBuffer.set(x0, y0, z - 0.03);
                 }
             }
 
@@ -248,21 +258,21 @@ public class FullRasterization {
         double alpha;
         double beta;
         double gamma;
-        if (denominator  == 0){
-             alpha = ((vertexList.get(1).getY() - vertexList.get(2).getY()) * (x - vertexList.get(2).getX()) +
+        if (denominator == 0) {
+            alpha = ((vertexList.get(1).getY() - vertexList.get(2).getY()) * (x - vertexList.get(2).getX()) +
                     (vertexList.get(2).getX() - vertexList.get(1).getX()) * (y - vertexList.get(2).getY()));
-             beta = ((vertexList.get(2).getY() - vertexList.get(0).getY()) * (x - vertexList.get(2).getX()) +
+            beta = ((vertexList.get(2).getY() - vertexList.get(0).getY()) * (x - vertexList.get(2).getX()) +
                     (vertexList.get(0).getX() - vertexList.get(2).getX()) * (y - vertexList.get(2).getY()));
 
-        }else {
-             alpha = ((vertexList.get(1).getY() - vertexList.get(2).getY()) * (x - vertexList.get(2).getX()) +
+        } else {
+            alpha = ((vertexList.get(1).getY() - vertexList.get(2).getY()) * (x - vertexList.get(2).getX()) +
                     (vertexList.get(2).getX() - vertexList.get(1).getX()) * (y - vertexList.get(2).getY())) / denominator;
-             beta = ((vertexList.get(2).getY() - vertexList.get(0).getY()) * (x - vertexList.get(2).getX()) +
+            beta = ((vertexList.get(2).getY() - vertexList.get(0).getY()) * (x - vertexList.get(2).getX()) +
                     (vertexList.get(0).getX() - vertexList.get(2).getX()) * (y - vertexList.get(2).getY())) / denominator;
         }
 
 
-         gamma = 1 - alpha - beta;
+        gamma = 1 - alpha - beta;
 
         return (alpha >= 0 && beta >= 0 && gamma >= 0) ? new double[]{alpha, beta, gamma} : null;
     }
