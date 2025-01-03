@@ -1,6 +1,6 @@
 package com.cgvsu.render_engine;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
@@ -24,8 +24,8 @@ public class RenderEngine {
             final int width,
             final int height) throws Exception {
 
-        List<Polygon> polygons = mesh.getPolygons();
-        List<Vector3D> vertices = mesh.getVertices();
+        ArrayList<Polygon> polygons = mesh.getPolygons();
+        ArrayList<Vector3D> vertices = mesh.getVertices();
 
         // Прерываем, если нет полигонов или вершин
         if (polygons.isEmpty() || vertices.isEmpty()) {
@@ -43,7 +43,7 @@ public class RenderEngine {
         for (Polygon polygon : polygons) {
 
             // Пропускаем полигоны с менее чем 2 вершинами
-            List<Integer> vertexIndices = polygon.getVertexIndices();
+            ArrayList<Integer> vertexIndices = polygon.getVertexIndices();
             int nVerticesInPolygon = vertexIndices.size();
             if (nVerticesInPolygon < 2) {
                 continue;
