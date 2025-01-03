@@ -2,6 +2,7 @@ package com.cgvsu.render_engine;
 
 import java.util.ArrayList;
 
+import com.cgvsu.math.matrices.Matrix;
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
@@ -32,7 +33,8 @@ public class RenderEngine {
             return;
         }
 
-        // Получаем необходимые матрицы
+        Matrix4D modelMatrix = Matrix.id(4).toMatrix4D();
+
         Matrix4D viewMatrix = camera.getViewMatrix();
         Matrix4D projectionMatrix = camera.getProjectionMatrix();
         Matrix4D modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix, viewMatrix);

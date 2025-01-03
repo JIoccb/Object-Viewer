@@ -13,6 +13,7 @@ public class Z_Buffer {
             // заполнения буфера одинаковыми большими значениями
             Arrays.fill(zBuffer[i], Double.MAX_VALUE);
         }
+
     }
 
     public void set(int x, int y, double z) {

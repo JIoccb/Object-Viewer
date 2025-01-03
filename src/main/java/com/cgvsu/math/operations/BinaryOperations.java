@@ -332,4 +332,8 @@ public class BinaryOperations {
         res.set(2, x.get(0) * y.get(1) - x.get(1) * y.get(0));
         return res;
     }
+
+
+
+
 }

@@ -21,11 +21,8 @@ public class Model {
     private final ArrayList<Polygon> polygons = new ArrayList<>();
     private ArrayList<Polygon> triangulatingPolygons = new ArrayList<>();
     private ArrayList<Vector3D> normals;
+    private ArrayList<Vector3D> polygonNormals;
 
-/*
-вызов методов для триангуляции и расчета нормалей не должен происходить в момент создания экземпляра модели
-это делается по необходимости в методах
- */
 
     public Model() throws Exception {
         triangulatingPolygons = triangulateModel();
@@ -75,6 +72,7 @@ public class Model {
         for (Polygon p : polygons) { //нормали полигонов получатся в том порядке, в каком и идут сами полигоны
             temporaryNormals.add(calcNormalOfPolygon(p));
         }
+        setPolygonNormals(temporaryNormals);
 
         // ключ - индекс вершины, значение - список нормалей полигонов
 
@@ -152,6 +150,14 @@ public class Model {
             res.vertices.set(i, transformedVertex);
         }
         return res;
+    }
+
+    public ArrayList<Vector3D> getPolygonNormals() {
+        return polygonNormals;
+    }
+
+    public void setPolygonNormals(ArrayList<Vector3D> polygonNormals) {
+        this.polygonNormals = polygonNormals;
     }
 
     public ArrayList<Polygon> getPolygons() {
