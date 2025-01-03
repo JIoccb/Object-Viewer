@@ -7,7 +7,7 @@ import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.paint.Color;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class FullRasterization {
     private static final double EPS = 1e-6;
@@ -19,7 +19,7 @@ public class FullRasterization {
             final double[] arrZ,
             final Color color, // Используется для заливки или линий, если текстура не задана
             final Image texture, // Текстура (может быть null, если текстура не используется)
-            final List<Vector2D> textureVert, // Текстурные координаты (используются, если текстура задана)
+            final ArrayList<Vector2D> textureVert, // Текстурные координаты (используются, если текстура задана)
             final Z_Buffer zBuffer,
             final boolean drawWireframe // Флаг: true для отрисовки полигональной сетки
     ) {

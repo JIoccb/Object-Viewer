@@ -14,7 +14,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.cgvsu.render_engine.GraphicConveyor.vertexToPoint;
 
@@ -28,7 +27,7 @@ public class RenderEngWithTriangFill {
             final int height) throws Exception {
 
         // Получаем полигоны для триангуляции и текстуру
-        List<Polygon> triangulatingPolygons = mesh.getTriangulatingPolygons();
+        ArrayList<Polygon> triangulatingPolygons = mesh.getTriangulatingPolygons();
         Image texture = mesh.getTexture();
 
         // Триангулируем модель, если нужно
@@ -49,7 +48,7 @@ public class RenderEngWithTriangFill {
         int[] arrX = new int[3];
         int[] arrY = new int[3];
         double[] arrZ = new double[3];
-        List<Vector2D> textureVertices = new ArrayList<>(3); // Мы ожидаем 3 текстурных вершины для треугольника
+        ArrayList<Vector2D> textureVertices = new ArrayList<>(3); // Мы ожидаем 3 текстурных вершины для треугольника
 
         // Итерация по полигонам
         for (Polygon polygon : triangulatingPolygons) {
