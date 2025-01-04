@@ -3,7 +3,7 @@ package com.cgvsu.render_engine;
 import java.util.ArrayList;
 
 import com.cgvsu.math.matrices.Matrix4D;
-import com.cgvsu.math.operations.BinaryOperations;
+import com.cgvsu.math.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;

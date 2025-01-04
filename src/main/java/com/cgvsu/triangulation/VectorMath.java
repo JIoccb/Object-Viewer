@@ -1,6 +1,6 @@
 package com.cgvsu.triangulation;
 
-import com.cgvsu.math.operations.BinaryOperations;
+import com.cgvsu.math.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
 
 /**

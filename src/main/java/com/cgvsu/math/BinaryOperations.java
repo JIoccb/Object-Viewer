@@ -1,4 +1,4 @@
-package com.cgvsu.math.operations;
+package com.cgvsu.math;
 
 
 import com.cgvsu.math.matrices.Matrix;

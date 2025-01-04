@@ -2,12 +2,11 @@ package com.cgvsu.model;
 
 import com.cgvsu.math.matrices.Matrix3D;
 import com.cgvsu.math.matrices.Matrix4D;
-import com.cgvsu.math.operations.BinaryOperations;
+import com.cgvsu.math.BinaryOperations;
 import com.cgvsu.math.vectors.Vector;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
-import com.cgvsu.rasterization.Z_Buffer;
 import com.cgvsu.triangulation.Triangulation;
 import javafx.scene.image.Image;
 

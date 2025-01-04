@@ -1,9 +1,7 @@
 package math;
 
-
-
 import com.cgvsu.math.matrices.Matrix;
-import com.cgvsu.math.operations.BinaryOperations;
+import com.cgvsu.math.BinaryOperations;
 import com.cgvsu.math.vectors.Vector3D;
 import org.junit.jupiter.api.Test;
 

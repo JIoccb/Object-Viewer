@@ -1,7 +1,7 @@
 package com.cgvsu.render_engine;
 
 import com.cgvsu.math.matrices.Matrix4D;
-import com.cgvsu.math.operations.BinaryOperations;
+import com.cgvsu.math.BinaryOperations;
 import com.cgvsu.math.vectors.Vector3D;
 
 public class Camera {

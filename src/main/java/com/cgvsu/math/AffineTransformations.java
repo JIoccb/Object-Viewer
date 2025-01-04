@@ -1,7 +1,6 @@
-package com.cgvsu.math.affine_transformations;
+package com.cgvsu.math;
 
 import com.cgvsu.math.matrices.Matrix4D;
-import com.cgvsu.math.operations.BinaryOperations;
 import com.cgvsu.math.vectors.Vector3D;
 
 public class AffineTransformations {
