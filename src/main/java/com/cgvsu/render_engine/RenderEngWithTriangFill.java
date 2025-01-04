@@ -24,11 +24,21 @@ public class RenderEngWithTriangFill {
             final Camera camera,
             final Model mesh,
             final int width,
-            final int height) throws Exception {
+            final int height,
+            final boolean[] flags) throws Exception {
+
+        boolean drawWireframe = flags[0];
+        boolean useTexture = flags[1];
+        boolean useLighting = flags[2];
+
+        Image texture;
+        if (useTexture) {
+            texture = mesh.getTexture();
+        } else {
+            texture = null;
+        }
 
         ArrayList<Polygon> triangulatingPolygons = mesh.getTriangulatingPolygons();
-        Image texture = mesh.getTexture();
-
         mesh.setTriangulatingPolygons(mesh.triangulateModel());
         mesh.setNormals(mesh.calculateNormals());
 
@@ -84,7 +94,7 @@ public class RenderEngWithTriangFill {
             final Vector3D l = new Vector3D(-1, 0, 0);
             //Vector3D l = new Vector3D(viewMatrix.get(0,2), viewMatrix.get(1,2), viewMatrix.get(2,2));
             FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.BLUE, texture, textureVertices, zBuffer,
-                    true, true, normals, l);
+                    drawWireframe, useLighting , normals, l);
         }
     }
 }

@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
 import java.util.*;
 
 public class Model {
-    private Image texture; //= new Image("D:/My/java/cg/Object-Viewer/3DModels/CaracalCube/caracal_texture.png");
+    private Image texture;
 
     private final ArrayList<Vector3D> vertices = new ArrayList<>();
     private final ArrayList<Vector2D> textureVertices = new ArrayList<>();
