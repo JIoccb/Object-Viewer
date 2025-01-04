@@ -9,6 +9,7 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
@@ -28,6 +29,9 @@ public class GuiController {
 
     private static final float TRANSLATION_SPEED = 0.5F;
     private static final float ZOOM_SPEED = 0.6F;
+    public CheckBox wireframeCheckBox;
+    public CheckBox textureCheckBox;
+    public CheckBox lightningCheckBox;
 
 
     @FXML
@@ -66,7 +70,12 @@ public class GuiController {
 
             if (mesh != null) {
                 try {
-                    RenderEngWithTriangFill.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height,  new boolean[]{true, true, true});
+                    boolean[] renderOptions = {
+                            wireframeCheckBox.isSelected(), // Wireframe
+                            textureCheckBox.isSelected(),   // Texture
+                            lightningCheckBox.isSelected()  // Lighting
+                    };
+                    RenderEngWithTriangFill.render(canvas.getGraphicsContext2D(), camera, mesh, (int) width, (int) height, renderOptions);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
