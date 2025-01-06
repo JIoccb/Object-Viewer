@@ -1,5 +1,6 @@
 package com.cgvsu.render_engine;
 
+import com.cgvsu.math.Global;
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
@@ -80,7 +81,7 @@ public class RenderEngWithTriangFill {
 
                 arrZ[vertexInPolygonInd] = result.get(2);
 
-                if (w == 0) continue;
+                if (Math.abs(w) < Global.EPS) continue;
 
                 result = result.scale(1 / w).toVector4D();
                 Vector2D resultPoint = vertexToPoint(new Vector3D(result.get(0), result.get(1), result.get(2)), width, height);
