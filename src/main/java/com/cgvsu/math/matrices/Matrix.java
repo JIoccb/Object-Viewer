@@ -56,15 +56,15 @@ public class Matrix {
         return res;
     }
 
-    public void setRows(int rows) {
+    void setRows(int rows) {
         this.rows = rows;
     }
 
-    public void setCols(int cols) {
+    void setCols(int cols) {
         this.cols = cols;
     }
 
-    public void setData(double[][] data) {
+    void setData(double[][] data) {
         this.data = data;
     }
 
@@ -275,7 +275,7 @@ public class Matrix {
         int cols = getCols();
 
         if (rows != cols) {
-            throw new IllegalArgumentException("The matrix must be square. Provided shapes: (" + rows + ", " + cols + ").");
+            throw new NonSquaredMatrixExeption(rows, cols);
         }
 
         double res = 0;
@@ -297,7 +297,7 @@ public class Matrix {
 
 
         if (col < 0 || col >= cols) {
-            throw new IndexOutOfBoundsException("Column index is out of matrix bounds");
+            throw new IndexOutOfBoundsException("Column index is out of matrix bounds. Provided: " + col);
         }
         Matrix newMatrix = new Matrix(rows, cols - 1);
 
@@ -325,7 +325,7 @@ public class Matrix {
 
 
         if (row < 0 || row >= rows) {
-            throw new IndexOutOfBoundsException("Column index is out of matrix bounds");
+            throw new IndexOutOfBoundsException("Row index is out of matrix bounds. Provided: " + row);
         }
         Matrix newMatrix = new Matrix(rows - 1, cols);
 
@@ -358,23 +358,23 @@ public class Matrix {
         return res;
     }
 
-    public Matrix4D toMatrix4D() throws Exception {
+    public Matrix4D toMatrix4D() {
         if (getRows() != 4 || getCols() != 4) {
-            throw new Exception("Shapes of matrix must be equal to 4x4. Provided: " + getRows() + ", " + getCols() + ".");
+            throw new IllegalMatrixShapes(4, 4, getRows(), getCols());
         }
         return new Matrix4D(getData());
     }
 
-    public Matrix3D toMatrix3D() throws Exception {
+    public Matrix3D toMatrix3D() {
         if (getRows() != 3 || getCols() != 3) {
-            throw new Exception("Shapes of matrix must be equal to 3x3. Provided: " + getRows() + ", " + getCols() + ".");
+            throw new IllegalMatrixShapes(3, 3, getRows(), getCols());
         }
         return new Matrix3D(getData());
     }
 
-    public Matrix2D toMatrix2D() throws Exception {
+    public Matrix2D toMatrix2D() {
         if (getRows() != 2 || getCols() != 2) {
-            throw new Exception("Shapes of matrix must be equal to 2x2. Provided: " + getRows() + ", " + getCols() + ".");
+            throw new IllegalMatrixShapes(2, 2, getRows(), getCols());
         }
         return new Matrix2D(getData());
     }
@@ -398,7 +398,7 @@ public class Matrix {
         int cols = getCols();
         int rows = getRows();
         if (cols != rows) {
-            throw new IllegalArgumentException("The matrix must be square. Provided shapes: (" + rows + ", " + cols + ").");
+            throw new NonSquaredMatrixExeption(rows, cols);
         }
         double res = 1;
         Matrix triang = this.gaussianElimination();
