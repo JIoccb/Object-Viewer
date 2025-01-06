@@ -39,7 +39,7 @@ public class Matrix4D extends Matrix {
     public Matrix inverse() throws Exception {
         double det = det();
         if (det == 0) {
-            throw new Exception("The matrix is singular, there is no inverse");
+            throw new SingularMatrixException();
         }
 
         double a = get(0, 0), b = get(0, 1), c = get(0, 2), d = get(0, 3);
