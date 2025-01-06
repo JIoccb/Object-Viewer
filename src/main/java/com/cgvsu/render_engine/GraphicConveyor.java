@@ -71,9 +71,4 @@ public class GraphicConveyor {
     public static Vector2D vertexToPoint(final Vector3D vertex, final int width, final int height) {
         return new Vector2D((width - 1) / 2.0D * (vertex.get(0) + 1), (height - 1) / 2.0D * (-vertex.get(1) + 1));
     }
-
-    public static Vector3D multiplyMatrix4ByVector3(final Matrix4D matrix, final Vector3D vertex) throws Exception {
-       // Matrix4D matrixTrans = matrix.transpose().toMatrix4D();
-        return matrix.mulVectorDivW(vertex);
-    }
 }

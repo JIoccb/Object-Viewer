@@ -37,7 +37,7 @@ public class Matrix2D extends Matrix {
     public Matrix inverse() throws Exception {
         double det = det();
         if (det == 0) {
-            throw new Exception("The matrix is singular, there is no inverse");
+            throw new SingularMatrixException();
 
         } else {
             double[][] inv = {{get(1, 1), -get(0, 1)},

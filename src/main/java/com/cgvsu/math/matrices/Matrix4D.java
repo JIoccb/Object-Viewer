@@ -1,8 +1,5 @@
 package com.cgvsu.math.matrices;
 
-import com.cgvsu.math.vectors.Vector3D;
-import com.cgvsu.math.vectors.Vector4D;
-
 public class Matrix4D extends Matrix {
     public Matrix4D() {
         setCols(4);
@@ -42,7 +39,7 @@ public class Matrix4D extends Matrix {
     public Matrix inverse() throws Exception {
         double det = det();
         if (det == 0) {
-            throw new Exception("The matrix is singular, there is no inverse");
+            throw new SingularMatrixException();
         }
 
         double a = get(0, 0), b = get(0, 1), c = get(0, 2), d = get(0, 3);
@@ -78,31 +75,5 @@ public class Matrix4D extends Matrix {
         };
 
         return new Matrix4D(inverse).scale(1 / det);
-    }
-
-    public Vector4D mulVector(Vector4D vectorCol) {
-        if (vectorCol == null) {
-            throw new NullPointerException("Предоставленный вектор не может быть нулевым");
-        }
-
-        float[] values = new float[4];
-        for (int i = 0; i < getData().length; i++) {
-            values[i] = 0;
-            for (int j = 0; j < getData()[0].length; j++) {
-                values[i] += (float) (getData()[i][j] * vectorCol.get(j));
-            }
-        }
-        return new Vector4D(values[0], values[1], values[2], values[3]);
-    }
-
-    public Vector3D mulVectorDivW(Vector3D vectorCol3D) {
-        if (vectorCol3D == null) {
-            throw new NullPointerException("Предоставленный вектор не может быть нулевым");
-        }
-        Vector4D vector4fCol = vectorCol3D.translationToVector4f();
-        Vector4D vec = this.mulVector(vector4fCol);
-        //return new Vector3D(vec.get(0) / vec.get(3), vec.get(1) / vec.get(3), vec.get(2) / vec.get(3));
-        return new Vector3D(vec.get(0) , vec.get(1) , vec.get(2));
-
     }
 }

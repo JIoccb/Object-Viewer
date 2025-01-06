@@ -1,6 +1,7 @@
 package com.cgvsu.math.vectors;
 
 
+import com.cgvsu.math.Global;
 import com.cgvsu.math.matrices.Matrix;
 
 public class Vector {
@@ -70,7 +71,7 @@ public class Vector {
     public Vector normalize() {
         Vector res = new Vector(length);
         double norm = norm();
-        if (!(Math.abs(norm) < 1e-6)) {
+        if (!(Math.abs(norm) < Global.EPS)) {
             int length = getLength();
 
             for (int i = 0; i < length; i++) {
@@ -185,9 +186,8 @@ public class Vector {
         if (this.length != length) {
             return false;
         }
-        float eps = 1e-6F;
         for (int i = 0; i < length; i++) {
-            if (Math.abs(get(i) - vector.get(i)) > eps) {
+            if (Math.abs(get(i) - vector.get(i)) > Global.EPS) {
                 return false;
             }
         }

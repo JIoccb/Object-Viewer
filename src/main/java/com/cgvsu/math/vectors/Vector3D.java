@@ -20,7 +20,4 @@ public class Vector3D extends Vector {
         setLength(3);
         setData(new double[]{x, y, z});
     }
-    public Vector4D translationToVector4f() {
-        return new Vector4D(get(0), get(1), get(2), 1);
-    }
 }

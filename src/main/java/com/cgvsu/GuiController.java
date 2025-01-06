@@ -2,7 +2,6 @@ package com.cgvsu;
 
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.render_engine.RenderEngWithTriangFill;
-import com.cgvsu.render_engine.RenderEngine;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -33,7 +32,6 @@ public class GuiController {
     public CheckBox textureCheckBox;
     public CheckBox lightningCheckBox;
 
-
     @FXML
     private AnchorPane anchorPane;
 
@@ -46,7 +44,6 @@ public class GuiController {
 
             new Vector3D(0, 0, 1500),
             new Vector3D(0, 0, 0),
-
 
             1.0F, 1, 0.01F, 100);
 
@@ -86,7 +83,6 @@ public class GuiController {
         timeline.play();
 
         setupMouseControls();
-        setupKeyboardControls(); // Добавляем обработку клавиш
     }
 
     @FXML
@@ -173,19 +169,6 @@ public class GuiController {
         canvas.setOnScroll((ScrollEvent event) -> {
             double zoom = event.getDeltaY();
             camera.movePosition(new Vector3D(0, 0, -zoom * ZOOM_SPEED));
-        });
-    }
-
-    private void setupKeyboardControls() {
-        canvas.setFocusTraversable(true);
-
-        canvas.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case W -> handleCameraUp();
-                case S -> handleCameraDown();
-                case A -> handleCameraLeft();
-                case D -> handleCameraRight();
-            }
         });
     }
 
