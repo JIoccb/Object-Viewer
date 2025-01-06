@@ -1,5 +1,6 @@
 package com.cgvsu.rasterization;
 
+import com.cgvsu.math.Global;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
@@ -25,8 +26,8 @@ public class FullRasterization {
 
             final Z_Buffer zBuffer,
             final boolean drawWireframe,
-            final boolean useLighting, // Использование освещения
-            final List<Vector3D> normals, // Список нормалей
+            final boolean useLighting,
+            final List<Vector3D> normals,
             final Vector3D lightDirection // Направление источника света
     ) {
 
@@ -34,7 +35,6 @@ public class FullRasterization {
         final int width = zBuffer.getWidth();
         final int height = zBuffer.getHeight();
 
-        // Проверка наличия текстуры
         PixelReader pixelReader = null;
         int textureWidth = 0;
         int textureHeight = 0;
@@ -54,7 +54,7 @@ public class FullRasterization {
             }
         });*/
 
-        // Подготовка текстурных координат (если есть текстура)
+        // Перегонка текстурных координат
         if (texture != null) {
             pixelReader = texture.getPixelReader();
             textureWidth = (int) texture.getWidth();
@@ -66,7 +66,7 @@ public class FullRasterization {
             uvCoords[2] = vertexList.get(2).getTextureVert().getData();
         }
 
-        // Отрисовка каркаса (если включено)
+        // Отрисовка полигональной сетки
         if (drawWireframe) {
             drawLine(graphicsContext, vertexList.get(0).getX(), vertexList.get(0).getY(), vertexList.get(0).getZ(), vertexList.get(1).getX(), vertexList.get(1).getY(), vertexList.get(1).getZ(), zBuffer);
             drawLine(graphicsContext, vertexList.get(1).getX(), vertexList.get(1).getY(), vertexList.get(1).getZ(), vertexList.get(2).getX(), vertexList.get(2).getY(), vertexList.get(2).getZ(), zBuffer);
@@ -88,11 +88,11 @@ public class FullRasterization {
 
                 double z = baryCoords[0] * vertexList.get(0).getZ() + baryCoords[1] * vertexList.get(1).getZ() + baryCoords[2] * vertexList.get(2).getZ();
 
-                // Проверка и обновление Z-буфера
+                // Проверяем и обновляем Z-буфер
                 if (z < zBuffer.get(x, y)) {
                     zBuffer.set(x, y, z);
                     Color finalColor;
-                    // Работа с текстурой
+
                     if (texture != null && uvCoords != null) {
                         double u = baryCoords[0] * uvCoords[0][0] + baryCoords[1] * uvCoords[1][0] + baryCoords[2] * uvCoords[2][0];
                         double v = baryCoords[0] * uvCoords[0][1] + baryCoords[1] * uvCoords[1][1] + baryCoords[2] * uvCoords[2][1];
@@ -106,18 +106,29 @@ public class FullRasterization {
                     } else {
                         finalColor = baseColor;
                     }
-                    // Интерполяция нормалей
-                    // Vector3D interpolatedNormal = interpolateNormal(baryCoords, vertexList);
 
-                    // Вычисление освещения
+                    // Вычисляем освещение
                     if (useLighting) {
-
-                        Vector3D currentN = new Vector3D(baryCoords[0] * vertexList.get(0).getNormal().get(0) + baryCoords[1] * vertexList.get(1).getNormal().get(0) + baryCoords[2] * vertexList.get(2).getNormal().get(0),
+                        finalColor = baseColor;
+                        Vector3D currentNormal = new Vector3D(baryCoords[0] * vertexList.get(0).getNormal().get(0) + baryCoords[1] * vertexList.get(1).getNormal().get(0) + baryCoords[2] * vertexList.get(2).getNormal().get(0),
                                 baryCoords[0] * vertexList.get(0).getNormal().get(1) + baryCoords[1] * vertexList.get(1).getNormal().get(1) + baryCoords[2] * vertexList.get(2).getNormal().get(1),
                                 baryCoords[0] * vertexList.get(0).getNormal().get(2) + baryCoords[1] * vertexList.get(1).getNormal().get(2) + baryCoords[2] * vertexList.get(2).getNormal().get(2));
-                        double l = (currentN.get(0) * lightDirection.get(0) + currentN.get(1) * lightDirection.get(1) + currentN.get(2) * lightDirection.get(2));
-                        double k = 0.7F;
-                        if (l > 0) {
+                        double l = (currentNormal.get(0) * lightDirection.get(0) + currentNormal.get(1) * lightDirection.get(1) + currentNormal.get(2) * lightDirection.get(2));
+                        double k = 0.5;
+                        if (l < 0) {
+                            l = 0;
+                        } else if (l > 1) {
+                            l = 1;
+                        }
+                        double r = Math.min(Global.MAX_COLOR_VALUE,  (finalColor.getRed() * (1 - k) + finalColor.getRed() * k * l));
+                        double g = Math.min(Global.MAX_COLOR_VALUE,  (finalColor.getGreen() * (1 - k) + finalColor.getGreen() * k * l));
+                        double b = Math.min(Global.MAX_COLOR_VALUE,  (finalColor.getBlue() * (1 - k) + finalColor.getBlue() * k * l));
+                        finalColor = new Color(r, g, b, 1);
+                       /* finalColor = new Color(finalColor.getRed() * (1 - k) + finalColor.getRed() * k * l,
+                                finalColor.getGreen() * (1 - k) + finalColor.getGreen() * k * l,
+                                finalColor.getBlue() * (1 - k) + finalColor.getBlue() * k * l,
+                                1);
+                       /* if (l > 0) {
                             if (l > 1) {
                                 l = 1;
                             }
@@ -125,9 +136,9 @@ public class FullRasterization {
                         } else {
                             finalColor = new Color(finalColor.getRed() * (1 - k), finalColor.getGreen() * (1 - k), finalColor.getBlue() * (1 - k), 1);
                         }
+
+                        */
                     }
-                    // Применение цвета с учетом освещения
-                    //Color finalColor = baseColor.deriveColor(0, 1, lightingFactor, 1);
                     pixelWriter.setColor(x, y, finalColor);
                 }
             }
