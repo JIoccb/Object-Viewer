@@ -1,6 +1,6 @@
 package com.cgvsu.model;
 
-import com.cgvsu.math.matrices.Matrix3D;
+import com.cgvsu.math.matrices.Matrix;
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.BinaryOperations;
 import com.cgvsu.math.vectors.Vector;
@@ -104,9 +104,9 @@ public class Model {
         Vector3D vectorB = BinaryOperations.add(vertice3, vertice1, false).toVector3D();
         Vector3D vectorC = BinaryOperations.cross(vectorA, vectorB);
 
-        Matrix3D matrix = new Matrix3D();
-        matrix = matrix.setRow(0, vectorA).toMatrix3D();
-        matrix = matrix.setRow(1, vectorB).toMatrix3D();
+        Matrix matrix = new Matrix(3, 3);
+        matrix = matrix.setRow(0, vectorA);
+        matrix = matrix.setRow(1, vectorB);
         matrix = matrix.setRow(2, vectorC).toMatrix3D();
 
         if (matrix.det() < 0) vectorC = BinaryOperations.cross(vectorB, vectorA);
