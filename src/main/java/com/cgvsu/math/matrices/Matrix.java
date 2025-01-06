@@ -1,6 +1,7 @@
 package com.cgvsu.math.matrices;
 
 
+import com.cgvsu.math.Global;
 import com.cgvsu.math.vectors.Vector;
 
 
@@ -429,10 +430,9 @@ public class Matrix {
         int rows = matrix.rows;
         if (this.rows != rows || this.cols != cols) return false;
 
-        float eps = 1e-6F;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                if (Math.abs(get(i, j) - matrix.get(i, j)) > eps) return false;
+                if (Math.abs(get(i, j) - matrix.get(i, j)) > Global.EPS) return false;
             }
         }
         return true;
