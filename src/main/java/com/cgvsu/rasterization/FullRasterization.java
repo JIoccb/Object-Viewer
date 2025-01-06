@@ -2,6 +2,7 @@ package com.cgvsu.rasterization;
 
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
+import com.cgvsu.math.vectors.Vector4D;
 import com.cgvsu.model.VertexObject;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;

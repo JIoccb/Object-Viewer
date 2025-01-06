@@ -2,6 +2,7 @@ package com.cgvsu.render_engine;
 
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.BinaryOperations;
+import com.cgvsu.math.vectors.Vector;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
@@ -91,8 +92,14 @@ public class RenderEngWithTriangFill {
                 //resultPoints.add(resultPoint);
             }
             //new Vector3D(1000, 1000, 1000)
-            final Vector3D l = new Vector3D(-1, 0, 0);
-            //Vector3D l = new Vector3D(viewMatrix.get(0,2), viewMatrix.get(1,2), viewMatrix.get(2,2));
+            // Vector3D l = new Vector3D(0, 0, 1);
+            Vector3D l = new Vector3D(viewMatrix.get(0,2), viewMatrix.get(1,2), viewMatrix.get(2,2));
+
+           // Vector3D worldLightDirection = new Vector3D(0, 0, -1); // Направление света в мировой системе координат
+
+            //Vector3D worldLightDirection = new Vector3D(viewMatrix.get(0,2), viewMatrix.get(1,2), viewMatrix.get(2,2)); // Направление света в мировой системе координат
+            //Vector4D cameraLightDirection = BinaryOperations.product(viewMatrix, worldLightDirection.increaseDimension()).normalize().toVector4D();
+            //Vector3D lightDirection = new Vector3D(cameraLightDirection.get(0), cameraLightDirection.get(1), cameraLightDirection.get(2));
             FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.BLUE, texture, textureVertices, zBuffer,
                     drawWireframe, useLighting , normals, l);
         }
