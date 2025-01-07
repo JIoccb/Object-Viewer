@@ -360,21 +360,21 @@ public class Matrix {
 
     public Matrix4D toMatrix4D() {
         if (getRows() != 4 || getCols() != 4) {
-            throw new IllegalMatrixShapes(4, 4, getRows(), getCols());
+            throw new IllegalMatrixShapesException(4, 4, getRows(), getCols());
         }
         return new Matrix4D(getData());
     }
 
     public Matrix3D toMatrix3D() {
         if (getRows() != 3 || getCols() != 3) {
-            throw new IllegalMatrixShapes(3, 3, getRows(), getCols());
+            throw new IllegalMatrixShapesException(3, 3, getRows(), getCols());
         }
         return new Matrix3D(getData());
     }
 
     public Matrix2D toMatrix2D() {
         if (getRows() != 2 || getCols() != 2) {
-            throw new IllegalMatrixShapes(2, 2, getRows(), getCols());
+            throw new IllegalMatrixShapesException(2, 2, getRows(), getCols());
         }
         return new Matrix2D(getData());
     }
