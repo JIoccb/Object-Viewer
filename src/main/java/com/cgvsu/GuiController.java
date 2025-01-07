@@ -8,7 +8,9 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextField;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
@@ -19,6 +21,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import com.cgvsu.model.Model;
 import com.cgvsu.objreader.ObjReader;
@@ -31,21 +36,37 @@ public class GuiController {
     public CheckBox wireframeCheckBox;
     public CheckBox textureCheckBox;
     public CheckBox lightningCheckBox;
+    public TextField eyeX;
+    public TextField targetX;
+    public TextField eyeY;
+    public TextField targetY;
+    public TextField eyeZ;
+    public TextField targetZ;
 
     @FXML
     private AnchorPane anchorPane;
+    @FXML
+    public AnchorPane cameraPane;
 
     @FXML
     private Canvas canvas;
 
+    Alert messageWarning = new Alert(Alert.AlertType.WARNING);
+    Alert messageError = new Alert(Alert.AlertType.ERROR);
+    Alert messageInformation = new Alert(Alert.AlertType.INFORMATION);
+
     private Model mesh = null;
+    private final List<Camera> cameras = new ArrayList<>();
+    private final List<Button> addedButtonsCamera = new ArrayList<>();
+    private final List<Button> deletedButtonsCamera = new ArrayList<>();
+
 
     private final Camera camera = new Camera(
 
             new Vector3D(0, 0, 1500),
             new Vector3D(0, 0, 0),
 
-            1.0F, 1, 0.01F, 100);
+            1.0F, 1, 0.01F, 100, true);
 
     private double mousePrevX = 0;
     private double mousePrevY = 0;
@@ -63,6 +84,11 @@ public class GuiController {
             double height = canvas.getHeight();
 
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
+           /* for (Camera c : cameras) {
+                c.setAspectRatio((float) (width / height));
+            }
+
+            */
             camera.setAspectRatio((float) (width / height));
 
             if (mesh != null) {
@@ -111,7 +137,7 @@ public class GuiController {
     @FXML
     private void onOpenTextureMenuItemClick() {
         if (mesh == null) {
-            showError("No Model Loaded", "Please load a model before applying a texture.");
+            showMessage("No Model Loaded", "Please load a model before applying a texture.", messageError);
             return;
         }
 
@@ -127,28 +153,113 @@ public class GuiController {
                 // Загружаем текстуру как Image
                 Image texture = new Image(selectedFile.toURI().toString());
                 mesh.setTexture(texture); //присваиваем текстуру для модели
-                showInfo("Texture Loaded", "The texture has been successfully applied.");
+                showMessage("Texture Loaded", "The texture has been successfully applied.", messageInformation);
             } catch (Exception e) {
-                showError("Texture Load Failed", "Failed to load texture: " + e.getMessage());
+                showMessage("Texture Load Failed", "Failed to load texture: " + e.getMessage(), messageError);
             }
         }
     }
 
-    private void showInfo(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
+
+    public void addCameraButtons() {
+        Button addButton = new Button("Камера " + (addedButtonsCamera.size() + 1));
+        addButton.setLayoutY((addedButtonsCamera.size() > 0) ?
+                addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutY() + 40 :
+                185);
+        addButton.setLayoutX(33);
+        addButton.setOnAction(event -> showCamera(addButton.getText()));
+        addedButtonsCamera.add(addButton);
+        Button deleteButton = new Button("Удалить");
+        deleteButton.setLayoutY(addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutY());
+        deleteButton.setLayoutX(addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutX() + 85);
+        deleteButton.setOnAction(event -> deleteCamera(addButton.getText()));
+        deletedButtonsCamera.add(deleteButton);
+
+        cameraPane.getChildren().add(addButton);
+        cameraPane.getChildren().add(deleteButton);
+    }
+
+    private Camera activeCamera() {
+        for (Camera camera : cameras) {
+            if (camera.isActive()) {
+                return camera;
+            }
+        }
+        showMessage("Осторожно", "Переключено на Камеру 1", messageInformation);
+        return cameras.get(0);
+    }
+
+
+    @FXML
+    private void createCamera() {
+        if (!Objects.equals(eyeX.getText(), "") && !Objects.equals(eyeY.getText(), "") && !Objects.equals(eyeZ.getText(), "")
+                && !Objects.equals(targetX.getText(), "") && !Objects.equals(targetY.getText(), "") && !Objects.equals(targetZ.getText(), "")) {
+            for (Camera camera : cameras) {
+                camera.setActive(false);
+            }
+            cameras.add(new Camera(
+                    new Vector3D(Float.parseFloat(eyeX.getText()), Float.parseFloat(eyeY.getText()), Float.parseFloat(eyeZ.getText())),
+                    new Vector3D(Float.parseFloat(targetX.getText()), Float.parseFloat(targetY.getText()), Float.parseFloat(targetZ.getText())),
+                    1.0F, 1, 0.01F, 100, true));
+            addCameraButtons();
+        } else {
+            showMessage("Предупреждение", "Введите необходимые данные!", messageWarning);
+        }
+    }
+
+    public void showCamera(String text) {
+        int numOfCamera = Integer.parseInt(text.substring(text.length() - 1));
+        for (int i = 0; i < cameras.size(); i++) {
+            cameras.get(i).setActive(false);
+            if (i + 1 == numOfCamera) {
+                cameras.get(i).setActive(true);
+            }
+        }
+    }
+
+    public void deleteCamera(String text) {
+        int numOfCamera = Integer.parseInt(text.substring(text.length() - 1));
+        for (int i = 0; i < addedButtonsCamera.size(); i++) {
+            if (i + 1 == numOfCamera) {
+                if (cameras.get(i).isActive()) {
+                    showMessage("Информация", "Вы перенаправлены на: Камера 1", messageInformation);
+                    cameras.get(0).setActive(true);
+                }
+                deleteCameraUI(i);
+                break;
+            }
+        }
+    }
+
+    public void deleteCameraUI(int cameraID) {
+        if (cameras.size() == 1) {
+            showMessage("Ошибка", "Нельзя удалить единственную камеру!", messageError);
+        } else {
+            cameras.remove(cameraID);
+            cameraPane.getChildren().remove(addedButtonsCamera.get(cameraID));
+            cameraPane.getChildren().remove(deletedButtonsCamera.get(cameraID));
+            for (int i = 0; i < addedButtonsCamera.size(); i++) {
+                if (i + 1 > cameraID) {
+                    addedButtonsCamera.get(i).setText("Камера " + i);
+                }
+            }
+            for (int i = addedButtonsCamera.size() - 1; i >= 1; i--) {
+                if (i + 1 > cameraID) {
+                    addedButtonsCamera.get(i).setLayoutY(addedButtonsCamera.get(i - 1).getLayoutY());
+                    deletedButtonsCamera.get(i).setLayoutY(deletedButtonsCamera.get(i - 1).getLayoutY());
+                }
+            }
+            addedButtonsCamera.remove(cameraID);
+            deletedButtonsCamera.remove(cameraID);
+        }
+    }
+
+    private void showMessage(String headText, String messageText, Alert alert) {
+        alert.setHeaderText(headText);
+        alert.setContentText(messageText);
         alert.showAndWait();
     }
 
-    private void showError(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
 
     private void setupMouseControls() {
         canvas.setOnMousePressed(event -> {
