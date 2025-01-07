@@ -3,7 +3,6 @@ package com.cgvsu.rasterization;
 import com.cgvsu.math.Global;
 import com.cgvsu.math.vectors.Vector2D;
 import com.cgvsu.math.vectors.Vector3D;
-import com.cgvsu.math.vectors.Vector4D;
 import com.cgvsu.model.VertexObject;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -115,14 +114,10 @@ public class FullRasterization {
                                 baryCoords[0] * vertexList.get(0).getNormal().get(2) + baryCoords[1] * vertexList.get(1).getNormal().get(2) + baryCoords[2] * vertexList.get(2).getNormal().get(2));
                         double l = (currentNormal.get(0) * lightDirection.get(0) + currentNormal.get(1) * lightDirection.get(1) + currentNormal.get(2) * lightDirection.get(2));
                         double k = 0.5;
-                        if (l < 0) {
-                            l = 0;
-                        } else if (l > 1) {
-                            l = 1;
-                        }
-                        double r = Math.min(Global.MAX_COLOR_VALUE,  (finalColor.getRed() * (1 - k) + finalColor.getRed() * k * l));
-                        double g = Math.min(Global.MAX_COLOR_VALUE,  (finalColor.getGreen() * (1 - k) + finalColor.getGreen() * k * l));
-                        double b = Math.min(Global.MAX_COLOR_VALUE,  (finalColor.getBlue() * (1 - k) + finalColor.getBlue() * k * l));
+                        l = Math.max(0, Math.min(l, 1));
+                        double r = Math.min(Global.MAX_COLOR_VALUE, (finalColor.getRed() * (1 - k) + finalColor.getRed() * k * l));
+                        double g = Math.min(Global.MAX_COLOR_VALUE, (finalColor.getGreen() * (1 - k) + finalColor.getGreen() * k * l));
+                        double b = Math.min(Global.MAX_COLOR_VALUE, (finalColor.getBlue() * (1 - k) + finalColor.getBlue() * k * l));
                         finalColor = new Color(r, g, b, 1);
                        /* finalColor = new Color(finalColor.getRed() * (1 - k) + finalColor.getRed() * k * l,
                                 finalColor.getGreen() * (1 - k) + finalColor.getGreen() * k * l,
