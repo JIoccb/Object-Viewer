@@ -125,8 +125,6 @@ public class FullRasterization {
                                 finalColor.getGreen() * (1 - k) + finalColor.getGreen() * k * l,
                                 finalColor.getBlue() * (1 - k) + finalColor.getBlue() * k * l,
                                 1);
-
-
                         if (l > 0) {
                             if (l > 1) {
                                 l = 1;
