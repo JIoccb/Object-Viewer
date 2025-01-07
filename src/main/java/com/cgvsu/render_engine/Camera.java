@@ -14,6 +14,7 @@ public class Camera {
     private final float farPlane;
     private double yaw; // Угол поворота по горизонтали
     private double pitch; // Угол поворота по вертикали
+    private boolean isActive;
 
     public void setAspectRatio(float aspectRatio) {
         this.aspectRatio = aspectRatio;
@@ -25,15 +26,19 @@ public class Camera {
             final float fov,
             final float aspectRatio,
             final float nearPlane,
-            final float farPlane) {
+            final float farPlane,
+            final boolean isActive
+    ) {
         this.position = position;
         this.target = target;
         this.fov = fov;
         this.aspectRatio = aspectRatio;
         this.nearPlane = nearPlane;
         this.farPlane = farPlane;
+        this.isActive = isActive;
         this.yaw = 0;
         this.pitch = 0;
+
     }
 
     public void movePosition(final Vector3D translation) {
@@ -79,5 +84,13 @@ public class Camera {
 
     public Vector3D getTarget() {
         return target;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }
