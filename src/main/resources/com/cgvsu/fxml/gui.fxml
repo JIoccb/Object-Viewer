@@ -19,76 +19,80 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane fx:id="anchorPane" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cgvsu.GuiController">
+    <children>
+        <Canvas fx:id="canvas" height="870" layoutY="15.0" width="1600" AnchorPane.topAnchor="15.0" />
 
-    <Canvas fx:id="canvas" height="870" layoutY="15.0" width="1600" AnchorPane.topAnchor="15.0" />
+        <VBox layoutX="1067.0" layoutY="619.0" prefHeight="100.0" prefWidth="150.0" />
+        <AnchorPane layoutX="584.0" layoutY="56.0" prefHeight="200.0" prefWidth="200.0" />
+        <Separator layoutX="889.0" layoutY="8.0" orientation="VERTICAL" prefHeight="880.0" prefWidth="50.0" AnchorPane.bottomAnchor="-3.0" />
 
-    <VBox layoutX="1067.0" layoutY="619.0" prefHeight="100.0" prefWidth="150.0" />
-   <AnchorPane layoutX="584.0" layoutY="56.0" prefHeight="200.0" prefWidth="200.0" />
-   <Separator layoutX="889.0" layoutY="8.0" orientation="VERTICAL" prefHeight="880.0" prefWidth="50.0" AnchorPane.bottomAnchor="-3.0" />
-   <AnchorPane fx:id="modelPane" layoutX="1102.0" layoutY="-1.0" minHeight="0.0" minWidth="0.0" prefHeight="310.0" prefWidth="484.0">
-      <children>
-         <Text layoutX="53.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Масштаб" />
-         <Text layoutX="31.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
-         <Text layoutX="31.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
-         <TextField fx:id="sx" alignment="TOP_CENTER" layoutX="57.0" layoutY="89.0" prefHeight="25.0" prefWidth="41.0" text="1" />
-         <TextField fx:id="sy" alignment="TOP_CENTER" layoutX="57.0" layoutY="123.0" prefHeight="25.0" prefWidth="41.0" text="1" />
-         <TextField fx:id="sz" alignment="TOP_CENTER" layoutX="57.0" layoutY="158.0" prefHeight="25.0" prefWidth="41.0" text="1" />
-
-         <Text layoutX="31.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
-         <Text layoutX="220.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Поворот" wrappingWidth="83.974609375" />
-         <Text layoutX="360.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Перемещение" wrappingWidth="100.267578125" />
-         <Text layoutX="348.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
-         <Text layoutX="348.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
-         <Text layoutX="349.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
-         <Text layoutX="191.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
-         <TextField fx:id="tx" alignment="TOP_CENTER" layoutX="378.0" layoutY="89.0" prefHeight="25.0" prefWidth="41.0" text="0" />
-         <TextField fx:id="ty" alignment="TOP_CENTER" layoutX="378.0" layoutY="123.0" prefHeight="25.0" prefWidth="41.0" text="0" />
-         <TextField fx:id="tz" alignment="TOP_CENTER" layoutX="378.0" layoutY="158.0" prefHeight="25.0" prefWidth="41.0" text="0" />
-         <Text layoutX="191.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
-         <Text layoutX="191.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
-         <TextField fx:id="rx" alignment="TOP_CENTER" layoutX="224.0" layoutY="89.0" prefHeight="25.0" prefWidth="41.0" text="0" />
-         <TextField fx:id="ry" alignment="TOP_CENTER" layoutX="224.0" layoutY="123.0" prefHeight="25.0" prefWidth="41.0" text="0" />
-         <TextField fx:id="rz" alignment="TOP_CENTER" layoutX="224.0" layoutY="158.0" prefHeight="25.0" prefWidth="41.0" text="0" />
-
-         <Button fx:id="convert" layoutX="190.0" layoutY="199.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Преобразовать" />
-         <ColorPicker layoutX="286.0" layoutY="280.0" prefHeight="25.0" prefWidth="125.0" promptText="model color">
-            <value>
-               <Color />
-            </value>
-         </ColorPicker>
-         <ButtonBar layoutX="-24.0" layoutY="280.0">
-            <buttons>
-               <Button mnemonicParsing="false" text="Reset camera position" />
-               <Button mnemonicParsing="false" onAction="#resetModelPosition" text="Reset model position" />
-            </buttons>
-         </ButtonBar>
-         <VBox layoutX="420.0" layoutY="254.0" prefHeight="51.0" prefWidth="82.0">
+        <AnchorPane fx:id="modelPane" layoutX="1102.0" layoutY="-1.0" minHeight="0.0" minWidth="0.0" prefHeight="310.0" prefWidth="484.0">
             <children>
-                 <CheckBox fx:id="textureCheckBox" alignment="TOP_CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="Texture" textAlignment="CENTER" />
-                 <CheckBox fx:id="wireframeCheckBox" alignment="TOP_CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="Wireframe" textAlignment="CENTER" />
-                 <CheckBox fx:id="lightningCheckBox" alignment="TOP_CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="17.0" prefWidth="74.0" text="Lightning" textAlignment="CENTER" />
+                <Text layoutX="53.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Масштаб" />
+                <Text layoutX="31.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
+                <Text layoutX="31.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
+                <Text layoutX="31.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
+                <TextField fx:id="sx" alignment="TOP_CENTER" layoutX="57.0" layoutY="89.0" prefHeight="25.0" prefWidth="41.0" text="1" />
+                <TextField fx:id="sy" alignment="TOP_CENTER" layoutX="57.0" layoutY="123.0" prefHeight="25.0" prefWidth="41.0" text="1" />
+                <TextField fx:id="sz" alignment="TOP_CENTER" layoutX="57.0" layoutY="158.0" prefHeight="25.0" prefWidth="41.0" text="1" />
+
+                <Text layoutX="220.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Поворот" wrappingWidth="83.974609375" />
+                <Text layoutX="191.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
+                <Text layoutX="191.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
+                <Text layoutX="191.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
+                <TextField fx:id="rx" alignment="TOP_CENTER" layoutX="224.0" layoutY="89.0" prefHeight="25.0" prefWidth="41.0" text="0" />
+                <TextField fx:id="ry" alignment="TOP_CENTER" layoutX="224.0" layoutY="123.0" prefHeight="25.0" prefWidth="41.0" text="0" />
+                <TextField fx:id="rz" alignment="TOP_CENTER" layoutX="224.0" layoutY="158.0" prefHeight="25.0" prefWidth="41.0" text="0" />
+
+                <Text layoutX="360.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Перемещение" wrappingWidth="100.267578125" />
+                <Text layoutX="348.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="X:" />
+                <Text layoutX="348.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Y:" />
+                <Text layoutX="349.0" layoutY="175.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Z:" />
+                <TextField fx:id="tx" alignment="TOP_CENTER" layoutX="378.0" layoutY="89.0" prefHeight="25.0" prefWidth="41.0" text="0" />
+                <TextField fx:id="ty" alignment="TOP_CENTER" layoutX="378.0" layoutY="123.0" prefHeight="25.0" prefWidth="41.0" text="0" />
+                <TextField fx:id="tz" alignment="TOP_CENTER" layoutX="378.0" layoutY="158.0" prefHeight="25.0" prefWidth="41.0" text="0" />
+
+                <Button fx:id="convert" layoutX="190.0" layoutY="199.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" text="Преобразовать" />
+                <ColorPicker layoutX="286.0" layoutY="280.0" prefHeight="25.0" prefWidth="125.0" promptText="model color">
+                    <value>
+                        <Color />
+                    </value>
+                </ColorPicker>
+                <ButtonBar layoutX="-24.0" layoutY="280.0">
+                    <buttons>
+                        <Button mnemonicParsing="false" text="Reset camera position" />
+                        <Button mnemonicParsing="false" onAction="#resetModelPosition" text="Reset model position" />
+                    </buttons>
+                </ButtonBar>
+                <VBox layoutX="420.0" layoutY="254.0" prefHeight="51.0" prefWidth="82.0">
+                    <children>
+                        <CheckBox fx:id="textureCheckBox" alignment="TOP_CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="Texture" textAlignment="CENTER" />
+                        <CheckBox fx:id="wireframeCheckBox" alignment="TOP_CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" text="Wireframe" textAlignment="CENTER" />
+                        <CheckBox fx:id="lightningCheckBox" alignment="TOP_CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="17.0" prefWidth="74.0" text="Lightning" textAlignment="CENTER" />
+                    </children>
+                </VBox>
             </children>
-         </VBox>
-      </children>
-      <cursor>
-         <Cursor fx:constant="DEFAULT" />
-      </cursor>
-      <effect>
-         <Bloom threshold="0.91" />
-      </effect>
-   </AnchorPane>
-    <MenuBar cache="true" layoutY="3.0">
-        <Menu mnemonicParsing="false" text="File">
-            <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
-            <accelerator>
-                <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-            </accelerator>
-            </MenuItem>
-         <MenuItem mnemonicParsing="false" onAction="#onOpenTextureMenuItemClick" text="Load texture">
-            <accelerator>
-               <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-            </accelerator>
-         </MenuItem>
-        </Menu>
-    </MenuBar>
+            <cursor>
+                <Cursor fx:constant="DEFAULT" />
+            </cursor>
+            <effect>
+                <Bloom threshold="0.91" />
+            </effect>
+        </AnchorPane>
+
+        <MenuBar cache="true" layoutY="3.0">
+            <Menu mnemonicParsing="false" text="File">
+                <MenuItem mnemonicParsing="false" onAction="#onOpenModelMenuItemClick" text="Load Model">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                    </accelerator>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#onOpenTextureMenuItemClick" text="Load texture">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                    </accelerator>
+                </MenuItem>
+            </Menu>
+        </MenuBar>
+    </children>
 </AnchorPane>
