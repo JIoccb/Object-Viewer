@@ -60,7 +60,7 @@
                 </ColorPicker>
                 <ButtonBar layoutX="-24.0" layoutY="280.0">
                     <buttons>
-                        <Button mnemonicParsing="false" text="Reset camera position" />
+                        <Button mnemonicParsing="false" onAction="#resetCameraPosition" text="Reset camera position" />
                         <Button mnemonicParsing="false" onAction="#resetModelPosition" text="Reset model position" />
                     </buttons>
                 </ButtonBar>

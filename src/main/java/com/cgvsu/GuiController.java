@@ -322,10 +322,6 @@ public class GuiController {
         camera.movePosition(new Vector3D(0, TRANSLATION_SPEED, 0));
     }
 
-    public void resetModelPosition() {
-
-    }
-
     public void translate(ActionEvent mouseEvent) {
         if (Objects.equals(tx.getText(), "") || Objects.equals(ty.getText(), "") || Objects.equals(tz.getText(), "")
                 || Objects.equals(sx.getText(), "") || Objects.equals(sy.getText(), "") || Objects.equals(sz.getText(), "")
