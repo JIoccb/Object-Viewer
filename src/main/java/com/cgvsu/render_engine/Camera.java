@@ -21,8 +21,8 @@ public class Camera {
     }
 
     public Camera(
-            final Vector3D position,
-            final Vector3D target,
+            Vector3D position,
+            Vector3D target,
             final float fov,
             final float aspectRatio,
             final float nearPlane,
@@ -92,5 +92,13 @@ public class Camera {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public void setPosition(Vector3D position) {
+        this.position = position;
+    }
+
+    public void setTarget(Vector3D target) {
+        this.target = target;
     }
 }

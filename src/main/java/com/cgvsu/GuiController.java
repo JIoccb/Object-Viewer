@@ -71,17 +71,23 @@ public class GuiController {
     private final List<Camera> cameras = new ArrayList<>();
     private final List<Button> addedButtonsCamera = new ArrayList<>();
     private final List<Button> deletedButtonsCamera = new ArrayList<>();
-
-
-    private final Camera camera = new Camera(
-
-            new Vector3D(0, 0, 1500),
-            new Vector3D(0, 0, 0),
-
+    private final Vector3D basePos = new Vector3D(0, 0, 1500);
+    private final Vector3D zero = new Vector3D();
+    private final Camera camera = new Camera(basePos, zero,
             1.0F, 1, 0.01F, 100, true);
 
     private double mousePrevX = 0;
     private double mousePrevY = 0;
+
+    @FXML
+    public void resetModelPosition() {
+
+    }
+    @FXML
+    public void resetCameraPosition(){
+        camera.setPosition(basePos);
+        camera.setTarget(zero);
+    }
 
     @FXML
     private void initialize() {
@@ -175,15 +181,15 @@ public class GuiController {
 
     public void addCameraButtons() {
         Button addButton = new Button("Камера " + (addedButtonsCamera.size() + 1));
-        addButton.setLayoutY((addedButtonsCamera.size() > 0) ?
-                addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutY() + 40 :
+        addButton.setLayoutY((!addedButtonsCamera.isEmpty()) ?
+                addedButtonsCamera.getLast().getLayoutY() + 40 :
                 185);
         addButton.setLayoutX(33);
         addButton.setOnAction(event -> showCamera(addButton.getText()));
         addedButtonsCamera.add(addButton);
         Button deleteButton = new Button("Удалить");
-        deleteButton.setLayoutY(addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutY());
-        deleteButton.setLayoutX(addedButtonsCamera.get(addedButtonsCamera.size() - 1).getLayoutX() + 85);
+        deleteButton.setLayoutY(addedButtonsCamera.getLast().getLayoutY());
+        deleteButton.setLayoutX(addedButtonsCamera.getLast().getLayoutX() + 85);
         deleteButton.setOnAction(event -> deleteCamera(addButton.getText()));
         deletedButtonsCamera.add(deleteButton);
 
@@ -198,7 +204,7 @@ public class GuiController {
             }
         }
         showMessage("Осторожно", "Переключено на Камеру 1", messageInformation);
-        return cameras.get(0);
+        return cameras.getFirst();
     }
 
 
@@ -235,7 +241,7 @@ public class GuiController {
             if (i + 1 == numOfCamera) {
                 if (cameras.get(i).isActive()) {
                     showMessage("Информация", "Вы перенаправлены на: Камера 1", messageInformation);
-                    cameras.get(0).setActive(true);
+                    cameras.getFirst().setActive(true);
                 }
                 deleteCameraUI(i);
                 break;
