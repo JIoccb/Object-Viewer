@@ -32,8 +32,8 @@ public class AffineTransformations {
                 {0, 0, 0, 1},
         });
     }
-    public static Matrix4D rotateScaleTranslate(Vector3D translate, double alpha, double beta, double gamma, double x, double y, double z) {
+    /*public static Matrix4D rotateScaleTranslate(Vector3D translate, double alpha, double beta, double gamma, double x, double y, double z) {
         Matrix4D RS = BinaryOperations.product(scaling(x, y, z), rotation(alpha, beta, gamma));
         return BinaryOperations.product(translation(translate.get(0), translate.get(1), translate.get(2)), RS);
-    }
+    }*/
 }

@@ -1,17 +1,13 @@
 package com.cgvsu.triangulation;
 
-import com.cgvsu.math.BinaryOperations;
 import com.cgvsu.math.vectors.Vector2D;
 
+import static com.cgvsu.math.Global.EPS;
+
 /**
- * A utility class for working with {@link //Vector2f}
+ * A utility class for working with {@link Vector2D}
  */
 final class VectorMath {
-
-    /**
-     * A small number for float and double comparisons
-     */
-    public static final double EPSILON = 0.000000001;
 
     /**
      * Prevents class instantiation.
@@ -51,18 +47,7 @@ final class VectorMath {
         double check2 = dis(p, b, c);
         double check3 = dis(p, c, a);
 
-        return (check1 >= -EPSILON && check2 >= -EPSILON && check3 >= -EPSILON) ||
-         (check1 <= EPSILON && check2 <= EPSILON && check3 <= EPSILON);
-    }
-
-    /**
-     * Calculates the length of vector AB.
-     * @param a A coordinates
-     * @param b B coordinates
-     * @return length of vector AB
-     */
-    double euclidNorm(Vector2D a, Vector2D b) {
-        Vector2D d = BinaryOperations.add(b, a, false);
-        return d.norm();
+        return (check1 >= -EPS && check2 >= -EPS && check3 >= -EPS) ||
+         (check1 <= EPS && check2 <= EPS && check3 <= EPS);
     }
 }

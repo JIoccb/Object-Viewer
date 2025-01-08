@@ -92,22 +92,22 @@ public class RenderEngWithTriangFill {
             }
 
             ArrayList<Vector3D> locToGlobNormal = new ArrayList<>(normals.size());
-            for (Vector3D normal: normals) {
+            for (Vector3D normal : normals) {
                 Vector n = BinaryOperations.product(modelViewProjectionMatrix, normal.increaseDimension()).normalize();
                 locToGlobNormal.add(new Vector3D(n.get(0), n.get(1), n.get(2)));
             }
 
 
             //Vector3D l = new Vector3D(0, 0, 1);
-            Vector3D l = new Vector3D(viewMatrix.get(0,2), viewMatrix.get(1,2), viewMatrix.get(2,2));
+            Vector3D l = new Vector3D(viewMatrix.get(0, 2), viewMatrix.get(1, 2), viewMatrix.get(2, 2));
 
             //Vector3D worldLightDirection = new Vector3D(1, 1, 0); // Направление света в мировой системе координат
 
-           // Vector3D worldLightDirection = new Vector3D(viewMatrix.get(0,2), viewMatrix.get(1,2), viewMatrix.get(2,2)); // Направление света в мировой системе координат
+            // Vector3D worldLightDirection = new Vector3D(viewMatrix.get(0,2), viewMatrix.get(1,2), viewMatrix.get(2,2)); // Направление света в мировой системе координат
             //Vector4D cameraLightDirection = BinaryOperations.product(viewMatrix, worldLightDirection.increaseDimension()).normalize().toVector4D();
             //Vector3D lightDirection = new Vector3D(cameraLightDirection.get(0), cameraLightDirection.get(1), cameraLightDirection.get(2));
             FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.CYAN, texture, textureVertices, zBuffer,
-                    drawWireframe, useLighting , normals, l);
+                    drawWireframe, useLighting, normals, l);
         }
     }
 }

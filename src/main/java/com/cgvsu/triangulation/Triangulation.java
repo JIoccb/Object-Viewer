@@ -6,9 +6,9 @@ import java.util.stream.IntStream;
 
 import com.cgvsu.math.vectors.*;
 
-import static com.cgvsu.triangulation.VectorMath.EPSILON;
+import static com.cgvsu.math.Global.EPS;
 
-
+//TODO: почистить класс от всего лишнего
 /**
  * A utility class for triangulating a 2D polygon.
  *
@@ -36,7 +36,7 @@ import static com.cgvsu.triangulation.VectorMath.EPSILON;
  * <p>
  * This returns the triangles as vertex indices corresponding to the provided list.
  *
- * @see //Vector2f
+ * @see Vector2D
  */
 
 public final class Triangulation {
@@ -167,7 +167,7 @@ public final class Triangulation {
 
                 double dis = VectorMath.dis(prevVertex, curVertex, nextVertex);
                 // check if convex
-                if ((isCCW ? dis : -dis) < EPSILON) {
+                if ((isCCW ? dis : -dis) < EPS) {
                     continue;
                 }
 

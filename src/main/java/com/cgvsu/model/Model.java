@@ -115,6 +115,7 @@ public class Model {
     }
 
     public Vector3D calcNormalOfVertex(List<Vector3D> vertices) {
+        int len = vertices.size();
         double xx = 0.0, yy = 0.0, zz = 0.0;
 
         for (Vector3D v : vertices) {
@@ -123,14 +124,14 @@ public class Model {
             zz += v.get(2);
         }
 
-        Vector normal = new Vector3D(xx / vertices.size(), yy / vertices.size(), zz / vertices.size());
+        Vector normal = new Vector3D(xx / len, yy / len, zz / len);
         return normal.normalize().toVector3D();
     }
 
     public Model transform(Matrix4D TRS) {
         Model res = this;
-        for (int i = 0; i < this.vertices.size(); i++) {
-            Vector3D vertex = this.vertices.get(i);
+        for (int i = 0; i < vertices.size(); i++) {
+            Vector3D vertex = vertices.get(i);
 
             // Добавляем четвертую координату w=1 для аффинного преобразования
             Vector4D vertex4d = vertex.increaseDimension().toVector4D();
