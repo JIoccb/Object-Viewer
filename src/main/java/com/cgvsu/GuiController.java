@@ -5,6 +5,7 @@ import com.cgvsu.render_engine.RenderEngWithTriangFill;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
@@ -42,6 +43,17 @@ public class GuiController {
     public TextField targetY;
     public TextField eyeZ;
     public TextField targetZ;
+    public AnchorPane modelPane;
+    public TextField sy;
+    public TextField sx;
+    public TextField sz;
+    public TextField rx;
+    public TextField ry;
+    public TextField rz;
+    public TextField tx;
+    public TextField ty;
+    public TextField tz;
+    public Button translate;
 
     @FXML
     private AnchorPane anchorPane;
@@ -303,4 +315,34 @@ public class GuiController {
     public void handleCameraDown() {
         camera.movePosition(new Vector3D(0, TRANSLATION_SPEED, 0));
     }
+
+    public void resetModelPosition() {
+
+    }
+
+    public void translate(ActionEvent mouseEvent) {
+        if (Objects.equals(tx.getText(), "") || Objects.equals(ty.getText(), "") || Objects.equals(tz.getText(), "")
+                || Objects.equals(sx.getText(), "") || Objects.equals(sy.getText(), "") || Objects.equals(sz.getText(), "")
+                || Objects.equals(rx.getText(), "") || Objects.equals(ry.getText(), "") || Objects.equals(rz.getText(), "")) {
+            showMessage("Ошибка", "Введите необходимые данные!", messageError);
+        } else {
+            try {
+                float txVal = Float.parseFloat(tx.getText());
+                float tyVal = Float.parseFloat(ty.getText());
+                float tzVal = Float.parseFloat(tz.getText());
+                float rxVal = Float.parseFloat(rx.getText());
+                float ryVal = Float.parseFloat(ry.getText());
+                float rzVal = Float.parseFloat(rz.getText());
+                float sxVal = Float.parseFloat(sx.getText());
+                float syVal = Float.parseFloat(sy.getText());
+                float szVal = Float.parseFloat(sz.getText());
+                //scene.transform(txVal, tyVal, tzVal, rxVal, ryVal, rzVal, sxVal, syVal, szVal);
+            } catch (NumberFormatException e) {
+                showMessage("Ошибка", "Неправильный формат чисел!", messageError);
+            } catch (RuntimeException ex) {
+                showMessage("Ошибка", ex.getMessage(), messageError);
+            }
+        }
+    }
+
 }
