@@ -27,7 +27,8 @@ public class RenderEngWithTriangFill {
             final Model mesh,
             final int width,
             final int height,
-            final boolean[] flags) throws Exception {
+            final boolean[] flags
+            ) throws Exception {
 
         boolean drawWireframe = flags[0];
         boolean useTexture = flags[1];
@@ -107,7 +108,7 @@ public class RenderEngWithTriangFill {
             //Vector3D worldLightDirection = new Vector3D(viewMatrix.get(0,2), viewMatrix.get(1,2), viewMatrix.get(2,2)); // Направление света в мировой системе координат
             //Vector4D cameraLightDirection = BinaryOperations.product(viewMatrix, worldLightDirection.increaseDimension()).normalize().toVector4D();
             //Vector3D lightDirection = new Vector3D(cameraLightDirection.get(0), cameraLightDirection.get(1), cameraLightDirection.get(2));
-            FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, Color.CYAN, texture, textureVertices, zBuffer,
+            FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, mesh.color, texture, textureVertices, zBuffer,
                     drawWireframe, useLighting, normals, l);
         }
     }

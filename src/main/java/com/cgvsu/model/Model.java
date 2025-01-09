@@ -9,6 +9,7 @@ import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.math.vectors.Vector4D;
 import com.cgvsu.triangulation.Triangulation;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 import java.util.*;
 
@@ -21,6 +22,7 @@ public class Model {
     private ArrayList<Polygon> triangulatingPolygons = new ArrayList<>();
     private ArrayList<Vector3D> normals;
     private ArrayList<Vector3D> polygonNormals;
+    public Color color = Color.GRAY;
 
 
     public Model() throws Exception {
