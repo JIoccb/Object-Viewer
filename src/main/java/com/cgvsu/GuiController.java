@@ -84,8 +84,9 @@ public class GuiController {
     public void resetModelPosition() {
 
     }
+
     @FXML
-    public void resetCameraPosition(){
+    public void resetCameraPosition() {
         camera.setPosition(basePos);
         camera.setTarget(zero);
     }
@@ -109,6 +110,7 @@ public class GuiController {
 
             */
             camera.setAspectRatio((float) (width / height));
+
 
             if (mesh != null) {
                 try {
