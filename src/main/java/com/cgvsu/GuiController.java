@@ -8,14 +8,15 @@ import com.cgvsu.render_engine.RenderEngWithTriangFill;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import javafx.scene.image.Image;
@@ -64,6 +65,8 @@ public class GuiController {
 
     @FXML
     private Canvas canvas;
+
+    public ColorPicker baseModelColor = new ColorPicker();
 
     Alert messageWarning = new Alert(Alert.AlertType.WARNING);
     Alert messageError = new Alert(Alert.AlertType.ERROR);
@@ -132,6 +135,18 @@ public class GuiController {
         timeline.play();
 
         setupMouseControls();
+    }
+
+    public void changeDefaultColor(MouseEvent mouseEvent) {
+        baseModelColor.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Color c = baseModelColor.getValue();
+                if (mesh != null) {
+                    mesh.color = c;
+                }
+            }
+        });
     }
 
     @FXML
