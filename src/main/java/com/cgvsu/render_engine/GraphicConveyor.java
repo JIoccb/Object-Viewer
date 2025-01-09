@@ -8,11 +8,11 @@ import com.cgvsu.math.vectors.Vector3D;
 
 public class GraphicConveyor {
 
-    public static Matrix4D lookAt(Vector3D eye, Vector3D target) throws Exception {
+    public static Matrix4D lookAt(Vector3D eye, Vector3D target) {
         return lookAt(eye, target, new Vector3D(0, -1, 0));
     }
 
-    public static Matrix4D lookAt(Vector3D eye, Vector3D target, Vector3D up) throws Exception {
+    public static Matrix4D lookAt(Vector3D eye, Vector3D target, Vector3D up) {
         Vector3D resultZ = BinaryOperations.add(target, eye, false).normalize().toVector3D(); // Z-ось (направление взгляда)
         Vector3D adjustedUp = up;
 
@@ -66,7 +66,6 @@ public class GraphicConveyor {
 
         return result;
     }
-
 
     public static Vector2D vertexToPoint(final Vector3D vertex, final int width, final int height) {
         return new Vector2D((width - 1) / 2.0D * (vertex.get(0) + 1), (height - 1) / 2.0D * (-vertex.get(1) + 1));
