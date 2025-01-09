@@ -70,7 +70,7 @@ public class Camera {
         this.target = BinaryOperations.add(this.position, direction, true);
     }
 
-    public Matrix4D getViewMatrix() throws Exception {
+    public Matrix4D getViewMatrix() {
         return GraphicConveyor.lookAt(position, target);
     }
 
