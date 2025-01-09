@@ -128,30 +128,6 @@ public class Model {
         return normal.normalize().toVector3D();
     }
 
-    public Model transform(Matrix4D TRS) {
-        Model res = this;
-        for (int i = 0; i < vertices.size(); i++) {
-            Vector3D vertex = vertices.get(i);
-
-            // Добавляем четвертую координату w=1 для аффинного преобразования
-            Vector4D vertex4d = vertex.increaseDimension().toVector4D();
-
-            // Умножаем вектор вершины на матрицу трансформации
-            Vector4D transformed = BinaryOperations.product(TRS, vertex4d).toVector4D();
-
-            // Создаем новый вектор из преобразованных координат (игнорируем w)
-            double w = transformed.get(3);
-            Vector3D transformedVertex = new Vector3D(
-                    transformed.get(0),
-                    transformed.get(1),
-                    transformed.get(2)).scale(w).toVector3D();
-
-            // Обновляем вершину модели
-            res.vertices.set(i, transformedVertex);
-        }
-        return res;
-    }
-
     public void setPolygonNormals(ArrayList<Vector3D> polygonNormals) {
         this.polygonNormals = polygonNormals;
     }
