@@ -1,19 +1,21 @@
 package com.cgvsu;
 
+import com.cgvsu.math.AffineTransformations;
+import com.cgvsu.math.matrices.Matrix;
+import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.vectors.Vector3D;
 import com.cgvsu.render_engine.RenderEngWithTriangFill;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TextField;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import javafx.scene.image.Image;
@@ -62,7 +64,6 @@ public class GuiController {
 
     @FXML
     private Canvas canvas;
-    public ColorPicker baseModelColor = new ColorPicker();
 
     Alert messageWarning = new Alert(Alert.AlertType.WARNING);
     Alert messageError = new Alert(Alert.AlertType.ERROR);
@@ -72,6 +73,7 @@ public class GuiController {
     private final List<Camera> cameras = new ArrayList<>();
     private final List<Button> addedButtonsCamera = new ArrayList<>();
     private final List<Button> deletedButtonsCamera = new ArrayList<>();
+    private static Matrix4D modelMatrix = Matrix.id(4).toMatrix4D();
     private final Vector3D basePos = new Vector3D(0, 0, 1500);
     private final Vector3D zero = new Vector3D();
     private final Camera camera = new Camera(basePos, zero,
@@ -82,7 +84,7 @@ public class GuiController {
 
     @FXML
     public void resetModelPosition() {
-
+        modelMatrix = Matrix.id(4).toMatrix4D();
     }
 
     @FXML
@@ -304,18 +306,6 @@ public class GuiController {
         });
     }
 
-    public void changeDefaultColor(MouseEvent mouseEvent) {
-        baseModelColor.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Color c = baseModelColor.getValue();
-                if (mesh != null) {
-                    mesh.color = c;
-                }
-            }
-        });
-    }
-
 
     @FXML
     public void handleCameraLeft() {
@@ -337,23 +327,24 @@ public class GuiController {
         camera.movePosition(new Vector3D(0, TRANSLATION_SPEED, 0));
     }
 
-    public void translate(ActionEvent mouseEvent) {
+    @FXML
+    public void transform() {
         if (Objects.equals(tx.getText(), "") || Objects.equals(ty.getText(), "") || Objects.equals(tz.getText(), "")
                 || Objects.equals(sx.getText(), "") || Objects.equals(sy.getText(), "") || Objects.equals(sz.getText(), "")
                 || Objects.equals(rx.getText(), "") || Objects.equals(ry.getText(), "") || Objects.equals(rz.getText(), "")) {
             showMessage("Ошибка", "Введите необходимые данные!", messageError);
         } else {
             try {
-                float txVal = Float.parseFloat(tx.getText());
-                float tyVal = Float.parseFloat(ty.getText());
-                float tzVal = Float.parseFloat(tz.getText());
-                float rxVal = Float.parseFloat(rx.getText());
-                float ryVal = Float.parseFloat(ry.getText());
-                float rzVal = Float.parseFloat(rz.getText());
-                float sxVal = Float.parseFloat(sx.getText());
-                float syVal = Float.parseFloat(sy.getText());
-                float szVal = Float.parseFloat(sz.getText());
-                //scene.transform(txVal, tyVal, tzVal, rxVal, ryVal, rzVal, sxVal, syVal, szVal);
+                float tX = Float.parseFloat(tx.getText());
+                float tY = Float.parseFloat(ty.getText());
+                float tZ = Float.parseFloat(tz.getText());
+                float rX = Float.parseFloat(rx.getText());
+                float rY = Float.parseFloat(ry.getText());
+                float rZ = Float.parseFloat(rz.getText());
+                float sX = Float.parseFloat(sx.getText());
+                float sY = Float.parseFloat(sy.getText());
+                float sZ = Float.parseFloat(sz.getText());
+                modelMatrix = AffineTransformations.rotateScaleTranslate(new Vector3D(tX, tY, tZ), rX, rY, rZ, sX, sY, sZ);
             } catch (NumberFormatException e) {
                 showMessage("Ошибка", "Неправильный формат чисел!", messageError);
             } catch (RuntimeException ex) {
@@ -362,4 +353,7 @@ public class GuiController {
         }
     }
 
+    public static Matrix4D getModelMatrix() {
+        return modelMatrix;
+    }
 }

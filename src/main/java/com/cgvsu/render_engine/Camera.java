@@ -1,5 +1,6 @@
 package com.cgvsu.render_engine;
 
+import com.cgvsu.GuiController;
 import com.cgvsu.math.matrices.Matrix4D;
 import com.cgvsu.math.BinaryOperations;
 import com.cgvsu.math.vectors.Vector3D;
@@ -38,7 +39,6 @@ public class Camera {
         this.isActive = isActive;
         this.yaw = 0;
         this.pitch = 0;
-
     }
 
     public void movePosition(final Vector3D translation) {
@@ -70,12 +70,15 @@ public class Camera {
         this.target = BinaryOperations.add(this.position, direction, true);
     }
 
-    public Matrix4D getViewMatrix() throws Exception {
+    public Matrix4D getViewMatrix() {
         return GraphicConveyor.lookAt(position, target);
     }
 
     public Matrix4D getProjectionMatrix() {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
+    }
+    public Matrix4D getModelMatrix(){
+        return GuiController.getModelMatrix();
     }
 
     public Vector3D getPosition() {

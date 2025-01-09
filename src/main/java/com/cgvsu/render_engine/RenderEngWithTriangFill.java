@@ -47,9 +47,10 @@ public class RenderEngWithTriangFill {
 
         if (triangulatingPolygons.isEmpty() || mesh.getVertices().isEmpty()) return;
 
+        Matrix4D modelMatrix = camera.getModelMatrix();
         Matrix4D viewMatrix = camera.getViewMatrix();
         Matrix4D projectionMatrix = camera.getProjectionMatrix();
-        Matrix4D modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix, viewMatrix);
+        Matrix4D modelViewProjectionMatrix = BinaryOperations.product(projectionMatrix, BinaryOperations.product(viewMatrix, modelMatrix));
 
         Z_Buffer zBuffer = new Z_Buffer(width, height);
 
@@ -104,7 +105,7 @@ public class RenderEngWithTriangFill {
 
             //Vector3D worldLightDirection = new Vector3D(1, 1, 0); // Направление света в мировой системе координат
 
-            // Vector3D worldLightDirection = new Vector3D(viewMatrix.get(0,2), viewMatrix.get(1,2), viewMatrix.get(2,2)); // Направление света в мировой системе координат
+            //Vector3D worldLightDirection = new Vector3D(viewMatrix.get(0,2), viewMatrix.get(1,2), viewMatrix.get(2,2)); // Направление света в мировой системе координат
             //Vector4D cameraLightDirection = BinaryOperations.product(viewMatrix, worldLightDirection.increaseDimension()).normalize().toVector4D();
             //Vector3D lightDirection = new Vector3D(cameraLightDirection.get(0), cameraLightDirection.get(1), cameraLightDirection.get(2));
             FullRasterization.fillTriangle(graphicsContext, arrX, arrY, arrZ, mesh.color, texture, textureVertices, zBuffer,

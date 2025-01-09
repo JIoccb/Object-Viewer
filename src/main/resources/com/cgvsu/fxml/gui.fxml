@@ -45,7 +45,7 @@
         <TextField fx:id="ty" layoutX="225.0" layoutY="123.0" prefWidth="50.0" text="0"/>
         <TextField fx:id="tz" layoutX="225.0" layoutY="158.0" prefWidth="50.0" text="0"/>
 
-        <Button fx:id="translate" layoutX="118.0" layoutY="210.0" onAction="#translate" text="Translate"/>
+        <Button fx:id="transform" layoutX="118.0" layoutY="210.0" onAction="#transform" text="Transform"/>
 
         <ColorPicker fx:id="baseModelColor" layoutX="93.0" layoutY="303.0" prefWidth="200.0" promptText="Model color" onMouseClicked="#changeDefaultColor" />
 

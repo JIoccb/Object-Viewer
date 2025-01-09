@@ -111,7 +111,7 @@ public class FullRasterization {
                         Vector3D currentNormal = new Vector3D(baryCoords[0] * vertexList.get(0).getNormal().get(0) + baryCoords[1] * vertexList.get(1).getNormal().get(0) + baryCoords[2] * vertexList.get(2).getNormal().get(0),
                                 baryCoords[0] * vertexList.get(0).getNormal().get(1) + baryCoords[1] * vertexList.get(1).getNormal().get(1) + baryCoords[2] * vertexList.get(2).getNormal().get(1),
                                 baryCoords[0] * vertexList.get(0).getNormal().get(2) + baryCoords[1] * vertexList.get(1).getNormal().get(2) + baryCoords[2] * vertexList.get(2).getNormal().get(2));
-                        double l = (currentNormal.get(0) * lightDirection.get(0) + currentNormal.get(1) * lightDirection.get(1) + currentNormal.get(2) * lightDirection.get(2));
+                        double l = currentNormal.get(0) * lightDirection.get(0) + currentNormal.get(1) * lightDirection.get(1) + currentNormal.get(2) * lightDirection.get(2);
                         double k = 0.5;
                         l = Math.max(0, Math.min(l, 1));
 
@@ -121,7 +121,7 @@ public class FullRasterization {
                         finalColor = new Color(r, g, b, 1);
 
 
-                      /*  finalColor = new Color(finalColor.getRed() * (1 - k) + finalColor.getRed() * k * l,
+                        /*finalColor = new Color(finalColor.getRed() * (1 - k) + finalColor.getRed() * k * l,
                                 finalColor.getGreen() * (1 - k) + finalColor.getGreen() * k * l,
                                 finalColor.getBlue() * (1 - k) + finalColor.getBlue() * k * l,
                                 1);
@@ -132,9 +132,7 @@ public class FullRasterization {
                             finalColor = new Color(finalColor.getRed() * (1 - k) + finalColor.getRed() * k * l, finalColor.getGreen() * (1 - k) + finalColor.getGreen() * k * l, finalColor.getBlue() * (1 - k) + finalColor.getBlue() * k * l, 1);
                         } else {
                             finalColor = new Color(finalColor.getRed() * (1 - k), finalColor.getGreen() * (1 - k), finalColor.getBlue() * (1 - k), 1);
-                        }
-                            */
-
+                        }*/
                     }
                     pixelWriter.setColor(x, y, finalColor);
                 }
